@@ -1,0 +1,32 @@
+{
+  "root": "Ingeniero Industrial",
+  "branches": [
+    {
+      "id": "b1",
+      "name": "Liderazgo",
+      "nodes": [
+        { "id": "n1", "name": "Comunicación", "status": "completed", "points": 100 },
+        { "id": "n2", "name": "Trabajo en Equipo", "status": "completed", "points": 100 },
+        { "id": "n3", "name": "Negociación", "status": "locked", "points": 150 }
+      ]
+    },
+    {
+      "id": "b2",
+      "name": "Innovación",
+      "nodes": [
+        { "id": "n4", "name": "Industria 4.0", "status": "in_progress", "points": 150 },
+        { "id": "n5", "name": "IA Aplicada", "status": "locked", "points": 200 },
+        { "id": "n6", "name": "Transformación Digital", "status": "locked", "points": 200 }
+      ]
+    },
+    {
+      "id": "b3",
+      "name": "Logística Inteligente",
+      "nodes": [
+        { "id": "n7", "name": "Lean Manufacturing", "status": "locked", "points": 150 },
+        { "id": "n8", "name": "Supply Chain", "status": "locked", "points": 200 },
+        { "id": "n9", "name": "Automatización", "status": "locked", "points": 250 }
+      ]
+    }
+  ]
+}

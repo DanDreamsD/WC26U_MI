@@ -1,0 +1,34 @@
+[
+  {
+    "dayId": 2,
+    "time": "09:00 - 10:30",
+    "title": "El Futuro de la Industria 4.0",
+    "speaker": "Dra. Elena Gómez",
+    "type": "PONENCIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 2,
+    "time": "11:00 - 12:30",
+    "title": "Taller: Design Thinking en Logística",
+    "speaker": "Ing. Carlos Ruiz",
+    "type": "TALLER",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 2,
+    "time": "14:00 - 16:00",
+    "title": "Networking Jóvenes Líderes",
+    "speaker": "Varios",
+    "type": "NETWORKING",
+    "requiresTicket": "VIP"
+  },
+  {
+    "dayId": 2,
+    "time": "16:30 - 18:00",
+    "title": "Networking Ejecutivo y Mentoría",
+    "speaker": "CEOs Invitados",
+    "type": "NETWORKING",
+    "requiresTicket": "PREMIUM"
+  }
+]

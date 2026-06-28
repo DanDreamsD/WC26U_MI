@@ -1,0 +1,23 @@
+[
+  {
+    "id": "b1",
+    "name": "Primera conferencia",
+    "description": "Asististe a tu primera ponencia en CEIISE.",
+    "rarity": "Común",
+    "date": "2026-10-12"
+  },
+  {
+    "id": "b2",
+    "name": "Innovador",
+    "description": "Completaste 3 actividades de la rama de Innovación.",
+    "rarity": "Rara",
+    "date": "2026-10-12"
+  },
+  {
+    "id": "b3",
+    "name": "Networking",
+    "description": "Hiciste conexión con 5 participantes diferentes.",
+    "rarity": "Épica",
+    "date": "2026-10-13"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "m1",
+    "dayId": 1,
+    "title": "Asistir a la inauguración",
+    "xp": 100
+  },
+  {
+    "id": "m2",
+    "dayId": 1,
+    "title": "Conocer un ponente",
+    "xp": 50
+  },
+  {
+    "id": "m3",
+    "dayId": 2,
+    "title": "Ver una ponencia sobre Innovación",
+    "xp": 100
+  },
+  {
+    "id": "m4",
+    "dayId": 2,
+    "title": "Participar en dinámica",
+    "xp": 150
+  }
+]

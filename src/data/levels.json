@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "day": 1,
+    "title": "Inauguración y Liderazgo",
+    "date": "2026-10-12",
+    "status": "completed"
+  },
+  {
+    "id": 2,
+    "day": 2,
+    "title": "Innovación Tecnológica",
+    "date": "2026-10-13",
+    "status": "available"
+  },
+  {
+    "id": 3,
+    "day": 3,
+    "title": "Logística Inteligente",
+    "date": "2026-10-14",
+    "status": "locked"
+  },
+  {
+    "id": 4,
+    "day": 4,
+    "title": "Visitas Técnicas y Feria",
+    "date": "2026-10-15",
+    "status": "locked"
+  },
+  {
+    "id": 5,
+    "day": 5,
+    "title": "Clausura y Premiación",
+    "date": "2026-10-16",
+    "status": "locked"
+  }
+]

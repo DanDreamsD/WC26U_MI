@@ -1,0 +1,12 @@
+{
+  "id": "u1",
+  "name": "Daniel",
+  "university": "Universidad Nacional de San Agustín",
+  "career": "Ingeniería Industrial",
+  "ticketType": "PREMIUM",
+  "level": 3,
+  "xp": 1250,
+  "completedMissions": ["m1", "m2"],
+  "unlockedNodes": ["n1", "n2", "n4"],
+  "badges": ["b1", "b2", "b3"]
+}
