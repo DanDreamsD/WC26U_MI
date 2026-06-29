@@ -27,14 +27,10 @@ export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, user }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-8">
-        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm text-center">
+      <div className="flex justify-center mb-8">
+        <div className="bg-white px-8 py-4 rounded-xl border border-gray-100 shadow-sm text-center">
           <div className="text-gray-500 text-sm mb-1">Nivel Actual</div>
           <div className="text-2xl font-bold text-deep">{user.level}</div>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm text-center">
-          <div className="text-gray-500 text-sm mb-1">XP Total</div>
-          <div className="text-2xl font-bold text-secondary">{user.xp}</div>
         </div>
       </div>
 

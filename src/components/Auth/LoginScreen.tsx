@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
-import { findUserByDocument, loginHint } from '../../utils/users';
+import { findUserByDocument } from '../../utils/users';
+import logo from '../../assets/iconoceiiseweb.svg';
 
 interface LoginScreenProps {
   onLogin: (user: any) => void;
@@ -28,11 +29,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(132,12,215,0.12),_transparent_60%)] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <ShieldCheck size={28} />
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <ShieldCheck size={28} />
+            </div>
+            <img src={logo} alt="CEIISE" className="h-14 w-14 rounded-2xl shadow-sm object-contain" />
           </div>
           <h1 className="text-2xl font-black text-deep">Acceso CEIISE 2026</h1>
-          <p className="mt-2 text-sm text-gray-500">Ingresa tu documento de identidad para entrar al mapa del evento.</p>
+          <p className="mt-2 text-sm text-gray-500">Ingresa tu documento de identidad para ver tu progreso en CEIISE 2026.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -62,7 +66,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-gray-400">{loginHint}</p>
       </div>
     </div>
   );

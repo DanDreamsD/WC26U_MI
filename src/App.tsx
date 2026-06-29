@@ -4,7 +4,7 @@ import { Dashboard } from './components/Dashboard/Dashboard';
 import { LevelJourney } from './components/Journey/LevelJourney';
 import { LevelModal } from './components/Journey/LevelModal';
 import { Profile } from './components/Profile/Profile';
-import { Passport } from './components/Passport/Passport';
+import { Prizes } from './components/Prizes/Prizes';
 import { KnowledgeTree } from './components/Tree/KnowledgeTree';
 import { LoginScreen } from './components/Auth/LoginScreen';
 import { Modal } from './components/UI/Modal';
@@ -15,7 +15,7 @@ const AUTH_STORAGE_KEY = 'ceiise-user';
 function App() {
   const [user, setUser] = useState<AppUser | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [passportOpen, setPassportOpen] = useState(false);
+  const [prizesOpen, setPrizesOpen] = useState(false);
   const [treeOpen, setTreeOpen] = useState(false);
   const [restrictionOpen, setRestrictionOpen] = useState(false);
   const [restrictionTitle, setRestrictionTitle] = useState('Acceso limitado');
@@ -62,8 +62,8 @@ function App() {
       <Dashboard 
         user={user}
         onOpenProfile={() => setProfileOpen(true)}
-        onOpenPassport={() => (user.ticketType === 'STANDARD' ? handleRestrictedAccess('Passport') : setPassportOpen(true))}
-        onOpenKnowledgeTree={() => (user.ticketType === 'STANDARD' ? handleRestrictedAccess('Skills') : setTreeOpen(true))}
+        onOpenPassport={() => setPrizesOpen(true)}
+        onOpenKnowledgeTree={() => (user.ticketType === 'STANDARD' ? handleRestrictedAccess('Mis nuevas habilidades') : setTreeOpen(true))}
       />
 
       <main className="flex-1 overflow-y-auto custom-scrollbar p-6 flex flex-col items-center">
@@ -91,11 +91,9 @@ function App() {
       />
 
       <Profile isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
+      <Prizes isOpen={prizesOpen} onClose={() => setPrizesOpen(false)} user={user} />
       {user.ticketType !== 'STANDARD' && (
-        <>
-          <Passport isOpen={passportOpen} onClose={() => setPassportOpen(false)} user={user} />
-          <KnowledgeTree isOpen={treeOpen} onClose={() => setTreeOpen(false)} userUnlockedNodes={user.unlockedNodes} />
-        </>
+        <KnowledgeTree isOpen={treeOpen} onClose={() => setTreeOpen(false)} userUnlockedNodes={user.unlockedNodes} />
       )}
 
       <Modal isOpen={restrictionOpen} onClose={() => setRestrictionOpen(false)} title="Acceso limitado">
@@ -105,7 +103,7 @@ function App() {
           </div>
           <h3 className="text-xl font-bold text-deep">{restrictionTitle}</h3>
           <p className="mt-2 max-w-md text-sm text-gray-600">
-            Los participantes Standard pueden ver el recorrido general, pero para acceder a detalles completos, Passport y Skills necesitan un plan superior.
+            Los participantes Standard pueden ver el recorrido general, pero para acceder a los detalles completos y a Mis nuevas habilidades necesitan un plan superior.
           </p>
           <div className="mt-5 flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700">
             <Crown size={16} />
