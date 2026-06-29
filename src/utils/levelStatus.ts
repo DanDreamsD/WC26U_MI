@@ -42,7 +42,7 @@ export const formatLevelDateLong = (levelDate: string) => {
 const getCurrentDate = (): Date => {
   if (import.meta.env.DEV) {
     // Cambia esta fecha cuando quieras hacer pruebas
-    return new Date(Date.UTC(2026, 7, 5)); // AA MM DD
+    return new Date(Date.UTC(2026, 8, 5)); // AA MM DD
   }
 
   return new Date();
