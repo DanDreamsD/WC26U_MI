@@ -6,25 +6,27 @@ const parseLevelDate = (value: string): Date => {
 };
 
 const getPeruDateAsUTC = (date: Date): Date => {
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Lima',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric'
-  });
-  const parts = formatter.formatToParts(date);
-  const year = Number(parts.find(p => p.type === 'year')?.value);
-  const month = Number(parts.find(p => p.type === 'month')?.value);
-  const day = Number(parts.find(p => p.type === 'day')?.value);
-  return new Date(Date.UTC(year, month - 1, day));
+  // Perú está en GMT-5 todo el año. Restamos 5 horas al tiempo UTC de la fecha dada para obtener el tiempo en Perú.
+  const peruTime = new Date(date.getTime() - 5 * 60 * 60 * 1000);
+  const year = peruTime.getUTCFullYear();
+  const month = peruTime.getUTCMonth();
+  const day = peruTime.getUTCDate();
+  return new Date(Date.UTC(year, month, day));
 };
 
 const getCurrentDate = (): Date => {
   // 1. Permite simular una fecha mediante un parámetro de consulta en la URL (ej. ?date=2026-08-05)
-  // Esto facilita las pruebas de diferentes días del evento tanto localmente como en GitHub.
+  // Soporta tanto parámetros de consulta estándar como parámetros dentro del hash (HashRouter)
   if (typeof window !== 'undefined') {
-    const params = new URLSearchParams(window.location.search);
-    const dateParam = params.get('date') || params.get('testDate');
+    const searchParams = new URLSearchParams(window.location.search);
+    let dateParam = searchParams.get('date') || searchParams.get('testDate');
+
+    if (!dateParam && window.location.hash.includes('?')) {
+      const hashQuery = window.location.hash.split('?')[1];
+      const hashParams = new URLSearchParams(hashQuery);
+      dateParam = hashParams.get('date') || hashParams.get('testDate');
+    }
+
     if (dateParam) {
       const [year, month, day] = dateParam.split('-').map(Number);
       if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
