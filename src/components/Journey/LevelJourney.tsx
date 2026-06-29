@@ -9,7 +9,6 @@ interface LevelJourneyProps {
 export const LevelJourney: React.FC<LevelJourneyProps> = ({ onNodeClick }) => {
   return (
     <div className="py-8 w-full flex flex-col items-center relative">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-transparent via-primary/20 to-transparent -z-10 hidden sm:block" />
       {levelsData.map((level, index) => (
         <JourneyNode 
           key={level.id} 

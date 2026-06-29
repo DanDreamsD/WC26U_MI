@@ -66,6 +66,40 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
           </button>
         </form>
 
+        {/* Animated border website link */}
+        <div className="mt-6 flex justify-center">
+          <a
+            href="https://ceiise.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-primary overflow-hidden group"
+            style={{ isolation: 'isolate' }}
+          >
+            {/* Spinning conic gradient border */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'conic-gradient(from 0deg, #840CD7, #6105A3, #ffffff, #840CD7)',
+                animation: 'border-spin 2.5s linear infinite',
+                padding: '2px',
+                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                WebkitMaskComposite: 'xor',
+                maskComposite: 'exclude',
+              }}
+            />
+            {/* Inner fill */}
+            <span className="absolute inset-[2px] rounded-full bg-white z-0" />
+            {/* Label */}
+            <span className="relative z-10 flex items-center gap-1.5 text-primary group-hover:text-secondary transition-colors">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+              Visitar ceiise.org
+            </span>
+          </a>
+        </div>
+
       </div>
     </div>
   );

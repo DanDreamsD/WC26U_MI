@@ -90,7 +90,7 @@ function App() {
         documentId={user.documentId} 
       />
 
-      <Profile isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
+      <Profile isOpen={profileOpen} onClose={() => setProfileOpen(false)} onLogout={() => setUser(null)} user={user} />
       <Prizes isOpen={prizesOpen} onClose={() => setPrizesOpen(false)} user={user} />
       {user.ticketType !== 'STANDARD' && (
         <KnowledgeTree isOpen={treeOpen} onClose={() => setTreeOpen(false)} userUnlockedNodes={user.unlockedNodes} />

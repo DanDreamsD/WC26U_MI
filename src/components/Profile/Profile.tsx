@@ -1,15 +1,16 @@
 import React from 'react';
 import { Modal } from '../UI/Modal';
-import { Crown, Award } from 'lucide-react';
+import { Crown, Award, LogOut } from 'lucide-react';
 import badgesData from '../../data/badges.json';
 
 interface ProfileProps {
   isOpen: boolean;
   onClose: () => void;
+  onLogout: () => void;
   user: any;
 }
 
-export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, user }) => {
+export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, onLogout, user }) => {
   const userBadges = badgesData.filter(b => user.badges.includes(b.id));
 
   return (
@@ -52,6 +53,17 @@ export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, user }) => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Logout */}
+      <div className="mt-6 pt-6 border-t border-gray-100">
+        <button
+          onClick={() => { onClose(); onLogout(); }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-red-200 text-red-500 font-semibold text-sm hover:bg-red-50 hover:border-red-300 transition-all"
+        >
+          <LogOut size={16} />
+          Cerrar sesión
+        </button>
       </div>
     </Modal>
   );
