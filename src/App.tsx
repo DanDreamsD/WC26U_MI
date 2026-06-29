@@ -1,19 +1,57 @@
-import { useState } from 'react';
-import userData from './data/users.json';
+import { useEffect, useState } from 'react';
+import { Lock, Crown } from 'lucide-react';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { LevelJourney } from './components/Journey/LevelJourney';
 import { LevelModal } from './components/Journey/LevelModal';
 import { Profile } from './components/Profile/Profile';
 import { Passport } from './components/Passport/Passport';
 import { KnowledgeTree } from './components/Tree/KnowledgeTree';
+import { LoginScreen } from './components/Auth/LoginScreen';
+import { Modal } from './components/UI/Modal';
+import type { AppUser } from './utils/users';
+
+const AUTH_STORAGE_KEY = 'ceiise-user';
 
 function App() {
-  const [user] = useState(userData);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [passportOpen, setPassportOpen] = useState(false);
   const [treeOpen, setTreeOpen] = useState(false);
+  const [restrictionOpen, setRestrictionOpen] = useState(false);
+  const [restrictionTitle, setRestrictionTitle] = useState('Acceso limitado');
   
   const [selectedLevel, setSelectedLevel] = useState<any | null>(null);
+
+  useEffect(() => {
+    try {
+      const storedUser = window.localStorage.getItem(AUTH_STORAGE_KEY);
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser) as AppUser;
+        if (parsedUser?.documentId) {
+          setUser(parsedUser);
+        }
+      }
+    } catch {
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+    } else {
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  }, [user]);
+
+  const handleRestrictedAccess = (featureName: string) => {
+    setRestrictionTitle(featureName);
+    setRestrictionOpen(true);
+  };
+
+  if (!user) {
+    return <LoginScreen onLogin={setUser} />;
+  }
 
   return (
     <div className="h-screen bg-white flex flex-col relative overflow-hidden font-sans selection:bg-primary selection:text-white">
@@ -24,8 +62,8 @@ function App() {
       <Dashboard 
         user={user}
         onOpenProfile={() => setProfileOpen(true)}
-        onOpenPassport={() => setPassportOpen(true)}
-        onOpenKnowledgeTree={() => setTreeOpen(true)}
+        onOpenPassport={() => (user.ticketType === 'STANDARD' ? handleRestrictedAccess('Passport') : setPassportOpen(true))}
+        onOpenKnowledgeTree={() => (user.ticketType === 'STANDARD' ? handleRestrictedAccess('Skills') : setTreeOpen(true))}
       />
 
       <main className="flex-1 overflow-y-auto custom-scrollbar p-6 flex flex-col items-center">
@@ -49,11 +87,32 @@ function App() {
         onClose={() => setSelectedLevel(null)} 
         level={selectedLevel} 
         userTicket={user.ticketType} 
+        documentId={user.documentId} 
       />
 
       <Profile isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
-      <Passport isOpen={passportOpen} onClose={() => setPassportOpen(false)} user={user} />
-      <KnowledgeTree isOpen={treeOpen} onClose={() => setTreeOpen(false)} userUnlockedNodes={user.unlockedNodes} />
+      {user.ticketType !== 'STANDARD' && (
+        <>
+          <Passport isOpen={passportOpen} onClose={() => setPassportOpen(false)} user={user} />
+          <KnowledgeTree isOpen={treeOpen} onClose={() => setTreeOpen(false)} userUnlockedNodes={user.unlockedNodes} />
+        </>
+      )}
+
+      <Modal isOpen={restrictionOpen} onClose={() => setRestrictionOpen(false)} title="Acceso limitado">
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Lock size={28} />
+          </div>
+          <h3 className="text-xl font-bold text-deep">{restrictionTitle}</h3>
+          <p className="mt-2 max-w-md text-sm text-gray-600">
+            Los participantes Standard pueden ver el recorrido general, pero para acceder a detalles completos, Passport y Skills necesitan un plan superior.
+          </p>
+          <div className="mt-5 flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700">
+            <Crown size={16} />
+            Disponible en Premium o VIP
+          </div>
+        </div>
+      </Modal>
       
     </div>
   );

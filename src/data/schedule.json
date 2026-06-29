@@ -1,34 +1,222 @@
 [
   {
+    "dayId": 1,
+    "time": "08:30 - 09:30",
+    "title": "Check in",
+    "speaker": "",
+    "type": "REGISTRO",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "09:30 - 10:00",
+    "title": "Inauguración",
+    "speaker": "",
+    "type": "CEREMONIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "10:00 - 10:45",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "10:45 - 11:45",
+    "title": "Taller de Innovación",
+    "speaker": "Próximamente",
+    "type": "TALLER",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "11:45 - 12:30",
+    "title": "Meet & Greet",
+    "speaker": "",
+    "type": "NETWORKING",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "14:30 - 15:30",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "15:30 - 16:15",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "16:15 - 17:45",
+    "title": "Noche cultural",
+    "speaker": "",
+    "type": "ACTIVIDAD",
+    "requiresTicket": "STANDARD"
+  },
+
+  {
     "dayId": 2,
-    "time": "09:00 - 10:30",
-    "title": "El Futuro de la Industria 4.0",
-    "speaker": "Dra. Elena Gómez",
+    "time": "08:30 - 12:30",
+    "title": "Visitas técnicas",
+    "speaker": "",
+    "type": "VISITAS TÉCNICAS",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 2,
+    "time": "14:30 - 15:30",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 2,
-    "time": "11:00 - 12:30",
-    "title": "Taller: Design Thinking en Logística",
-    "speaker": "Ing. Carlos Ruiz",
-    "type": "TALLER",
+    "time": "15:30 - 16:15",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 2,
-    "time": "14:00 - 16:00",
-    "title": "Networking Jóvenes Líderes",
-    "speaker": "Varios",
+    "time": "16:15 - 17:45",
+    "title": "Feria de voluntarios",
+    "speaker": "Diversos voluntariados",
     "type": "NETWORKING",
-    "requiresTicket": "VIP"
+    "requiresTicket": "STANDARD"
   },
   {
     "dayId": 2,
-    "time": "16:30 - 18:00",
-    "title": "Networking Ejecutivo y Mentoría",
-    "speaker": "CEOs Invitados",
+    "time": "17:45 - 18:30",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
+    "requiresTicket": "STANDARD"
+  },
+
+  {
+    "dayId": 3,
+    "time": "08:30 - 12:30",
+    "title": "Visitas técnicas",
+    "speaker": "",
+    "type": "VISITAS TÉCNICAS",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 3,
+    "time": "14:00 - 16:15",
+    "title": "Feria laboral",
+    "speaker": "",
+    "type": "FERIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 3,
+    "time": "16:15 - 17:00",
+    "title": "Taller de Logística",
+    "speaker": "Próximamente",
+    "type": "TALLER",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 3,
+    "time": "17:00 - 17:45",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 3,
+    "time": "17:45 - 18:00",
+    "title": "Coffee Break",
+    "speaker": "",
+    "type": "BREAK",
+    "requiresTicket": "STANDARD"
+  },
+
+  {
+    "dayId": 4,
+    "time": "08:30 - 12:30",
+    "title": "Visitas técnicas",
+    "speaker": "",
+    "type": "VISITAS TÉCNICAS",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 4,
+    "time": "15:30 - 16:15",
+    "title": "Hub de Innovación Aplicada",
+    "speaker": "",
     "type": "NETWORKING",
-    "requiresTicket": "PREMIUM"
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 4,
+    "time": "16:15 - 17:00",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 4,
+    "time": "17:00 - 17:45",
+    "title": "Meet & Greet",
+    "speaker": "",
+    "type": "NETWORKING",
+    "requiresTicket": "STANDARD"
+  },
+
+  {
+    "dayId": 5,
+    "time": "10:00 - 10:45",
+    "title": "Ponencia: Tema a revelarse próximamente",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 5,
+    "time": "10:45 - 12:30",
+    "title": "Conversatorio",
+    "speaker": "Próximamente",
+    "type": "CONVERSATORIO",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 5,
+    "time": "14:30 - 16:15",
+    "title": "Taller de Liderazgo",
+    "speaker": "Próximamente",
+    "type": "TALLER",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 5,
+    "time": "16:15 - 17:00",
+    "title": "Cierre",
+    "speaker": "",
+    "type": "CEREMONIA",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 5,
+    "time": "17:00 - 17:45",
+    "title": "Concierto",
+    "speaker": "",
+    "type": "ACTIVIDAD",
+    "requiresTicket": "STANDARD"
   }
 ]

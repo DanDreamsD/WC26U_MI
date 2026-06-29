@@ -42,10 +42,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, onOpenProfile, onOpe
             <button onClick={onOpenProfile} className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 bg-white/50 hover:bg-white rounded-full shadow-sm hover:shadow-md transition-all text-sm font-semibold border border-gray-100/50 hover:border-primary/20 text-deep">
               <User size={16} className="text-primary/70" /> Perfil
             </button>
-            <button onClick={onOpenPassport} className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 bg-white/50 hover:bg-white rounded-full shadow-sm hover:shadow-md transition-all text-sm font-semibold border border-gray-100/50 hover:border-primary/20 text-deep">
-              <Target size={16} className="text-primary/70" /> Passport
+            <button onClick={onOpenPassport} className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full shadow-sm transition-all text-sm font-semibold border ${user.ticketType === 'STANDARD' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-pointer' : 'bg-white/50 hover:bg-white border-gray-100/50 hover:border-primary/20 text-deep'}`}>
+              <Target size={16} className={user.ticketType === 'STANDARD' ? 'text-gray-400' : 'text-primary/70'} /> Passport
             </button>
-            <button onClick={onOpenKnowledgeTree} className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-secondary text-white rounded-full shadow-[0_8px_16px_-6px_rgba(132,12,215,0.4)] hover:shadow-[0_12px_20px_-6px_rgba(132,12,215,0.6)] hover:-translate-y-0.5 transition-all duration-300 text-sm font-bold">
+            <button onClick={onOpenKnowledgeTree} className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full shadow-[0_8px_16px_-6px_rgba(132,12,215,0.4)] transition-all duration-300 text-sm font-bold ${user.ticketType === 'STANDARD' ? 'bg-gray-400 text-white' : 'bg-gradient-to-r from-primary to-secondary text-white hover:shadow-[0_12px_20px_-6px_rgba(132,12,215,0.6)] hover:-translate-y-0.5'}`}>
               <Award size={16} /> Skills
             </button>
           </div>

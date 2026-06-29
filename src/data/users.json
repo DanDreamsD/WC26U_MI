@@ -1,4 +1,6 @@
 {
+  "sourceCsv": "BD DE PRUEBAS.csv",
+  "documentIdField": "DOCUMENTO DE IDENTIDAD",
   "id": "u1",
   "name": "Daniel",
   "university": "Universidad Nacional de San Agustín",

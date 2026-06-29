@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Modal } from '../UI/Modal';
 import scheduleData from '../../data/schedule.json';
-import { Lock, Clock, ChevronRight } from 'lucide-react';
+import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound } from 'lucide-react';
+import { formatLevelDateLong, getLevelStatus } from '../../utils/levelStatus';
+import { attendanceKeywordsByDay } from '../../utils/attendanceKeywords';
+import { hasAttendanceRecord, saveAttendanceRecord } from '../../utils/attendanceStorage';
 
 interface LevelModalProps {
   isOpen: boolean;
   onClose: () => void;
   level: any | null;
   userTicket: string;
+  documentId?: string;
 }
 
 const TICKET_LEVELS: Record<string, number> = {
@@ -16,13 +20,64 @@ const TICKET_LEVELS: Record<string, number> = {
   PREMIUM: 3
 };
 
-export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, userTicket }) => {
+export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, userTicket, documentId }) => {
   if (!level) return null;
+
+  const [attendanceInput, setAttendanceInput] = useState('');
+  const [attendanceMessage, setAttendanceMessage] = useState('');
+  const [attendanceRegistered, setAttendanceRegistered] = useState(false);
 
   const daySchedule = scheduleData.filter(s => s.dayId === level.id);
   const userLevel = TICKET_LEVELS[userTicket] || 1;
+  const isStandardUser = userLevel === TICKET_LEVELS.STANDARD;
 
-  const isLockedDay = level.status === 'locked';
+  const levelStatus = useMemo(() => getLevelStatus(level.date), [level.date]);
+  const isLockedDay = levelStatus === 'locked';
+  const shouldShowSummary = levelStatus === 'completed' || isStandardUser;
+
+  const keyword = attendanceKeywordsByDay[level.id];
+
+  useEffect(() => {
+    const checkAttendance = async () => {
+      if (!documentId) return;
+
+      const exists = await hasAttendanceRecord(documentId, level.id);
+      setAttendanceRegistered(exists);
+    };
+
+    checkAttendance();
+  }, [documentId, level.id]);
+
+  const handleAttendanceSubmit = async (event?: React.FormEvent | React.MouseEvent) => {
+    event?.preventDefault();
+
+    if (!keyword) {
+      setAttendanceMessage('No hay palabra clave disponible para este día.');
+      return;
+    }
+
+    if (attendanceInput.trim().toUpperCase() === keyword) {
+      if (!documentId) {
+        setAttendanceMessage('No se pudo identificar el documento para guardar la asistencia.');
+        return;
+      }
+
+      const result = await saveAttendanceRecord({
+        documentId,
+        day: level.id,
+        keyword
+      });
+
+      if (result.success) {
+        setAttendanceRegistered(true);
+        setAttendanceMessage('Asistencia registrada correctamente.');
+      } else {
+        setAttendanceMessage(result.message ?? 'No se pudo guardar la asistencia.');
+      }
+    } else {
+      setAttendanceMessage('La palabra clave es incorrecta. Intenta nuevamente.');
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Día ${level.day}: ${level.title}`}>
@@ -33,19 +88,86 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
           </div>
           <h3 className="text-xl font-bold text-deep mb-2">Contenido Bloqueado</h3>
           <p className="text-gray-500 max-w-sm">
-            Este día aún no está disponible. Podrás acceder a partir del {new Date(level.date).toLocaleDateString('es-PE', { month: 'long', day: 'numeric', timeZone: 'UTC' })}.
+            Este día aún no está disponible. Podrás acceder a partir del {formatLevelDateLong(level.date)}.
           </p>
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 flex justify-between items-center">
-            <div>
-              <h4 className="font-semibold text-primary mb-1">Resumen del Día</h4>
-              <p className="text-sm text-gray-600">Explora las conferencias y talleres de hoy.</p>
+          {isStandardUser ? (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
+              Puedes registrar tu asistencia desde aquí. El contenido completo y los recorridos detallados siguen reservados para Premium o VIP.
             </div>
-            <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium shadow-md hover:bg-secondary transition-colors">
-              Comenzar recorrido
-            </button>
+          ) : null}
+
+          {shouldShowSummary ? (
+            <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 flex justify-between items-center">
+              <div>
+                <h4 className="font-semibold text-primary mb-1">Resumen del Día</h4>
+                <p className="text-sm text-gray-600">
+                  {isStandardUser
+                    ? 'Consulta el resumen general del día y registra tu asistencia. Los detalles completos siguen reservados para Premium o VIP.'
+                    : 'Explora las conferencias y talleres del día.'}
+                </p>
+              </div>
+              <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium shadow-md hover:bg-secondary transition-colors">
+                Comenzar recorrido
+              </button>
+            </div>
+          ) : (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
+              El resumen del día aparecerá cuando el día ya haya pasado. Mientras tanto, puedes registrar tu asistencia para este día.
+            </div>
+          )}
+
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <KeyRound size={18} />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-deep">Registrar asistencia</h4>
+                <p className="mt-1 text-sm text-gray-600">
+                  {attendanceRegistered
+                    ? 'Tu asistencia ya fue registrada para este día.'
+                    : `Ingresa la palabra clave provisional para confirmar tu asistencia del día ${level.day}.`}
+                </p>
+                {!attendanceRegistered ? (
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      void handleAttendanceSubmit(event);
+                    }}
+                    className="mt-3 flex flex-col gap-2 sm:flex-row"
+                  >
+                    <input
+                      type="text"
+                      value={attendanceInput}
+                      onChange={(e) => {
+                        setAttendanceInput(e.target.value);
+                        if (attendanceMessage) setAttendanceMessage('');
+                      }}
+                      placeholder="Palabra clave"
+                      className="flex-1 rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void handleAttendanceSubmit();
+                      }}
+                      className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-secondary"
+                    >
+                      Confirmar
+                    </button>
+                  </form>
+                ) : (
+                  <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-green-600">
+                    <CheckCircle2 size={16} />
+                    Asistencia confirmada
+                  </div>
+                )}
+                {attendanceMessage ? <p className="mt-2 text-sm text-gray-600">{attendanceMessage}</p> : null}
+              </div>
+            </div>
           </div>
 
           <div className="space-y-4">

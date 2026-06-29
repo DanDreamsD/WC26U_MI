@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, Lock, Calendar } from 'lucide-react';
+import { formatLevelDate, getLevelStatus } from '../../utils/levelStatus';
 
 interface JourneyNodeProps {
   level: any;
@@ -9,9 +10,10 @@ interface JourneyNodeProps {
 }
 
 export const JourneyNode: React.FC<JourneyNodeProps> = ({ level, isLast, onClick }) => {
-  const isCompleted = level.status === 'completed';
-  const isAvailable = level.status === 'available';
-  const isLocked = level.status === 'locked';
+  const computedStatus = getLevelStatus(level.date);
+  const isCompleted = computedStatus === 'completed';
+  const isAvailable = computedStatus === 'available';
+  const isLocked = computedStatus === 'locked';
 
   return (
     <div className="flex flex-col items-start w-full max-w-sm mx-auto group cursor-pointer" onClick={() => onClick(level)}>
@@ -43,7 +45,7 @@ export const JourneyNode: React.FC<JourneyNodeProps> = ({ level, isLast, onClick
           <h3 className="text-xl font-extrabold text-deep leading-tight group-hover:text-primary transition-colors">{level.title}</h3>
           <div className="flex items-center gap-1.5 text-sm font-medium text-gray-400 mt-2">
             <Calendar size={14} />
-            {new Date(level.date).toLocaleDateString('es-PE', { month: 'short', day: 'numeric', timeZone: 'UTC' })}
+            {formatLevelDate(level.date)}
           </div>
         </div>
       </div>
