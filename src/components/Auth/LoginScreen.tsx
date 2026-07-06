@@ -55,6 +55,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             />
           </label>
 
+          <div className="rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-sm text-violet-700">
+            Perfil de revisión: usa el documento <span className="font-bold">99999999</span> para entrar con todo desbloqueado.
+          </div>
+
           {error ? <p className="text-sm text-red-500">{error}</p> : null}
 
           <button

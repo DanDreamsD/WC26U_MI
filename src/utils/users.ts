@@ -23,6 +23,21 @@ interface UsersConfig {
 const config = usersConfig as UsersConfig;
 const SOURCE_CSV = config.sourceCsv ?? 'BD DE PRUEBAS.csv';
 const DOCUMENT_ID_FIELD = config.documentIdField ?? 'DOCUMENTO DE IDENTIDAD';
+const TESTER_DOCUMENT_ID = '99999999';
+
+const createReviewerUser = (): AppUser => ({
+  id: 'reviewer-profile',
+  documentId: TESTER_DOCUMENT_ID,
+  name: 'Perfil de revisión',
+  university: 'CEIISE',
+  career: 'Revisión / QA',
+  ticketType: 'VIP',
+  level: 10,
+  xp: 1200,
+  completedMissions: ['m1', 'm2', 'm3', 'm4'],
+  unlockedNodes: ['n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9'],
+  badges: ['b1', 'b2', 'b3']
+});
 
 const normalizeText = (value: string) =>
   value
@@ -125,7 +140,11 @@ export const findUserByDocument = (documentInput: string): AppUser | null => {
     return null;
   }
 
+  if (documentId === TESTER_DOCUMENT_ID) {
+    return createReviewerUser();
+  }
+
   return getUsersFromCsv().find((user) => user.documentId === documentId) ?? null;
 };
 
-export const loginHint = `${SOURCE_CSV} • usa el campo ${DOCUMENT_ID_FIELD}`;
+export const loginHint = `${SOURCE_CSV} • usa el campo ${DOCUMENT_ID_FIELD} • ID de revisión: ${TESTER_DOCUMENT_ID}`;
