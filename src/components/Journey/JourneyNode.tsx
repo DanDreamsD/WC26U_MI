@@ -7,10 +7,11 @@ interface JourneyNodeProps {
   level: any;
   isLast: boolean;
   onClick: (level: any) => void;
+  isReviewer?: boolean;
 }
 
-export const JourneyNode: React.FC<JourneyNodeProps> = ({ level, isLast, onClick }) => {
-  const computedStatus = getLevelStatus(level.date);
+export const JourneyNode: React.FC<JourneyNodeProps> = ({ level, isLast, onClick, isReviewer = false }) => {
+  const computedStatus = isReviewer ? 'available' : getLevelStatus(level.date);
   const isCompleted = computedStatus === 'completed';
   const isAvailable = computedStatus === 'available';
   const isLocked = computedStatus === 'locked';

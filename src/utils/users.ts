@@ -23,7 +23,7 @@ interface UsersConfig {
 const config = usersConfig as UsersConfig;
 const SOURCE_CSV = config.sourceCsv ?? 'BD DE PRUEBAS.csv';
 const DOCUMENT_ID_FIELD = config.documentIdField ?? 'DOCUMENTO DE IDENTIDAD';
-const TESTER_DOCUMENT_ID = '99999999';
+export const TESTER_DOCUMENT_ID = '99999999';
 
 const createReviewerUser = (): AppUser => ({
   id: 'reviewer-profile',

@@ -4,9 +4,10 @@ import { JourneyNode } from './JourneyNode';
 
 interface LevelJourneyProps {
   onNodeClick: (level: any) => void;
+  isReviewer?: boolean;
 }
 
-export const LevelJourney: React.FC<LevelJourneyProps> = ({ onNodeClick }) => {
+export const LevelJourney: React.FC<LevelJourneyProps> = ({ onNodeClick, isReviewer = false }) => {
   return (
     <div className="py-8 w-full flex flex-col items-center relative">
       {levelsData.map((level, index) => (
@@ -14,7 +15,8 @@ export const LevelJourney: React.FC<LevelJourneyProps> = ({ onNodeClick }) => {
           key={level.id} 
           level={level} 
           isLast={index === levelsData.length - 1} 
-          onClick={onNodeClick} 
+          onClick={onNodeClick}
+          isReviewer={isReviewer}
         />
       ))}
     </div>

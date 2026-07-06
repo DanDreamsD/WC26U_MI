@@ -12,6 +12,7 @@ interface LevelModalProps {
   level: any | null;
   userTicket: string;
   documentId?: string;
+  isReviewer?: boolean;
 }
 
 const TICKET_LEVELS: Record<string, number> = {
@@ -20,7 +21,7 @@ const TICKET_LEVELS: Record<string, number> = {
   PREMIUM: 3
 };
 
-export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, userTicket, documentId }) => {
+export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, userTicket, documentId, isReviewer = false }) => {
   if (!level) return null;
 
   const [attendanceInput, setAttendanceInput] = useState('');
@@ -31,9 +32,9 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const userLevel = TICKET_LEVELS[userTicket] || 1;
   const isStandardUser = userLevel === TICKET_LEVELS.STANDARD;
 
-  const levelStatus = useMemo(() => getLevelStatus(level.date), [level.date]);
+  const levelStatus = useMemo(() => (isReviewer ? 'available' : getLevelStatus(level.date)), [isReviewer, level.date]);
   const isLockedDay = levelStatus === 'locked';
-  const shouldShowSummary = levelStatus === 'completed' || isStandardUser;
+  const shouldShowSummary = isReviewer || levelStatus === 'completed' || isStandardUser;
 
   const keyword = attendanceKeywordsByDay[level.id];
 

@@ -8,7 +8,7 @@ import { Prizes } from './components/Prizes/Prizes';
 import { KnowledgeTree } from './components/Tree/KnowledgeTree';
 import { LoginScreen } from './components/Auth/LoginScreen';
 import { Modal } from './components/UI/Modal';
-import type { AppUser } from './utils/users';
+import { TESTER_DOCUMENT_ID, type AppUser } from './utils/users';
 
 const AUTH_STORAGE_KEY = 'ceiise-user';
 
@@ -78,7 +78,7 @@ function App() {
             Desbloquea conocimientos, completa retos y construye tu perfil profesional día a día.
           </p>
           
-          <LevelJourney onNodeClick={(level) => setSelectedLevel(level)} />
+          <LevelJourney isReviewer={user.documentId === TESTER_DOCUMENT_ID} onNodeClick={(level) => setSelectedLevel(level)} />
         </div>
       </main>
 
@@ -88,6 +88,7 @@ function App() {
         level={selectedLevel} 
         userTicket={user.ticketType} 
         documentId={user.documentId} 
+        isReviewer={user.documentId === TESTER_DOCUMENT_ID}
       />
 
       <Profile isOpen={profileOpen} onClose={() => setProfileOpen(false)} onLogout={() => setUser(null)} user={user} />
