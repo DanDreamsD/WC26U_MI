@@ -35,7 +35,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             </div>
             <img src={logo} alt="CEIISE" className="h-14 w-14 rounded-2xl shadow-sm object-contain" />
           </div>
-          <h1 className="text-2xl font-black text-deep">Acceso CEIISE 2026</h1>
+          <h1 className="text-2xl font-black text-deep">Acceso a MI PROGRESO - CEIISE 2026</h1>
           <p className="mt-2 text-sm text-gray-500">Ingresa tu documento de identidad para ver tu progreso en CEIISE 2026.</p>
         </div>
 
@@ -49,15 +49,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 setDocumentId(e.target.value);
                 if (error) setError('');
               }}
-              placeholder="Ej. 61327324"
+              placeholder="Ingresa tu documento"
               className="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 outline-none ring-0 focus:border-primary focus:bg-white"
               autoFocus
             />
           </label>
-
-          <div className="rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-sm text-violet-700">
-            Perfil de revisión: usa el documento <span className="font-bold">99999999</span> para entrar con todo desbloqueado.
-          </div>
 
           {error ? <p className="text-sm text-red-500">{error}</p> : null}
 
@@ -85,7 +81,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
               className="absolute inset-0 rounded-full"
               style={{
                 background: 'conic-gradient(from 0deg, #840CD7, #6105A3, #ffffff, #840CD7)',
-                animation: 'border-spin 2.5s linear infinite',
                 padding: '2px',
                 WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
                 WebkitMaskComposite: 'xor',

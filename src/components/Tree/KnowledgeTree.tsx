@@ -3,6 +3,7 @@ import { Modal } from '../UI/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, Play, FileText, Download } from 'lucide-react';
 import knowledgeData from '../../data/knowledge.json';
+import { getSkillResource } from '../../data/skillLinks';
 
 interface KnowledgeTreeProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface KnowledgeTreeProps {
 
 export const KnowledgeTree: React.FC<KnowledgeTreeProps> = ({ isOpen, onClose, userUnlockedNodes }) => {
   const [selectedNode, setSelectedNode] = useState<any | null>(null);
+  const selectedResource = selectedNode ? getSkillResource(selectedNode.id) : null;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Mis nuevas habilidades">
@@ -92,7 +94,7 @@ export const KnowledgeTree: React.FC<KnowledgeTreeProps> = ({ isOpen, onClose, u
             
             <div className="bg-primary/5 p-6 rounded-2xl border border-primary/20">
               <h3 className="text-2xl font-bold text-deep mb-2">{selectedNode.name}</h3>
-              <p className="text-gray-600 mb-4 text-sm">Competencia desarrollada durante el CEIISE 2026. Esta habilidad es fundamental para destacar en entornos industriales modernos.</p>
+              <p className="text-gray-600 mb-4 text-sm">{selectedResource?.description ?? 'Competencia desarrollada durante el CEIISE 2026. Esta habilidad es fundamental para destacar en entornos industriales modernos.'}</p>
               
               <div className="flex flex-wrap gap-2 mb-6">
                 <span className="px-3 py-1 bg-primary text-white text-xs font-bold rounded-full">
@@ -102,31 +104,41 @@ export const KnowledgeTree: React.FC<KnowledgeTreeProps> = ({ isOpen, onClose, u
 
               <div className="space-y-3">
                 <h4 className="font-semibold text-deep text-sm mb-3 uppercase tracking-wider">Materiales de la sesión</h4>
-                <button className="w-full flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-primary/40 transition-colors group">
+                <a
+                  href={selectedResource?.recording.url ?? '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-primary/40 transition-colors group"
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
                       <Play size={18} className="ml-1" />
                     </div>
                     <div className="text-left">
-                      <div className="font-bold text-deep text-sm">Grabación de Ponencia</div>
-                      <div className="text-xs text-gray-500">45 min • 1080p</div>
+                      <div className="font-bold text-deep text-sm">{selectedResource?.recording.label ?? 'Grabación de Ponencia'}</div>
+                      <div className="text-xs text-gray-500">{selectedResource ? `${selectedResource.recording.duration} • ${selectedResource.recording.quality}` : '45 min • 1080p'}</div>
                     </div>
                   </div>
                   <div className="text-gray-400 group-hover:text-primary transition-colors text-sm font-medium">Ver →</div>
-                </button>
+                </a>
 
-                <button className="w-full flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-primary/40 transition-colors group">
+                <a
+                  href={selectedResource?.presentation.url ?? '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-primary/40 transition-colors group"
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
                       <FileText size={18} />
                     </div>
                     <div className="text-left">
-                      <div className="font-bold text-deep text-sm">Presentación PDF</div>
-                      <div className="text-xs text-gray-500">2.4 MB</div>
+                      <div className="font-bold text-deep text-sm">{selectedResource?.presentation.label ?? 'Presentación PDF'}</div>
+                      <div className="text-xs text-gray-500">{selectedResource?.presentation.format ?? 'PDF'}</div>
                     </div>
                   </div>
                   <Download size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
-                </button>
+                </a>
               </div>
 
             </div>

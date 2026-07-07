@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from '../UI/Modal';
-import prizesData from '../../data/prizes.json';
 import { Crown, Gift, Shuffle } from 'lucide-react';
+import { getPrizeLibrary } from '../../data/prizeLibrary';
 
 interface PrizesProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ const categoryColors: Record<string, string> = {
 export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user }) => {
   const userRank = TICKET_RANK[user.ticketType] ?? 1;
 
-  const prizes = prizesData.map((prize) => ({
+  const prizes = getPrizeLibrary().map((prize) => ({
     ...prize,
     accessible: userRank >= TICKET_RANK[prize.eligibility],
   }));

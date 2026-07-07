@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Modal } from '../UI/Modal';
 import scheduleData from '../../data/schedule.json';
-import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound } from 'lucide-react';
+import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound, ArrowLeft } from 'lucide-react';
 import { formatLevelDateLong, getLevelStatus } from '../../utils/levelStatus';
 import { attendanceKeywordsByDay } from '../../utils/attendanceKeywords';
 import { hasAttendanceRecord, saveAttendanceRecord } from '../../utils/attendanceStorage';
+import { getDayActivityDetails } from '../../data/dayActivityLibrary';
 
 interface LevelModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const [attendanceInput, setAttendanceInput] = useState('');
   const [attendanceMessage, setAttendanceMessage] = useState('');
   const [attendanceRegistered, setAttendanceRegistered] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<any | null>(null);
 
   const daySchedule = scheduleData.filter(s => s.dayId === level.id);
   const userLevel = TICKET_LEVELS[userTicket] || 1;
@@ -37,6 +39,9 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const shouldShowSummary = isReviewer || levelStatus === 'completed' || isStandardUser;
 
   const keyword = attendanceKeywordsByDay[level.id];
+  const selectedActivityDetails = selectedActivity
+    ? getDayActivityDetails(level.id, selectedActivity.title, selectedActivity.time)
+    : null;
 
   useEffect(() => {
     const checkAttendance = async () => {
@@ -172,55 +177,103 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
           </div>
 
           <div className="space-y-4">
-            {daySchedule.map((item, idx) => {
-              const reqLevel = TICKET_LEVELS[item.requiresTicket] || 1;
-              const hasAccess = userLevel >= reqLevel;
+            {selectedActivityDetails ? (
+              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setSelectedActivity(null)}
+                  className="mb-4 flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                >
+                  <ArrowLeft size={16} /> Volver a actividades
+                </button>
 
-              return (
-                <div key={idx} className={`relative overflow-hidden flex flex-col sm:flex-row gap-4 p-4 rounded-xl border ${hasAccess ? 'bg-white border-gray-200 hover:border-primary/30 hover:shadow-md transition-all' : 'bg-gray-50 border-gray-200 opacity-75'}`}>
-                  
-                  {/* Time badge */}
-                  <div className="flex-shrink-0 pt-1">
-                    <div className="flex items-center gap-1 text-sm font-medium text-gray-500">
-                      <Clock size={14} /> {item.time}
-                    </div>
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
+                    {selectedActivityDetails.type}
+                  </span>
+                  <span className="text-sm font-medium text-gray-500">{selectedActivityDetails.time}</span>
+                </div>
+
+                <h4 className="text-xl font-bold text-deep">{selectedActivityDetails.title}</h4>
+                <p className="mt-2 text-sm text-gray-600">{selectedActivityDetails.description}</p>
+
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  <div className="rounded-xl bg-white p-4 border border-gray-200">
+                    <h5 className="text-sm font-semibold text-deep mb-2">Objetivos</h5>
+                    <ul className="space-y-1 text-sm text-gray-600">
+                      {selectedActivityDetails.objectives.map((objective) => (
+                        <li key={objective} className="flex gap-2"><span className="text-primary">•</span>{objective}</li>
+                      ))}
+                    </ul>
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <span className={`text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full uppercase ${hasAccess ? 'bg-primary/10 text-primary' : 'bg-gray-200 text-gray-500'}`}>
-                          {item.type}
-                        </span>
-                        <h4 className={`text-lg font-bold mt-1 ${hasAccess ? 'text-deep' : 'text-gray-600'}`}>{item.title}</h4>
-                        <p className="text-sm text-gray-500 mt-1">{item.speaker}</p>
-                      </div>
+                  <div className="rounded-xl bg-white p-4 border border-gray-200">
+                    <h5 className="text-sm font-semibold text-deep mb-2">Puntos clave</h5>
+                    <ul className="space-y-1 text-sm text-gray-600">
+                      {selectedActivityDetails.highlights.map((highlight) => (
+                        <li key={highlight} className="flex gap-2"><span className="text-primary">•</span>{highlight}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
 
-                      {!hasAccess && (
-                        <div className="flex-shrink-0 flex items-center gap-1 bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-md font-medium">
-                          <Lock size={12} /> {item.requiresTicket}
+                <div className="mt-4 rounded-xl bg-white p-4 border border-gray-200">
+                  <div className="text-sm font-semibold text-deep">Impartido por</div>
+                  <div className="mt-1 text-sm text-gray-600">{selectedActivityDetails.speaker || 'Por confirmar'}</div>
+                  <div className="mt-2 text-sm font-semibold text-deep">Lugar</div>
+                  <div className="mt-1 text-sm text-gray-600">{selectedActivityDetails.location}</div>
+                </div>
+              </div>
+            ) : (
+              daySchedule.map((item, idx) => {
+                const reqLevel = TICKET_LEVELS[item.requiresTicket] || 1;
+                const hasAccess = userLevel >= reqLevel;
+
+                return (
+                  <div key={idx} className={`relative overflow-hidden flex flex-col sm:flex-row gap-4 p-4 rounded-xl border ${hasAccess ? 'bg-white border-gray-200 hover:border-primary/30 hover:shadow-md transition-all' : 'bg-gray-50 border-gray-200 opacity-75'}`}>
+                    <div className="flex-shrink-0 pt-1">
+                      <div className="flex items-center gap-1 text-sm font-medium text-gray-500">
+                        <Clock size={14} /> {item.time}
+                      </div>
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className={`text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full uppercase ${hasAccess ? 'bg-primary/10 text-primary' : 'bg-gray-200 text-gray-500'}`}>
+                            {item.type}
+                          </span>
+                          <h4 className={`text-lg font-bold mt-1 ${hasAccess ? 'text-deep' : 'text-gray-600'}`}>{item.title}</h4>
+                          <p className="text-sm text-gray-500 mt-1">{item.speaker}</p>
+                        </div>
+
+                        {!hasAccess && (
+                          <div className="flex-shrink-0 flex items-center gap-1 bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-md font-medium">
+                            <Lock size={12} /> {item.requiresTicket}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end sm:justify-start">
+                      {hasAccess ? (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedActivity(item)}
+                          className="w-10 h-10 rounded-full bg-gray-50 hover:bg-primary hover:text-white flex items-center justify-center text-primary transition-colors border border-gray-200 hover:border-primary"
+                        >
+                          <ChevronRight size={20} />
+                        </button>
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                          <Lock size={16} />
                         </div>
                       )}
                     </div>
                   </div>
-
-                  {/* Action Button */}
-                  <div className="flex items-center justify-end sm:justify-start">
-                    {hasAccess ? (
-                      <button className="w-10 h-10 rounded-full bg-gray-50 hover:bg-primary hover:text-white flex items-center justify-center text-primary transition-colors border border-gray-200 hover:border-primary">
-                        <ChevronRight size={20} />
-                      </button>
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
-                        <Lock size={16} />
-                      </div>
-                    )}
-                  </div>
-
-                </div>
-              );
-            })}
+                );
+              })
+            )}
             
             {daySchedule.length === 0 && (
               <p className="text-center text-gray-500 py-8">No hay actividades programadas aún.</p>
