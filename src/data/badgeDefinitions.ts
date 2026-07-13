@@ -259,6 +259,16 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     category: 'temática',
     condition: (p) => p.attendanceDays.includes(3) && p.quizzesCompleted.includes(3),
   },
+  {
+    id: 'b-pionero',
+    name: 'Pionero CEIISE',
+    icon: '🏅',
+    description: 'Insignia exclusiva por participar en el CEIISE 2026.',
+    rarity: 'Legendaria',
+    xpBonus: 0,
+    category: 'temática',
+    condition: () => false, // Reclamado manualmente desde la sección de premios
+  },
 ];
 
 export const getBadgeById = (id: string): BadgeDefinition | undefined =>

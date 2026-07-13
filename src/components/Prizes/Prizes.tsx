@@ -6,10 +6,14 @@ import { getPrizeLibrary } from '../../data/prizeLibrary';
 import { PioneroBadgeCelebration } from '../UI/PioneroBadgeCelebration';
 import { playClickSound } from '../../utils/sounds';
 
+import type { UserProgress, GamificationEvent } from '../../utils/gamificationStore';
+
 interface PrizesProps {
   isOpen: boolean;
   onClose: () => void;
   user: any;
+  progress: UserProgress | null;
+  onProgressUpdate: (updatedProgress: UserProgress, events: GamificationEvent[]) => void;
 }
 
 const TICKET_RANK: Record<string, number> = {
@@ -27,11 +31,9 @@ const categoryColors: Record<string, string> = {
 
 const PIONERO_STORAGE_KEY = 'ceiise-pionero-claimed';
 
-export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user }) => {
+export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user, progress, onProgressUpdate }) => {
   const userRank = TICKET_RANK[user.ticketType] ?? 1;
-  const [pioneroClaimed, setPioneroClaimed] = useState(() => {
-    try { return localStorage.getItem(`${PIONERO_STORAGE_KEY}-${user.documentId}`) === 'true'; } catch { return false; }
-  });
+  const pioneroClaimed = progress?.earnedBadges.includes('b-pionero') ?? false;
   const [showCelebration, setShowCelebration] = useState(false);
 
   const prizes = getPrizeLibrary().map((prize) => ({
@@ -46,8 +48,16 @@ export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user }) => {
 
   const handleCelebrationClose = () => {
     setShowCelebration(false);
-    setPioneroClaimed(true);
     try { localStorage.setItem(`${PIONERO_STORAGE_KEY}-${user.documentId}`, 'true'); } catch { /* skip */ }
+    
+    if (progress && !progress.earnedBadges.includes('b-pionero')) {
+      const nextProgress = {
+        ...progress,
+        earnedBadges: [...progress.earnedBadges, 'b-pionero']
+      };
+      // Trigger update and show badge event notification
+      onProgressUpdate(nextProgress, [{ type: 'badge', label: 'Pionero CEIISE', icon: '🏅' }]);
+    }
   };
 
   return (

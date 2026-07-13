@@ -170,7 +170,13 @@ function App() {
         user={user}
         progress={progress}
       />
-      <Prizes isOpen={prizesOpen} onClose={() => setPrizesOpen(false)} user={user} />
+      <Prizes
+        isOpen={prizesOpen}
+        onClose={() => setPrizesOpen(false)}
+        user={user}
+        progress={progress}
+        onProgressUpdate={handleProgressUpdate}
+      />
       {user.ticketType !== 'STANDARD' && (
         <KnowledgeTree
           isOpen={treeOpen}
