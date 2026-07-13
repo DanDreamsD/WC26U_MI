@@ -8,6 +8,7 @@ export interface DayActivityDetail {
   objectives: string[];
   highlights: string[];
   location: string;
+  requiresTicket?: string;
 }
 
 export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
@@ -318,6 +319,10 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       location: 'Escenario principal'
     }
   ]
+};
+
+export const getDayActivitiesForDay = (dayId: number) => {
+  return dayActivityLibrary[dayId] ?? [];
 };
 
 export const getDayActivityDetails = (dayId: number, title: string, time: string) => {

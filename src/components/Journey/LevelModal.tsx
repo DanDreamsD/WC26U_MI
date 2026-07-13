@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Modal } from '../UI/Modal';
-import scheduleData from '../../data/schedule.json';
-import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound, ArrowLeft } from 'lucide-react';
+import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound, ArrowLeft, MapPin, Camera } from 'lucide-react';
 import { formatLevelDateLong, getLevelStatus } from '../../utils/levelStatus';
 import { attendanceKeywordsByDay } from '../../utils/attendanceKeywords';
 import { hasAttendanceRecord, saveAttendanceRecord } from '../../utils/attendanceStorage';
-import { getDayActivityDetails } from '../../data/dayActivityLibrary';
+import { getDayActivitiesForDay, getDayActivityDetails } from '../../data/dayActivityLibrary';
+import { getLevelLocation } from '../../data/levelLocationLibrary';
+import { getQuizForDay, getQuizScore, QUIZ_TOTAL_POINTS } from '../../data/quizLibrary';
+import { recordAttendance, recordQuizScore, recordExploredActivity, evaluateAndSave } from '../../utils/gamificationStore';
 
 interface LevelModalProps {
   isOpen: boolean;
@@ -14,6 +16,8 @@ interface LevelModalProps {
   userTicket: string;
   documentId?: string;
   isReviewer?: boolean;
+  progress: import('../../utils/gamificationStore').UserProgress | null;
+  onProgressUpdate: (progress: import('../../utils/gamificationStore').UserProgress, events: import('../../utils/gamificationStore').GamificationEvent[]) => void;
 }
 
 const TICKET_LEVELS: Record<string, number> = {
@@ -22,15 +26,20 @@ const TICKET_LEVELS: Record<string, number> = {
   PREMIUM: 3
 };
 
-export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, userTicket, documentId, isReviewer = false }) => {
+export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, userTicket, documentId, isReviewer = false, progress, onProgressUpdate }) => {
   if (!level) return null;
 
   const [attendanceInput, setAttendanceInput] = useState('');
   const [attendanceMessage, setAttendanceMessage] = useState('');
   const [attendanceRegistered, setAttendanceRegistered] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<any | null>(null);
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
+  const [quizScore, setQuizScore] = useState<number | null>(null);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
 
-  const daySchedule = scheduleData.filter(s => s.dayId === level.id);
+  const daySchedule = getDayActivitiesForDay(level.id);
+  const quiz = getQuizForDay(level.id);
   const userLevel = TICKET_LEVELS[userTicket] || 1;
   const isStandardUser = userLevel === TICKET_LEVELS.STANDARD;
 
@@ -39,9 +48,43 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const shouldShowSummary = isReviewer || levelStatus === 'completed' || isStandardUser;
 
   const keyword = attendanceKeywordsByDay[level.id];
+  const locationDetails = getLevelLocation(level.id);
   const selectedActivityDetails = selectedActivity
     ? getDayActivityDetails(level.id, selectedActivity.title, selectedActivity.time)
     : null;
+
+  const handleQuizSubmit = (event?: React.FormEvent) => {
+    event?.preventDefault();
+    if (!quiz) {
+      return;
+    }
+
+    const score = getQuizScore(quiz, selectedAnswers);
+    setQuizScore(score);
+    setQuizSubmitted(true);
+
+    if (progress) {
+      const updatedProgress = { ...progress };
+      const quizEvents = recordQuizScore(updatedProgress, level.id, score);
+      const evalEvents = evaluateAndSave(updatedProgress);
+      if (quizEvents.length > 0 || evalEvents.length > 0) {
+        onProgressUpdate(updatedProgress, [...quizEvents, ...evalEvents]);
+      }
+    }
+  };
+
+  const handleActivityExplore = (item: any) => {
+    setSelectedActivity(item);
+    
+    if (progress) {
+      const updatedProgress = { ...progress };
+      const exploreEvents = recordExploredActivity(updatedProgress, level.id, item.title);
+      const evalEvents = evaluateAndSave(updatedProgress);
+      if (exploreEvents.length > 0 || evalEvents.length > 0) {
+        onProgressUpdate(updatedProgress, [...exploreEvents, ...evalEvents]);
+      }
+    }
+  };
 
   useEffect(() => {
     const checkAttendance = async () => {
@@ -53,6 +96,13 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
 
     checkAttendance();
   }, [documentId, level.id]);
+
+  useEffect(() => {
+    setQuizOpen(false);
+    setSelectedAnswers({});
+    setQuizScore(null);
+    setQuizSubmitted(false);
+  }, [level.id]);
 
   const handleAttendanceSubmit = async (event?: React.FormEvent | React.MouseEvent) => {
     event?.preventDefault();
@@ -77,6 +127,15 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
       if (result.success) {
         setAttendanceRegistered(true);
         setAttendanceMessage('Asistencia registrada correctamente.');
+        
+        if (progress) {
+          const updatedProgress = { ...progress };
+          const attendanceEvents = recordAttendance(updatedProgress, level.id);
+          const evalEvents = evaluateAndSave(updatedProgress);
+          if (attendanceEvents.length > 0 || evalEvents.length > 0) {
+            onProgressUpdate(updatedProgress, [...attendanceEvents, ...evalEvents]);
+          }
+        }
       } else {
         setAttendanceMessage(result.message ?? 'No se pudo guardar la asistencia.');
       }
@@ -99,6 +158,27 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
         </div>
       ) : (
         <div className="space-y-6">
+          <div className="overflow-hidden rounded-3xl bg-white shadow-lg border border-gray-200">
+            <div className="relative h-52 sm:h-64">
+              <img
+                src={locationDetails.imageSrc}
+                alt={locationDetails.placeName}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 text-white">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold uppercase tracking-wider shadow-lg">
+                  <Camera size={14} /> Lugar
+                </div>
+                <h3 className="mt-3 text-2xl font-extrabold">{locationDetails.placeName}</h3>
+                <p className="mt-1 text-sm text-white/85">{locationDetails.locationDescription}</p>
+                <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-sm text-white">
+                  <MapPin size={16} /> {locationDetails.address}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {isStandardUser ? (
             <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
               Puedes registrar tu asistencia desde aquí. El contenido completo y los recorridos detallados siguen reservados para Premium o VIP.
@@ -176,6 +256,96 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           </div>
 
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h4 className="font-semibold text-deep">Cuestionario del día</h4>
+                <p className="mt-1 text-sm text-gray-600">
+                  Responde el quiz de este día para reforzar el contenido y obtener una puntuación sobre {QUIZ_TOTAL_POINTS}.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setQuizOpen((prev) => !prev)}
+                className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700"
+              >
+                {quizOpen ? 'Ocultar cuestionario' : 'Realizar cuestionario'}
+              </button>
+            </div>
+
+            {quizOpen ? (
+              quiz ? (
+                <form onSubmit={(event) => { event.preventDefault(); handleQuizSubmit(event); }} className="mt-4 space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                  <div>
+                    <h5 className="font-semibold text-deep">{quiz.title}</h5>
+                    <p className="mt-2 text-sm text-gray-600">Responde las 10 preguntas del día y obtén una puntuación sobre {QUIZ_TOTAL_POINTS}.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {quiz.questions.map((question) => {
+                      const currentAnswer = selectedAnswers[question.id];
+
+                      return (
+                        <div key={question.id} className="rounded-xl border border-gray-200 bg-white p-3">
+                          <p className="text-sm font-semibold text-deep">{question.prompt}</p>
+                          <div className="mt-3 space-y-2">
+                            {question.options.map((option) => {
+                              const isSelected = currentAnswer === option.id;
+                              return (
+                                <label
+                                  key={option.id}
+                                  className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2 text-sm transition ${isSelected ? 'border-primary bg-primary/10 text-primary' : 'border-gray-200 bg-white text-gray-700 hover:border-primary/40'}`}
+                                >
+                                  <input
+                                    type="radio"
+                                    name={`quiz-${question.id}`}
+                                    checked={isSelected}
+                                    onChange={() => {
+                                      setSelectedAnswers((prev) => ({ ...prev, [question.id]: option.id }));
+                                      if (quizSubmitted) {
+                                        setQuizSubmitted(false);
+                                        setQuizScore(null);
+                                      }
+                                    }}
+                                    className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                                  />
+                                  <span>{option.label}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+
+                          {quizSubmitted ? (
+                            <div className="mt-3 rounded-lg border border-gray-100 bg-gray-50 p-3 text-sm text-gray-600">
+                              <p className="font-semibold">Explicación</p>
+                              <p className="mt-1">{question.explanation}</p>
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      type="submit"
+                      className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
+                    >
+                      Enviar respuestas
+                    </button>
+                    {quizSubmitted && quizScore !== null ? (
+                      <span className={`text-sm font-semibold ${quizScore >= 5 ? 'text-green-600' : 'text-amber-600'}`}>
+                        Puntuación: {quizScore}/{QUIZ_TOTAL_POINTS}
+                      </span>
+                    ) : null}
+                  </div>
+                </form>
+              ) : (
+                <p className="mt-4 text-sm text-gray-600">No hay un cuestionario disponible para este día.</p>
+              )
+            ) : null}
+          </div>
+
           <div className="space-y-4">
             {selectedActivityDetails ? (
               <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 shadow-sm">
@@ -226,12 +396,12 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
               </div>
             ) : (
               daySchedule.map((item, idx) => {
-                const reqLevel = TICKET_LEVELS[item.requiresTicket] || 1;
+                const reqLevel = item.requiresTicket ? TICKET_LEVELS[item.requiresTicket] || 1 : 1;
                 const hasAccess = userLevel >= reqLevel;
 
                 return (
                   <div key={idx} className={`relative overflow-hidden flex flex-col sm:flex-row gap-4 p-4 rounded-xl border ${hasAccess ? 'bg-white border-gray-200 hover:border-primary/30 hover:shadow-md transition-all' : 'bg-gray-50 border-gray-200 opacity-75'}`}>
-                    <div className="flex-shrink-0 pt-1">
+                    <div className="shrink-0 pt-1">
                       <div className="flex items-center gap-1 text-sm font-medium text-gray-500">
                         <Clock size={14} /> {item.time}
                       </div>
@@ -248,7 +418,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                         </div>
 
                         {!hasAccess && (
-                          <div className="flex-shrink-0 flex items-center gap-1 bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-md font-medium">
+                          <div className="shrink-0 flex items-center gap-1 bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-md font-medium">
                             <Lock size={12} /> {item.requiresTicket}
                           </div>
                         )}
@@ -259,7 +429,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                       {hasAccess ? (
                         <button
                           type="button"
-                          onClick={() => setSelectedActivity(item)}
+                          onClick={() => handleActivityExplore(item)}
                           className="w-10 h-10 rounded-full bg-gray-50 hover:bg-primary hover:text-white flex items-center justify-center text-primary transition-colors border border-gray-200 hover:border-primary"
                         >
                           <ChevronRight size={20} />

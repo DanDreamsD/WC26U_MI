@@ -1,5 +1,6 @@
 import usersConfig from '../data/users.json';
 import csvData from '../data/BD DE PRUEBAS.csv?raw';
+import { loadProgress, createFullProgress } from './gamificationStore';
 
 export interface AppUser {
   id: string;
@@ -25,19 +26,22 @@ const SOURCE_CSV = config.sourceCsv ?? 'BD DE PRUEBAS.csv';
 const DOCUMENT_ID_FIELD = config.documentIdField ?? 'DOCUMENTO DE IDENTIDAD';
 export const TESTER_DOCUMENT_ID = '99999999';
 
-const createReviewerUser = (): AppUser => ({
-  id: 'reviewer-profile',
-  documentId: TESTER_DOCUMENT_ID,
-  name: 'Perfil de revisión',
-  university: 'CEIISE',
-  career: 'Revisión / QA',
-  ticketType: 'VIP',
-  level: 10,
-  xp: 1200,
-  completedMissions: ['m1', 'm2', 'm3', 'm4'],
-  unlockedNodes: ['n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9'],
-  badges: ['b1', 'b2', 'b3']
-});
+const createReviewerUser = (): AppUser => {
+  const progress = createFullProgress(TESTER_DOCUMENT_ID);
+  return {
+    id: 'reviewer-profile',
+    documentId: TESTER_DOCUMENT_ID,
+    name: 'Perfil de revisión',
+    university: 'CEIISE',
+    career: 'Revisión / QA',
+    ticketType: 'VIP',
+    level: progress.level,
+    xp: progress.xp,
+    completedMissions: progress.quizzesCompleted.map((d) => `quiz-d${d}`),
+    unlockedNodes: [...progress.unlockedNodes],
+    badges: [...progress.earnedBadges]
+  };
+};
 
 const normalizeText = (value: string) =>
   value
@@ -144,7 +148,16 @@ export const findUserByDocument = (documentInput: string): AppUser | null => {
     return createReviewerUser();
   }
 
-  return getUsersFromCsv().find((user) => user.documentId === documentId) ?? null;
+  const user = getUsersFromCsv().find((user) => user.documentId === documentId) ?? null;
+  if (user) {
+    const progress = loadProgress(user.documentId);
+    user.level = progress.level;
+    user.xp = progress.xp;
+    user.completedMissions = progress.quizzesCompleted.map((d) => `quiz-d${d}`);
+    user.unlockedNodes = [...progress.unlockedNodes];
+    user.badges = [...progress.earnedBadges];
+  }
+  return user;
 };
 
 export const loginHint = `${SOURCE_CSV} • usa el campo ${DOCUMENT_ID_FIELD} • ID de revisión: ${TESTER_DOCUMENT_ID}`;

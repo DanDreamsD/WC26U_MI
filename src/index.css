@@ -24,6 +24,16 @@
   50% { transform: translateY(-5px); }
 }
 
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(251, 191, 36, 0.5); }
+}
+
 @layer base {
   body {
     @apply font-sans overflow-hidden;
