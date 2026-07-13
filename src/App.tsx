@@ -17,6 +17,7 @@ import {
   type UserProgress,
   type GamificationEvent,
 } from './utils/gamificationStore';
+import { syncProgressToSheets, loadProgressFromSheets } from './utils/sheetsSync';
 
 const AUTH_STORAGE_KEY = 'ceiise-user';
 
@@ -63,6 +64,20 @@ function App() {
         ? createFullProgress(user.documentId)
         : loadProgress(user.documentId);
       setProgress(loaded);
+
+      if (!isReviewer) {
+        loadProgressFromSheets(user.documentId).then((sheetsProgress) => {
+          if (sheetsProgress) {
+            setProgress((current) => {
+              if (!current || sheetsProgress.xp > current.xp) {
+                saveProgress(sheetsProgress);
+                return sheetsProgress;
+              }
+              return current;
+            });
+          }
+        });
+      }
     } else {
       setProgress(null);
     }
@@ -73,6 +88,7 @@ function App() {
     (updatedProgress: UserProgress, events: GamificationEvent[]) => {
       setProgress({ ...updatedProgress });
       saveProgress(updatedProgress);
+      syncProgressToSheets(updatedProgress);
 
       if (events.length > 0) {
         setPendingEvents((prev) => [...prev, ...events]);
