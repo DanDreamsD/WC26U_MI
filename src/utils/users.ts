@@ -1,3 +1,5 @@
+import { createFullProgress } from './gamificationStore';
+
 export interface AppUser {
   id: string;
   documentId: string;
@@ -14,19 +16,22 @@ export interface AppUser {
 
 export const TESTER_DOCUMENT_ID = '99999999';
 
-const createReviewerUser = (): AppUser => ({
-  id: 'reviewer-profile',
-  documentId: TESTER_DOCUMENT_ID,
-  name: 'Perfil de revisión',
-  university: 'CEIISE',
-  career: 'Revisión / QA',
-  ticketType: 'VIP',
-  level: 10,
-  xp: 1200,
-  completedMissions: ['m1', 'm2', 'm3', 'm4'],
-  unlockedNodes: ['n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9'],
-  badges: ['b1', 'b2', 'b3']
-});
+const createReviewerUser = (): AppUser => {
+  const progress = createFullProgress(TESTER_DOCUMENT_ID);
+  return {
+    id: 'reviewer-profile',
+    documentId: TESTER_DOCUMENT_ID,
+    name: 'Perfil de revisión',
+    university: 'CEIISE',
+    career: 'Revisión / QA',
+    ticketType: 'VIP',
+    level: progress.level,
+    xp: progress.xp,
+    completedMissions: progress.quizzesCompleted.map((d) => `quiz-d${d}`),
+    unlockedNodes: [...progress.unlockedNodes],
+    badges: [...progress.earnedBadges]
+  };
+};
 
 const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) ?? 'https://weajzsivyuangtpofycp.supabase.co';
 const SUPABASE_ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY as string) ?? '';

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Lock, Crown } from 'lucide-react';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { LevelJourney } from './components/Journey/LevelJourney';
@@ -8,20 +8,32 @@ import { Prizes } from './components/Prizes/Prizes';
 import { KnowledgeTree } from './components/Tree/KnowledgeTree';
 import { LoginScreen } from './components/Auth/LoginScreen';
 import { Modal } from './components/UI/Modal';
+import { XpNotification } from './components/UI/XpNotification';
 import { TESTER_DOCUMENT_ID, type AppUser } from './utils/users';
+import {
+  loadProgress,
+  saveProgress,
+  createFullProgress,
+  type UserProgress,
+  type GamificationEvent,
+} from './utils/gamificationStore';
+import { syncProgressToSheets, loadProgressFromSheets } from './utils/sheetsSync';
 
 const AUTH_STORAGE_KEY = 'ceiise-user';
 
 function App() {
   const [user, setUser] = useState<AppUser | null>(null);
+  const [progress, setProgress] = useState<UserProgress | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [prizesOpen, setPrizesOpen] = useState(false);
   const [treeOpen, setTreeOpen] = useState(false);
   const [restrictionOpen, setRestrictionOpen] = useState(false);
   const [restrictionTitle, setRestrictionTitle] = useState('Acceso limitado');
+  const [pendingEvents, setPendingEvents] = useState<GamificationEvent[]>([]);
   
   const [selectedLevel, setSelectedLevel] = useState<any | null>(null);
 
+  // ── Auth persistence ──────────────────────────────────────────
   useEffect(() => {
     try {
       const storedUser = window.localStorage.getItem(AUTH_STORAGE_KEY);
@@ -44,6 +56,63 @@ function App() {
     }
   }, [user]);
 
+  // ── Load gamification progress when user logs in ──────────────
+  useEffect(() => {
+    if (user) {
+      const isReviewer = user.documentId === TESTER_DOCUMENT_ID;
+      const loaded = isReviewer
+        ? createFullProgress(user.documentId)
+        : loadProgress(user.documentId);
+      setProgress(loaded);
+
+      if (!isReviewer) {
+        loadProgressFromSheets(user.documentId).then((sheetsProgress) => {
+          if (sheetsProgress) {
+            setProgress((current) => {
+              if (!current || sheetsProgress.xp > current.xp) {
+                saveProgress(sheetsProgress);
+                return sheetsProgress;
+              }
+              return current;
+            });
+          }
+        });
+      }
+    } else {
+      setProgress(null);
+    }
+  }, [user]);
+
+  // ── Progress update callback ──────────────────────────────────
+  const handleProgressUpdate = useCallback(
+    (updatedProgress: UserProgress, events: GamificationEvent[]) => {
+      setProgress({ ...updatedProgress });
+      saveProgress(updatedProgress);
+      syncProgressToSheets(updatedProgress);
+
+      if (events.length > 0) {
+        setPendingEvents((prev) => [...prev, ...events]);
+      }
+
+      // Sync user-level fields for display
+      if (user) {
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                xp: updatedProgress.xp,
+                level: updatedProgress.level,
+                unlockedNodes: [...updatedProgress.unlockedNodes],
+                badges: [...updatedProgress.earnedBadges],
+                completedMissions: [...updatedProgress.quizzesCompleted.map((d) => `quiz-d${d}`)],
+              }
+            : prev
+        );
+      }
+    },
+    [user]
+  );
+
   const handleRestrictedAccess = (featureName: string) => {
     setRestrictionTitle(featureName);
     setRestrictionOpen(true);
@@ -61,6 +130,7 @@ function App() {
 
       <Dashboard 
         user={user}
+        progress={progress}
         onOpenProfile={() => setProfileOpen(true)}
         onOpenPassport={() => setPrizesOpen(true)}
         onOpenKnowledgeTree={() => (user.ticketType === 'STANDARD' ? handleRestrictedAccess('Mis nuevas habilidades') : setTreeOpen(true))}
@@ -89,12 +159,30 @@ function App() {
         userTicket={user.ticketType} 
         documentId={user.documentId} 
         isReviewer={user.documentId === TESTER_DOCUMENT_ID}
+        progress={progress}
+        onProgressUpdate={handleProgressUpdate}
       />
 
-      <Profile isOpen={profileOpen} onClose={() => setProfileOpen(false)} onLogout={() => setUser(null)} user={user} />
-      <Prizes isOpen={prizesOpen} onClose={() => setPrizesOpen(false)} user={user} />
+      <Profile
+        isOpen={profileOpen}
+        onClose={() => setProfileOpen(false)}
+        onLogout={() => setUser(null)}
+        user={user}
+        progress={progress}
+      />
+      <Prizes
+        isOpen={prizesOpen}
+        onClose={() => setPrizesOpen(false)}
+        user={user}
+        progress={progress}
+        onProgressUpdate={handleProgressUpdate}
+      />
       {user.ticketType !== 'STANDARD' && (
-        <KnowledgeTree isOpen={treeOpen} onClose={() => setTreeOpen(false)} userUnlockedNodes={user.unlockedNodes} />
+        <KnowledgeTree
+          isOpen={treeOpen}
+          onClose={() => setTreeOpen(false)}
+          progress={progress}
+        />
       )}
 
       <Modal isOpen={restrictionOpen} onClose={() => setRestrictionOpen(false)} title="Acceso limitado">
@@ -112,6 +200,12 @@ function App() {
           </div>
         </div>
       </Modal>
+
+      {/* Gamification event notifications */}
+      <XpNotification
+        events={pendingEvents}
+        onClear={() => setPendingEvents([])}
+      />
       
     </div>
   );
