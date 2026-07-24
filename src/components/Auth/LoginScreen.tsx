@@ -68,9 +68,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 font-semibold text-white transition hover:bg-secondary"
+            disabled={isLoading}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 font-semibold text-white transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Entrar
+            {isLoading ? 'Cargando...' : 'Entrar'}
             <ArrowRight size={18} />
           </button>
         </form>
