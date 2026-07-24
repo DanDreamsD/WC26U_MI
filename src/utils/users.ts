@@ -55,13 +55,27 @@ type Database = {
   USUARIOS: SupabaseUserRecord;
 };
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false,
-    detectSessionInUrl: false,
-  },
-});
+// Lazy-initialize Supabase client: avoids crashing the app at import time
+// when the anon key is not yet configured.
+let _supabase: ReturnType<typeof createClient<Database>> | null = null;
+
+const getSupabase = () => {
+  if (!SUPABASE_ANON_KEY) {
+    throw new Error(
+      'Falta la clave anónima de Supabase. Define VITE_SUPABASE_ANON_KEY en tu archivo .env'
+    );
+  }
+  if (!_supabase) {
+    _supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    });
+  }
+  return _supabase;
+};
 
 const normalizeText = (value: string) =>
   value
@@ -115,11 +129,9 @@ export const findUserByDocument = async (documentInput: string): Promise<AppUser
     return createReviewerUser();
   }
 
-  if (!SUPABASE_ANON_KEY) {
-    throw new Error('Falta la clave anónima de Supabase. Define VITE_SUPABASE_ANON_KEY.');
-  }
+  const client = getSupabase();
 
-  const { data, error, status } = await supabase
+  const { data, error, status } = await client
     .from('USUARIOS')
     .select('*')
     .eq('dni', documentId)
