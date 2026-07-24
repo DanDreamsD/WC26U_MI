@@ -1,4 +1,5 @@
 import { createFullProgress } from './gamificationStore';
+import { createClient } from '@supabase/supabase-js';
 
 export interface AppUser {
   id: string;
@@ -50,6 +51,18 @@ interface SupabaseUserRecord {
   phone?: string;
 }
 
+type Database = {
+  USUARIOS: SupabaseUserRecord;
+};
+
+const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+  },
+});
+
 const normalizeText = (value: string) =>
   value
     .normalize('NFKD')
@@ -77,19 +90,6 @@ const normalizeProgress = (value: string | number | undefined): number => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-const getSupabaseHeaders = (): Record<string, string> => {
-  const headers: Record<string, string> = {
-    accept: 'application/json',
-  };
-
-  if (SUPABASE_ANON_KEY) {
-    headers.apikey = SUPABASE_ANON_KEY;
-    headers.Authorization = `Bearer ${SUPABASE_ANON_KEY}`;
-  }
-
-  return headers;
-};
-
 const mapSupabaseRecordToAppUser = (record: SupabaseUserRecord): AppUser => ({
   id: record.id || record.dni || 'unknown-user',
   documentId: normalizeDocument(record.dni ?? ''),
@@ -115,19 +115,22 @@ export const findUserByDocument = async (documentInput: string): Promise<AppUser
     return createReviewerUser();
   }
 
-  const url = `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&dni=eq.${encodeURIComponent(documentId)}`;
-  const response = await fetch(url, {
-    headers: getSupabaseHeaders(),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Supabase request failed with status ${response.status}`);
+  if (!SUPABASE_ANON_KEY) {
+    throw new Error('Falta la clave anónima de Supabase. Define VITE_SUPABASE_ANON_KEY.');
   }
 
-  const records = (await response.json()) as SupabaseUserRecord[];
-  const record = records[0];
+  const { data, error, status } = await supabase
+    .from('USUARIOS')
+    .select('*')
+    .eq('dni', documentId)
+    .limit(1)
+    .single();
 
-  return record ? mapSupabaseRecordToAppUser(record) : null;
+  if (error) {
+    throw new Error(`Supabase query failed [${status}]: ${error.message}`);
+  }
+
+  return data ? mapSupabaseRecordToAppUser(data) : null;
 };
 
 export const loginHint = `Supabase ${SUPABASE_TABLE} • busca por DNI • ID de revisión: ${TESTER_DOCUMENT_ID}`;
