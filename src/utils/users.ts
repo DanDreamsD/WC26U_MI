@@ -1,6 +1,3 @@
-import usersConfig from '../data/users.json';
-import csvData from '../data/BD DE PRUEBAS.csv?raw';
-
 export interface AppUser {
   id: string;
   documentId: string;
@@ -15,14 +12,6 @@ export interface AppUser {
   badges: string[];
 }
 
-interface UsersConfig {
-  sourceCsv?: string;
-  documentIdField?: string;
-}
-
-const config = usersConfig as UsersConfig;
-const SOURCE_CSV = config.sourceCsv ?? 'BD DE PRUEBAS.csv';
-const DOCUMENT_ID_FIELD = config.documentIdField ?? 'DOCUMENTO DE IDENTIDAD';
 export const TESTER_DOCUMENT_ID = '99999999';
 
 const createReviewerUser = (): AppUser => ({
@@ -39,6 +28,23 @@ const createReviewerUser = (): AppUser => ({
   badges: ['b1', 'b2', 'b3']
 });
 
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) ?? 'https://weajzsivyuangtpofycp.supabase.co';
+const SUPABASE_ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY as string) ?? '';
+const SUPABASE_TABLE = 'USUARIOS';
+
+interface SupabaseUserRecord {
+  id: string;
+  created_at?: string;
+  nombres?: string;
+  correo?: string;
+  dni?: string;
+  acceso?: string;
+  nivel?: string | number;
+  progreso?: string | number;
+  certificado?: string;
+  phone?: string;
+}
+
 const normalizeText = (value: string) =>
   value
     .normalize('NFKD')
@@ -49,91 +55,51 @@ const normalizeText = (value: string) =>
 const normalizeDocument = (value: string) => value.replace(/\D/g, '');
 
 const normalizeTicket = (value: string): AppUser['ticketType'] => {
-  const normalized = normalizeText(value);
+  const normalized = normalizeText(value || '');
 
-  if (normalized === 'vip') return 'VIP';
-  if (normalized === 'premium') return 'PREMIUM';
-  if (normalized === 'estandar' || normalized === 'standard') return 'STANDARD';
+  if (normalized.includes('vip')) return 'VIP';
+  if (normalized.includes('premium')) return 'PREMIUM';
+  if (normalized.includes('estandar') || normalized.includes('standard')) return 'STANDARD';
 
   return 'STANDARD';
 };
 
-const parseCsvLine = (line: string): string[] => {
-  const values: string[] = [];
-  let current = '';
-  let inQuotes = false;
+const normalizeProgress = (value: string | number | undefined): number => {
+  if (typeof value === 'number') return value;
+  if (!value) return 0;
 
-  for (let index = 0; index < line.length; index += 1) {
-    const char = line[index];
+  const parsed = Number(String(value).replace(/[^0-9.-]/g, ''));
+  return Number.isFinite(parsed) ? parsed : 0;
+};
 
-    if (char === '"') {
-      if (inQuotes && line[index + 1] === '"') {
-        current += '"';
-        index += 1;
-      } else {
-        inQuotes = !inQuotes;
-      }
-      continue;
-    }
+const getSupabaseHeaders = (): Record<string, string> => {
+  const headers: Record<string, string> = {
+    accept: 'application/json',
+  };
 
-    if (char === ';' && !inQuotes) {
-      values.push(current.trim());
-      current = '';
-      continue;
-    }
-
-    current += char;
+  if (SUPABASE_ANON_KEY) {
+    headers.apikey = SUPABASE_ANON_KEY;
+    headers.Authorization = `Bearer ${SUPABASE_ANON_KEY}`;
   }
 
-  values.push(current.trim());
-  return values;
+  return headers;
 };
 
-const parseCsv = (raw: string) => {
-  const lines = raw
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+const mapSupabaseRecordToAppUser = (record: SupabaseUserRecord): AppUser => ({
+  id: record.id || record.dni || 'unknown-user',
+  documentId: normalizeDocument(record.dni ?? ''),
+  name: record.nombres?.trim() ?? 'Participante',
+  university: '',
+  career: '',
+  ticketType: normalizeTicket(record.acceso ?? ''),
+  level: Number(record.nivel ?? 1) || 1,
+  xp: normalizeProgress(record.progreso),
+  completedMissions: [],
+  unlockedNodes: [],
+  badges: []
+});
 
-  if (lines.length === 0) return [];
-
-  const headers = parseCsvLine(lines[0]).map((header) => header.trim());
-
-  return lines.slice(1).map((line) => {
-    const values = parseCsvLine(line);
-    return headers.reduce<Record<string, string>>((acc, header, index) => {
-      acc[header] = values[index] ?? '';
-      return acc;
-    }, {});
-  });
-};
-
-export const getUsersFromCsv = (): AppUser[] => {
-  const rows = parseCsv(csvData);
-  return rows
-    .filter((row) => row[DOCUMENT_ID_FIELD])
-    .map((row, index) => {
-      const documentId = normalizeDocument(row[DOCUMENT_ID_FIELD] ?? '');
-
-      const accessValue = row.ACCESO ?? row.TIPO ?? '';
-
-      return {
-        id: documentId || `user-${index + 1}`,
-        documentId,
-        name: [row.NOMBRES ?? '', row.APELLIDOS ?? ''].filter(Boolean).join(' ').trim(),
-        university: row['UNIVERSIDAD / INSTITUCIÓN'] ?? '',
-        career: row.CARRERA ?? '',
-        ticketType: normalizeTicket(accessValue),
-        level: 1,
-        xp: 0,
-        completedMissions: [],
-        unlockedNodes: [],
-        badges: []
-      };
-    });
-};
-
-export const findUserByDocument = (documentInput: string): AppUser | null => {
+export const findUserByDocument = async (documentInput: string): Promise<AppUser | null> => {
   const documentId = normalizeDocument(documentInput);
 
   if (!documentId) {
@@ -144,7 +110,19 @@ export const findUserByDocument = (documentInput: string): AppUser | null => {
     return createReviewerUser();
   }
 
-  return getUsersFromCsv().find((user) => user.documentId === documentId) ?? null;
+  const url = `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&dni=eq.${encodeURIComponent(documentId)}`;
+  const response = await fetch(url, {
+    headers: getSupabaseHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Supabase request failed with status ${response.status}`);
+  }
+
+  const records = (await response.json()) as SupabaseUserRecord[];
+  const record = records[0];
+
+  return record ? mapSupabaseRecordToAppUser(record) : null;
 };
 
-export const loginHint = `${SOURCE_CSV} • usa el campo ${DOCUMENT_ID_FIELD} • ID de revisión: ${TESTER_DOCUMENT_ID}`;
+export const loginHint = `Supabase ${SUPABASE_TABLE} • busca por DNI • ID de revisión: ${TESTER_DOCUMENT_ID}`;

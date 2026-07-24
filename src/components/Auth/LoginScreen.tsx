@@ -10,19 +10,28 @@ interface LoginScreenProps {
 export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   const [documentId, setDocumentId] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    const user = findUserByDocument(documentId);
-
-    if (!user) {
-      setError('No se encontró un participante con ese documento.');
-      return;
-    }
-
     setError('');
-    onLogin(user);
+    setIsLoading(true);
+
+    try {
+      const user = await findUserByDocument(documentId);
+
+      if (!user) {
+        setError('No se encontró un participante con ese documento.');
+        return;
+      }
+
+      onLogin(user);
+    } catch (fetchError) {
+      setError('Error al conectar con la base de datos. Intenta de nuevo.');
+      console.error(fetchError);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
