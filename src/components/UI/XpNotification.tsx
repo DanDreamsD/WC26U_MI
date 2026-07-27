@@ -63,17 +63,21 @@ const playSoundForEvent = (type: GamificationEvent['type']) => {
   }
 };
 
+const makeEventKey = (e: GamificationEvent) => `${e.type}|${e.label}|${e.value ?? ''}`;
+
 export const XpNotification: React.FC<XpNotificationProps> = ({ events, onClear }) => {
   const [visibleEvents, setVisibleEvents] = useState<DisplayEvent[]>([]);
-  const processedRef = useRef<GamificationEvent[] | null>(null);
+  const processedKeysRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (events.length === 0) return;
-    // Prevent processing the same batch twice (React StrictMode double-invoke)
-    if (processedRef.current === events) return;
-    processedRef.current = events;
 
-    const newEvents: DisplayEvent[] = events.map((e, i) => ({
+    const pending = events.filter((e) => !processedKeysRef.current.has(makeEventKey(e)));
+    if (pending.length === 0) return;
+
+    pending.forEach((e) => processedKeysRef.current.add(makeEventKey(e)));
+
+    const newEvents: DisplayEvent[] = pending.map((e, i) => ({
       ...e,
       key: `${Date.now()}-${i}`,
     }));

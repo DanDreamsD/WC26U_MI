@@ -66,8 +66,8 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     if (progress) {
       const updatedProgress = { ...progress };
       const quizEvents = recordQuizScore(updatedProgress, level.id, score);
-      const evalEvents = evaluateAndSave(updatedProgress);
-      if (quizEvents.length > 0 || evalEvents.length > 0) {
+      if (quizEvents.length > 0) {
+        const evalEvents = evaluateAndSave(updatedProgress);
         onProgressUpdate(updatedProgress, [...quizEvents, ...evalEvents]);
       }
     }
@@ -79,8 +79,8 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     if (progress) {
       const updatedProgress = { ...progress };
       const exploreEvents = recordExploredActivity(updatedProgress, level.id, item.title);
-      const evalEvents = evaluateAndSave(updatedProgress);
-      if (exploreEvents.length > 0 || evalEvents.length > 0) {
+      if (exploreEvents.length > 0) {
+        const evalEvents = evaluateAndSave(updatedProgress);
         onProgressUpdate(updatedProgress, [...exploreEvents, ...evalEvents]);
       }
     }
@@ -131,8 +131,8 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
         if (progress) {
           const updatedProgress = { ...progress };
           const attendanceEvents = recordAttendance(updatedProgress, level.id);
-          const evalEvents = evaluateAndSave(updatedProgress);
-          if (attendanceEvents.length > 0 || evalEvents.length > 0) {
+          if (attendanceEvents.length > 0) {
+            const evalEvents = evaluateAndSave(updatedProgress);
             onProgressUpdate(updatedProgress, [...attendanceEvents, ...evalEvents]);
           }
         }
@@ -366,26 +366,6 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
 
                 <h4 className="text-xl font-bold text-deep">{selectedActivityDetails.title}</h4>
                 <p className="mt-2 text-sm text-gray-600">{selectedActivityDetails.description}</p>
-
-                <div className="mt-4 grid gap-4 md:grid-cols-2">
-                  <div className="rounded-xl bg-white p-4 border border-gray-200">
-                    <h5 className="text-sm font-semibold text-deep mb-2">Objetivos</h5>
-                    <ul className="space-y-1 text-sm text-gray-600">
-                      {selectedActivityDetails.objectives.map((objective) => (
-                        <li key={objective} className="flex gap-2"><span className="text-primary">•</span>{objective}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="rounded-xl bg-white p-4 border border-gray-200">
-                    <h5 className="text-sm font-semibold text-deep mb-2">Puntos clave</h5>
-                    <ul className="space-y-1 text-sm text-gray-600">
-                      {selectedActivityDetails.highlights.map((highlight) => (
-                        <li key={highlight} className="flex gap-2"><span className="text-primary">•</span>{highlight}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
 
                 <div className="mt-4 rounded-xl bg-white p-4 border border-gray-200">
                   <div className="text-sm font-semibold text-deep">Impartido por</div>

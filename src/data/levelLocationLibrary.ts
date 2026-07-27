@@ -12,9 +12,9 @@ export const levelLocationLibrary: Record<number, LevelLocationDetail> = {
   1: {
     levelId: 1,
     imageSrc: heroImage,
-    placeName: 'Auditorio Principal CEIISE',
+    placeName: 'Auditorio Administración',
     locationDescription: 'Inauguración y bienvenida en el auditorio central del congreso.',
-    address: 'Av. Principal 123, Centro de Convenciones'
+    address: 'UNSA área ingenierías | Escuela de administración'
   },
   2: {
     levelId: 2,
