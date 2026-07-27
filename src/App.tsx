@@ -104,7 +104,7 @@ function App() {
   }
 
   return (
-    <div className="h-screen bg-white flex flex-col relative overflow-hidden font-sans selection:bg-primary selection:text-white">
+    <div className="h-screen bg-white flex flex-col relative overflow-x-hidden font-sans selection:bg-primary selection:text-white">
       {/* Premium subtle mesh gradient background */}
       <div className="absolute top-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-full h-1/2 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-secondary/5 via-transparent to-transparent pointer-events-none" />

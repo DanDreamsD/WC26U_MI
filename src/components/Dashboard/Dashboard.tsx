@@ -110,31 +110,31 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProf
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center gap-2.5 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 scrollbar-hide"
+            className="flex items-center gap-2 w-full sm:w-auto flex-wrap justify-center sm:justify-end overflow-visible py-1"
           >
             <motion.button
-              whileHover={{ scale: 1.04, y: -1 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03, y: -1 }}
+              whileTap={{ scale: 0.97 }}
               onClick={onOpenProfile}
-              className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-all text-sm font-semibold border border-gray-100 hover:border-primary/20 text-deep"
+              className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all text-[13px] font-semibold border border-gray-100 hover:border-primary/20 text-deep"
             >
-              <User size={15} className="text-primary" /> Perfil
+              <User size={14} className="text-primary" /> Perfil
             </motion.button>
             <motion.button
-              whileHover={{ scale: 1.04, y: -1 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03, y: -1 }}
+              whileTap={{ scale: 0.97 }}
               onClick={onOpenPassport}
-              className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-all text-sm font-semibold border border-gray-100 hover:border-primary/20 text-deep"
+              className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all text-[13px] font-semibold border border-gray-100 hover:border-primary/20 text-deep"
             >
-              <Target size={15} className="text-primary" /> Premios
+              <Target size={14} className="text-primary" /> Premios
             </motion.button>
             <motion.button
-              whileHover={{ scale: 1.04, y: -2 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03, y: -1 }}
+              whileTap={{ scale: 0.97 }}
               onClick={onOpenKnowledgeTree}
-              className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl transition-all duration-300 text-sm font-bold ${user.ticketType === 'STANDARD' ? 'bg-gray-400 text-white shadow-sm' : 'bg-gradient-to-r from-primary to-secondary text-white shadow-[0_8px_20px_-6px_rgba(132,12,215,0.5)] hover:shadow-[0_12px_24px_-6px_rgba(132,12,215,0.7)]'}`}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all duration-300 text-[13px] font-bold ${user.ticketType === 'STANDARD' ? 'bg-gray-400 text-white shadow-sm' : 'bg-gradient-to-r from-primary to-secondary text-white shadow-[0_6px_16px_-4px_rgba(132,12,215,0.45)] hover:shadow-[0_10px_20px_-4px_rgba(132,12,215,0.6)]'}`}
             >
-              <Award size={15} /> Mis habilidades
+              <Award size={14} /> Mis habilidades
             </motion.button>
           </motion.div>
           
