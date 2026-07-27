@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Lock, Crown } from 'lucide-react';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { LevelJourney } from './components/Journey/LevelJourney';
@@ -19,8 +20,6 @@ import {
 } from './utils/gamificationStore';
 import { syncProgressToSheets, loadProgressFromSheets } from './utils/sheetsSync';
 
-const AUTH_STORAGE_KEY = 'ceiise-user';
-
 function App() {
   const [user, setUser] = useState<AppUser | null>(null);
   const [progress, setProgress] = useState<UserProgress | null>(null);
@@ -30,31 +29,9 @@ function App() {
   const [restrictionOpen, setRestrictionOpen] = useState(false);
   const [restrictionTitle, setRestrictionTitle] = useState('Acceso limitado');
   const [pendingEvents, setPendingEvents] = useState<GamificationEvent[]>([]);
+  const clearPendingEvents = useCallback(() => setPendingEvents([]), []);
   
   const [selectedLevel, setSelectedLevel] = useState<any | null>(null);
-
-  // ── Auth persistence ──────────────────────────────────────────
-  useEffect(() => {
-    try {
-      const storedUser = window.localStorage.getItem(AUTH_STORAGE_KEY);
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser) as AppUser;
-        if (parsedUser?.documentId) {
-          setUser(parsedUser);
-        }
-      }
-    } catch {
-      window.localStorage.removeItem(AUTH_STORAGE_KEY);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
-    } else {
-      window.localStorage.removeItem(AUTH_STORAGE_KEY);
-    }
-  }, [user]);
 
   // ── Load gamification progress when user logs in ──────────────
   useEffect(() => {
@@ -68,13 +45,7 @@ function App() {
       if (!isReviewer) {
         loadProgressFromSheets(user.documentId).then((sheetsProgress) => {
           if (sheetsProgress) {
-            setProgress((current) => {
-              if (!current || sheetsProgress.xp > current.xp) {
-                saveProgress(sheetsProgress);
-                return sheetsProgress;
-              }
-              return current;
-            });
+            setProgress(sheetsProgress);
           }
         });
       }
@@ -91,7 +62,17 @@ function App() {
       syncProgressToSheets(updatedProgress);
 
       if (events.length > 0) {
-        setPendingEvents((prev) => [...prev, ...events]);
+        // Deduplicate events by type+label+value to avoid showing the same notification twice
+        setPendingEvents((prev) => {
+          const seen = new Set(prev.map((e) => `${e.type}|${e.label}|${e.value ?? ''}`));
+          const unique = events.filter((e) => {
+            const key = `${e.type}|${e.label}|${e.value ?? ''}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+          return [...prev, ...unique];
+        });
       }
 
       // Sync user-level fields for display
@@ -138,15 +119,30 @@ function App() {
 
       <main className="flex-1 overflow-y-auto custom-scrollbar p-6 flex flex-col items-center">
         <div className="mt-12 text-center w-full max-w-2xl relative z-10">
-          <div className="inline-block mb-3 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="inline-block mb-3 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase"
+          >
             CEIISE 2026
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-deep via-primary to-secondary mb-4 tracking-tight">
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-deep via-primary to-secondary mb-4 tracking-tight"
+          >
             Tu Ruta de Progreso
-          </h2>
-          <p className="text-gray-500 text-lg max-w-lg mx-auto mb-12">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="text-gray-500 text-lg max-w-lg mx-auto mb-12"
+          >
             Desbloquea conocimientos, completa retos y construye tu perfil profesional día a día.
-          </p>
+          </motion.p>
           
           <LevelJourney isReviewer={user.documentId === TESTER_DOCUMENT_ID} onNodeClick={(level) => setSelectedLevel(level)} />
         </div>
@@ -204,7 +200,7 @@ function App() {
       {/* Gamification event notifications */}
       <XpNotification
         events={pendingEvents}
-        onClear={() => setPendingEvents([])}
+        onClear={clearPendingEvents}
       />
       
     </div>

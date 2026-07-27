@@ -90,12 +90,12 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     const checkAttendance = async () => {
       if (!documentId) return;
 
-      const exists = await hasAttendanceRecord(documentId, level.id);
+      const exists = await hasAttendanceRecord(documentId, level.id, keyword);
       setAttendanceRegistered(exists);
     };
 
     checkAttendance();
-  }, [documentId, level.id]);
+  }, [documentId, level.id, keyword]);
 
   useEffect(() => {
     setQuizOpen(false);

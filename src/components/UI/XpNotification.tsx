@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { GamificationEvent } from '../../utils/gamificationStore';
 import { playXpSound, playBadgeSound, playLevelUpSound } from '../../utils/sounds';
@@ -65,32 +65,43 @@ const playSoundForEvent = (type: GamificationEvent['type']) => {
 
 export const XpNotification: React.FC<XpNotificationProps> = ({ events, onClear }) => {
   const [visibleEvents, setVisibleEvents] = useState<DisplayEvent[]>([]);
+  const processedRef = useRef<GamificationEvent[] | null>(null);
 
   useEffect(() => {
     if (events.length === 0) return;
+    // Prevent processing the same batch twice (React StrictMode double-invoke)
+    if (processedRef.current === events) return;
+    processedRef.current = events;
 
     const newEvents: DisplayEvent[] = events.map((e, i) => ({
       ...e,
       key: `${Date.now()}-${i}`,
     }));
 
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
     newEvents.forEach((event, index) => {
-      setTimeout(() => {
+      const showTimer = setTimeout(() => {
         setVisibleEvents((prev) => [...prev, event]);
         playSoundForEvent(event.type);
 
-        setTimeout(() => {
+        const hideTimer = setTimeout(() => {
           setVisibleEvents((prev) => prev.filter((e) => e.key !== event.key));
         }, EVENT_DISPLAY_MS);
+        timers.push(hideTimer);
       }, index * EVENT_STAGGER_MS);
+      timers.push(showTimer);
     });
 
     const totalTime = newEvents.length * EVENT_STAGGER_MS + EVENT_DISPLAY_MS + 300;
-    const timer = setTimeout(() => {
+    const clearTimer = setTimeout(() => {
       onClear();
     }, totalTime);
+    timers.push(clearTimer);
 
-    return () => clearTimeout(timer);
+    return () => {
+      timers.forEach(clearTimeout);
+    };
   }, [events, onClear]);
 
   return (

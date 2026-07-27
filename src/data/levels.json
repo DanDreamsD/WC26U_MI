@@ -2,31 +2,31 @@
   {
     "id": 1,
     "day": 1,
-    "title": "Inauguración y bienvenida",
+    "title": "Empleabilidad y Futuro Profesional",
     "date": "2026-8-3"
   },
   {
     "id": 2,
     "day": 2,
-    "title": "Innovación Tecnológica",
+    "title": "Liderazgo Estratégico y Desarrollo Profesional",
     "date": "2026-8-4"
   },
   {
     "id": 3,
     "day": 3,
-    "title": "Logística Inteligente",
+    "title": "Logística Inteligente y Supply Chain",
     "date": "2026-8-5"
   },
   {
     "id": 4,
     "day": 4,
-    "title": "Visitas Técnicas y Feria",
+    "title": "Innovación Empresarial y Metodologías Ágiles",
     "date": "2026-8-6"
   },
   {
     "id": 5,
     "day": 5,
-    "title": "Clausura y despedida",
+    "title": "Innovación Empresarial y Metodologías Ágiles",
     "date": "2026-8-7"
   }
 ]

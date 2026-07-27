@@ -24,11 +24,7 @@ export interface GamificationEvent {
   icon?: string;
 }
 
-// ── Storage ───────────────────────────────────────────────────────
-
-const STORAGE_PREFIX = 'ceiise-progress-';
-
-const getStorageKey = (documentId: string) => `${STORAGE_PREFIX}${documentId}`;
+// ── State Initialization ──────────────────────────────────────────
 
 export const createEmptyProgress = (documentId: string): UserProgress => ({
   documentId,
@@ -44,26 +40,11 @@ export const createEmptyProgress = (documentId: string): UserProgress => ({
 });
 
 export const loadProgress = (documentId: string): UserProgress => {
-  try {
-    const raw = localStorage.getItem(getStorageKey(documentId));
-    if (raw) {
-      const parsed = JSON.parse(raw) as UserProgress;
-      // Ensure all arrays exist (backwards compatibility)
-      return {
-        ...createEmptyProgress(documentId),
-        ...parsed,
-        documentId,
-      };
-    }
-  } catch {
-    // Corrupted data, start fresh
-  }
   return createEmptyProgress(documentId);
 };
 
 export const saveProgress = (progress: UserProgress): void => {
   progress.lastUpdated = new Date().toISOString();
-  localStorage.setItem(getStorageKey(progress.documentId), JSON.stringify(progress));
 };
 
 // ── XP & Level Engine ─────────────────────────────────────────────

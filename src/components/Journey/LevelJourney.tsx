@@ -14,6 +14,7 @@ export const LevelJourney: React.FC<LevelJourneyProps> = ({ onNodeClick, isRevie
         <JourneyNode 
           key={level.id} 
           level={level} 
+          index={index}
           isLast={index === levelsData.length - 1} 
           onClick={onNodeClick}
           isReviewer={isReviewer}

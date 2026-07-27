@@ -29,8 +29,6 @@ const categoryColors: Record<string, string> = {
   'Premio Sorteo': 'bg-sky-50 border-sky-200 text-sky-700',
 };
 
-const PIONERO_STORAGE_KEY = 'ceiise-pionero-claimed';
-
 export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user, progress, onProgressUpdate }) => {
   const userRank = TICKET_RANK[user.ticketType] ?? 1;
   const pioneroClaimed = progress?.earnedBadges.includes('b-pionero') ?? false;
@@ -48,7 +46,6 @@ export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user, progress,
 
   const handleCelebrationClose = () => {
     setShowCelebration(false);
-    try { localStorage.setItem(`${PIONERO_STORAGE_KEY}-${user.documentId}`, 'true'); } catch { /* skip */ }
     
     if (progress && !progress.earnedBadges.includes('b-pionero')) {
       const nextProgress = {

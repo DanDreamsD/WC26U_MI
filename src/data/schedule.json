@@ -1,15 +1,23 @@
 [
   {
     "dayId": 1,
-    "time": "08:30 - 09:30",
-    "title": "Check in",
+    "time": "08:30 - 09:15",
+    "title": "Recepción y networking",
     "speaker": "",
     "type": "REGISTRO",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 1,
-    "time": "09:30 - 10:00",
+    "time": "09:15 - 09:45",
+    "title": "Número musical",
+    "speaker": "",
+    "type": "ACTIVIDAD",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "09:45 - 10:00",
     "title": "Inauguración",
     "speaker": "",
     "type": "CEREMONIA",
@@ -18,22 +26,22 @@
   {
     "dayId": 1,
     "time": "10:00 - 10:45",
-    "title": "Ponencia: Tema a revelarse próximamente",
+    "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 1,
-    "time": "10:45 - 11:45",
-    "title": "Taller de Innovación",
+    "time": "10:45 - 11:00",
+    "title": "Taller Liderazgo",
     "speaker": "Próximamente",
     "type": "TALLER",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 1,
-    "time": "11:45 - 12:30",
+    "time": "11:00 - 11:45",
     "title": "Meet & Greet",
     "speaker": "",
     "type": "NETWORKING",
@@ -41,23 +49,39 @@
   },
   {
     "dayId": 1,
-    "time": "14:30 - 15:30",
-    "title": "Ponencia: Tema a revelarse próximamente",
+    "time": "12:30 - 14:00",
+    "title": "Almuerzo libre",
+    "speaker": "",
+    "type": "BREAK",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "14:00 - 14:30",
+    "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 1,
-    "time": "15:30 - 16:15",
-    "title": "Ponencia: Tema a revelarse próximamente",
+    "time": "15:15 - 15:30",
+    "title": "Contingencia",
+    "speaker": "",
+    "type": "BREAK",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 1,
+    "time": "15:30 - 15:45",
+    "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 1,
-    "time": "16:15 - 17:45",
+    "time": "16:15 - 18:00",
     "title": "Noche cultural",
     "speaker": "",
     "type": "ACTIVIDAD",
@@ -66,24 +90,40 @@
 
   {
     "dayId": 2,
-    "time": "08:30 - 12:30",
-    "title": "Visitas técnicas",
+    "time": "09:45 - 12:30",
+    "title": "Visita Técnica",
     "speaker": "",
     "type": "VISITAS TÉCNICAS",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 2,
-    "time": "14:30 - 15:30",
-    "title": "Ponencia: Tema a revelarse próximamente",
+    "time": "12:30 - 14:00",
+    "title": "Almuerzo libre",
+    "speaker": "",
+    "type": "BREAK",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 2,
+    "time": "14:30 - 15:15",
+    "title": "Talk Experience",
     "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 2,
+    "time": "15:15 - 15:30",
+    "title": "Contingencia",
+    "speaker": "",
+    "type": "BREAK",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 2,
     "time": "15:30 - 16:15",
-    "title": "Ponencia: Tema a revelarse próximamente",
+    "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
@@ -91,32 +131,40 @@
   {
     "dayId": 2,
     "time": "16:15 - 17:45",
-    "title": "Feria de voluntarios",
-    "speaker": "Diversos voluntariados",
+    "title": "Feria de voluntariados",
+    "speaker": "",
     "type": "NETWORKING",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 2,
-    "time": "17:45 - 18:30",
-    "title": "Ponencia: Tema a revelarse próximamente",
-    "speaker": "Próximamente",
-    "type": "PONENCIA",
+    "time": "18:00 - 18:30",
+    "title": "Meet & Greet",
+    "speaker": "",
+    "type": "NETWORKING",
     "requiresTicket": "STANDARD"
   },
 
   {
     "dayId": 3,
-    "time": "08:30 - 12:30",
-    "title": "Visitas técnicas",
+    "time": "09:45 - 12:30",
+    "title": "Visita Técnica",
     "speaker": "",
     "type": "VISITAS TÉCNICAS",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 3,
+    "time": "12:30 - 14:00",
+    "title": "Almuerzo libre",
+    "speaker": "",
+    "type": "BREAK",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 3,
     "time": "14:00 - 16:15",
-    "title": "Feria laboral",
+    "title": "Feria laboral y Hub de innovación",
     "speaker": "",
     "type": "FERIA",
     "requiresTicket": "STANDARD"
@@ -124,7 +172,7 @@
   {
     "dayId": 3,
     "time": "16:15 - 17:00",
-    "title": "Taller de Logística",
+    "title": "Taller Logística Inteligente",
     "speaker": "Próximamente",
     "type": "TALLER",
     "requiresTicket": "STANDARD"
@@ -132,7 +180,7 @@
   {
     "dayId": 3,
     "time": "17:00 - 17:45",
-    "title": "Ponencia: Tema a revelarse próximamente",
+    "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
@@ -148,48 +196,56 @@
 
   {
     "dayId": 4,
-    "time": "08:30 - 12:30",
-    "title": "Visitas técnicas",
+    "time": "09:45 - 12:30",
+    "title": "Visita Técnica",
     "speaker": "",
     "type": "VISITAS TÉCNICAS",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 4,
-    "time": "15:30 - 16:15",
-    "title": "Hub de Innovación Aplicada",
-    "speaker": "",
-    "type": "NETWORKING",
-    "requiresTicket": "STANDARD"
-  },
-  {
-    "dayId": 4,
-    "time": "16:15 - 17:00",
-    "title": "Ponencia: Tema a revelarse próximamente",
+    "time": "14:30 - 16:15",
+    "title": "Ponencia Virtual",
     "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 4,
-    "time": "17:00 - 17:45",
-    "title": "Meet & Greet",
-    "speaker": "",
-    "type": "NETWORKING",
+    "time": "16:15 - 17:45",
+    "title": "Ponencia Virtual",
+    "speaker": "Próximamente",
+    "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
 
   {
     "dayId": 5,
+    "time": "09:45 - 10:00",
+    "title": "Recepción",
+    "speaker": "",
+    "type": "REGISTRO",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 5,
     "time": "10:00 - 10:45",
-    "title": "Ponencia: Tema a revelarse próximamente",
+    "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 5,
-    "time": "10:45 - 12:30",
+    "time": "10:45 - 11:00",
+    "title": "Contingencia",
+    "speaker": "",
+    "type": "BREAK",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 5,
+    "time": "11:00 - 12:30",
     "title": "Conversatorio",
     "speaker": "Próximamente",
     "type": "CONVERSATORIO",
@@ -197,15 +253,23 @@
   },
   {
     "dayId": 5,
-    "time": "14:30 - 16:15",
-    "title": "Taller de Liderazgo",
+    "time": "12:30 - 14:00",
+    "title": "Buffet y Fotos",
+    "speaker": "",
+    "type": "BREAK",
+    "requiresTicket": "STANDARD"
+  },
+  {
+    "dayId": 5,
+    "time": "14:30 - 15:30",
+    "title": "Taller Innovación",
     "speaker": "Próximamente",
     "type": "TALLER",
     "requiresTicket": "STANDARD"
   },
   {
     "dayId": 5,
-    "time": "16:15 - 17:00",
+    "time": "15:30 - 15:45",
     "title": "Cierre",
     "speaker": "",
     "type": "CEREMONIA",
@@ -213,7 +277,7 @@
   },
   {
     "dayId": 5,
-    "time": "17:00 - 17:45",
+    "time": "15:45 - 16:15",
     "title": "Concierto",
     "speaker": "",
     "type": "ACTIVIDAD",

@@ -33,11 +33,21 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProf
   const ticketGrad = ticketGradients[user.ticketType] ?? ticketGradients.STANDARD;
 
   return (
-    <div className="w-full bg-white/70 backdrop-blur-2xl sticky top-0 z-30 border-b border-gray-100/60 shadow-[0_4px_40px_rgba(42,1,102,0.04)]">
+    <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="w-full bg-white/70 backdrop-blur-2xl sticky top-0 z-30 border-b border-gray-100/60 shadow-[0_4px_40px_rgba(42,1,102,0.04)]"
+    >
       <div className="max-w-5xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           
-          <div className="flex items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center gap-4"
+          >
             {/* Animated avatar with ring */}
             <div className="relative">
               <motion.div
@@ -94,9 +104,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProf
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center gap-2.5 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 scrollbar-hide"
+          >
             <motion.button
               whileHover={{ scale: 1.04, y: -1 }}
               whileTap={{ scale: 0.96 }}
@@ -121,10 +136,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProf
             >
               <Award size={15} /> Mis habilidades
             </motion.button>
-          </div>
+          </motion.div>
           
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

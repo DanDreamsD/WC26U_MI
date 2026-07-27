@@ -1,8 +1,8 @@
 import { createFullProgress } from './gamificationStore';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabase, type SupabaseUserRecord } from './supabaseClient';
 
 export interface AppUser {
-  id: string;
+  id: string | number;
   documentId: string;
   name: string;
   university: string;
@@ -34,48 +34,7 @@ const createReviewerUser = (): AppUser => {
   };
 };
 
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) ?? 'https://weajzsivyuangtpofycp.supabase.co';
-const SUPABASE_ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY as string) ?? '';
 const SUPABASE_TABLE = 'USUARIOS';
-
-interface SupabaseUserRecord {
-  id: string;
-  created_at?: string;
-  nombres?: string;
-  correo?: string;
-  dni?: string;
-  acceso?: string;
-  nivel?: string | number;
-  progreso?: string | number;
-  certificado?: string;
-  phone?: string;
-}
-
-type Database = {
-  USUARIOS: SupabaseUserRecord;
-};
-
-// Lazy-initialize Supabase client: avoids crashing the app at import time
-// when the anon key is not yet configured.
-let _supabase: ReturnType<typeof createClient<Database>> | null = null;
-
-const getSupabase = () => {
-  if (!SUPABASE_ANON_KEY) {
-    throw new Error(
-      'Falta la clave anónima de Supabase. Define VITE_SUPABASE_ANON_KEY en tu archivo .env'
-    );
-  }
-  if (!_supabase) {
-    _supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false,
-      },
-    });
-  }
-  return _supabase;
-};
 
 const normalizeText = (value: string) =>
   value

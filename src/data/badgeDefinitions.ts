@@ -14,19 +14,39 @@ export interface BadgeDefinition {
   condition: (progress: UserProgress) => boolean;
 }
 
-const TOTAL_ACTIVITIES = 26; // Sum of all activities across 5 days
+const TOTAL_ACTIVITIES = 35; // Sum of all activities across 5 days
 
 export const BADGE_DEFINITIONS: BadgeDefinition[] = [
-  // ── Asistencia ──────────────────────────────────────────────────
+  // ── Insignias asignadas a IDs b1, b2, b3 ────────────────────────
   {
-    id: 'b-first-day',
-    name: 'Primera Jornada',
+    id: 'b1',
+    name: 'Primera conferencia',
     icon: '🌅',
-    description: 'Registraste tu asistencia el primer día.',
+    description: 'Asististe a tu primera ponencia en CEIISE.',
     rarity: 'Común',
     xpBonus: 10,
     category: 'asistencia',
     condition: (p) => p.attendanceDays.includes(1),
+  },
+  {
+    id: 'b2',
+    name: 'Innovador',
+    icon: '🚀',
+    description: 'Completaste 3 actividades de la rama de Innovación.',
+    rarity: 'Rara',
+    xpBonus: 20,
+    category: 'temática',
+    condition: (p) => p.attendanceDays.includes(2) && p.quizzesCompleted.includes(2),
+  },
+  {
+    id: 'b3',
+    name: 'Networking',
+    icon: '🤝',
+    description: 'Hiciste conexión con 5 participantes diferentes.',
+    rarity: 'Épica',
+    xpBonus: 30,
+    category: 'exploración',
+    condition: (p) => p.exploredActivities.length >= 5,
   },
   {
     id: 'b-attendance-3',
@@ -239,16 +259,6 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   },
 
   // ── Temáticas ──────────────────────────────────────────────────
-  {
-    id: 'b-day-innovacion',
-    name: 'Innovador',
-    icon: '🚀',
-    description: 'Asististe y completaste el quiz del día de Innovación.',
-    rarity: 'Rara',
-    xpBonus: 20,
-    category: 'temática',
-    condition: (p) => p.attendanceDays.includes(2) && p.quizzesCompleted.includes(2),
-  },
   {
     id: 'b-day-logistica',
     name: 'Logístico',
