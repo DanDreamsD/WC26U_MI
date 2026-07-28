@@ -26,6 +26,8 @@ export interface GamificationEvent {
 
 // ── State Initialization ──────────────────────────────────────────
 
+const STORAGE_KEY = 'ceiise_progress';
+
 export const createEmptyProgress = (documentId: string): UserProgress => ({
   documentId,
   xp: 0,
@@ -40,11 +42,27 @@ export const createEmptyProgress = (documentId: string): UserProgress => ({
 });
 
 export const loadProgress = (documentId: string): UserProgress => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as UserProgress;
+      if (parsed.documentId === documentId) {
+        return parsed;
+      }
+    }
+  } catch {
+    // corrupt data, fall through
+  }
   return createEmptyProgress(documentId);
 };
 
 export const saveProgress = (progress: UserProgress): void => {
   progress.lastUpdated = new Date().toISOString();
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  } catch {
+    // storage full or unavailable – silently ignore
+  }
 };
 
 // ── XP & Level Engine ─────────────────────────────────────────────

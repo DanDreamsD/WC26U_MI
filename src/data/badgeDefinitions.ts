@@ -1,4 +1,5 @@
 import type { UserProgress } from '../utils/gamificationStore';
+import { dayActivityLibrary } from './dayActivityLibrary';
 
 export type BadgeRarity = 'Común' | 'Poco común' | 'Rara' | 'Épica' | 'Legendaria';
 
@@ -14,7 +15,12 @@ export interface BadgeDefinition {
   condition: (progress: UserProgress) => boolean;
 }
 
-const TOTAL_ACTIVITIES = 35; // Sum of all activities across 5 days
+const TOTAL_ACTIVITIES = 28; // Unique activity keys across 5 days (deduplicated by dayId-title)
+
+const getUniqueActivityCountForDay = (dayId: number): number => {
+  const activities = dayActivityLibrary[dayId] ?? [];
+  return new Set(activities.map((a) => a.title)).size;
+};
 
 export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   // ── Insignias asignadas a IDs b1, b2, b3 ────────────────────────
@@ -67,6 +73,49 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     xpBonus: 50,
     category: 'asistencia',
     condition: (p) => p.attendanceDays.length >= 5,
+  },
+  {
+    id: 'b-constancia',
+    name: 'Constancia',
+    icon: '🔥',
+    description: 'Asististe 3 días consecutivos del congreso.',
+    rarity: 'Poco común',
+    xpBonus: 100,
+    category: 'asistencia',
+    condition: (p) => {
+      const sorted = [...p.attendanceDays].sort((a, b) => a - b);
+      let maxConsecutive = 1;
+      let current = 1;
+      for (let i = 1; i < sorted.length; i++) {
+        if (sorted[i] === sorted[i - 1] + 1) {
+          current++;
+          maxConsecutive = Math.max(maxConsecutive, current);
+        } else {
+          current = 1;
+        }
+      }
+      return maxConsecutive >= 3;
+    },
+  },
+  {
+    id: 'b-apertura',
+    name: 'Apertura',
+    icon: '🎬',
+    description: 'Asististe a la inauguración del congreso (Día 1).',
+    rarity: 'Común',
+    xpBonus: 50,
+    category: 'asistencia',
+    condition: (p) => p.attendanceDays.includes(1),
+  },
+  {
+    id: 'b-cierre',
+    name: 'Cierre Oficial',
+    icon: '🎊',
+    description: 'Asististe al cierre del congreso (Día 5).',
+    rarity: 'Poco común',
+    xpBonus: 100,
+    category: 'asistencia',
+    condition: (p) => p.attendanceDays.includes(5),
   },
 
   // ── Conocimiento ────────────────────────────────────────────────
@@ -122,6 +171,21 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
       p.quizzesCompleted.length >= 5 &&
       Object.values(p.quizScores).every((s) => s === 10),
   },
+  {
+    id: 'b-certificacion',
+    name: 'Certificado',
+    icon: '📜',
+    description: 'Completaste los 5 cuestionarios con promedio ≥ 7/10.',
+    rarity: 'Épica',
+    xpBonus: 150,
+    category: 'conocimiento',
+    condition: (p) => {
+      if (p.quizzesCompleted.length < 5) return false;
+      const scores = Object.values(p.quizScores);
+      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+      return avg >= 7;
+    },
+  },
 
   // ── Exploración ─────────────────────────────────────────────────
   {
@@ -153,6 +217,76 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     xpBonus: 30,
     category: 'exploración',
     condition: (p) => p.exploredActivities.length >= TOTAL_ACTIVITIES,
+  },
+  {
+    id: 'b-explorador-dedicado',
+    name: 'Explorador Dedicado',
+    icon: '🌟',
+    description: 'Exploraste 20 o más actividades del programa.',
+    rarity: 'Poco común',
+    xpBonus: 75,
+    category: 'exploración',
+    condition: (p) => p.exploredActivities.length >= 20,
+  },
+  {
+    id: 'b-day-complete-1',
+    name: 'Completista Día 1',
+    icon: '🏅',
+    description: 'Exploraste todas las actividades del Día 1.',
+    rarity: 'Poco común',
+    xpBonus: 30,
+    category: 'exploración',
+    condition: (p) =>
+      p.exploredActivities.filter((a) => a.startsWith('1-')).length >=
+      getUniqueActivityCountForDay(1),
+  },
+  {
+    id: 'b-day-complete-2',
+    name: 'Completista Día 2',
+    icon: '🏅',
+    description: 'Exploraste todas las actividades del Día 2.',
+    rarity: 'Poco común',
+    xpBonus: 30,
+    category: 'exploración',
+    condition: (p) =>
+      p.exploredActivities.filter((a) => a.startsWith('2-')).length >=
+      getUniqueActivityCountForDay(2),
+  },
+  {
+    id: 'b-day-complete-3',
+    name: 'Completista Día 3',
+    icon: '🏅',
+    description: 'Exploraste todas las actividades del Día 3.',
+    rarity: 'Poco común',
+    xpBonus: 30,
+    category: 'exploración',
+    condition: (p) =>
+      p.exploredActivities.filter((a) => a.startsWith('3-')).length >=
+      getUniqueActivityCountForDay(3),
+  },
+  {
+    id: 'b-day-complete-4',
+    name: 'Completista Día 4',
+    icon: '🏅',
+    description: 'Exploraste todas las actividades del Día 4.',
+    rarity: 'Poco común',
+    xpBonus: 30,
+    category: 'exploración',
+    condition: (p) =>
+      p.exploredActivities.filter((a) => a.startsWith('4-')).length >=
+      getUniqueActivityCountForDay(4),
+  },
+  {
+    id: 'b-day-complete-5',
+    name: 'Completista Día 5',
+    icon: '🏅',
+    description: 'Exploraste todas las actividades del Día 5.',
+    rarity: 'Poco común',
+    xpBonus: 30,
+    category: 'exploración',
+    condition: (p) =>
+      p.exploredActivities.filter((a) => a.startsWith('5-')).length >=
+      getUniqueActivityCountForDay(5),
   },
 
   // ── Habilidades ─────────────────────────────────────────────────

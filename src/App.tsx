@@ -10,11 +10,12 @@ import { KnowledgeTree } from './components/Tree/KnowledgeTree';
 import { LoginScreen } from './components/Auth/LoginScreen';
 import { Modal } from './components/UI/Modal';
 import { XpNotification } from './components/UI/XpNotification';
+import { LevelUpCelebration } from './components/UI/LevelUpCelebration';
+import { DevPanel } from './components/DevPanel/DevPanel';
 import { TESTER_DOCUMENT_ID, type AppUser } from './utils/users';
 import {
   loadProgress,
   saveProgress,
-  createFullProgress,
   type UserProgress,
   type GamificationEvent,
 } from './utils/gamificationStore';
@@ -32,17 +33,15 @@ function App() {
   const clearPendingEvents = useCallback(() => setPendingEvents([]), []);
   
   const [selectedLevel, setSelectedLevel] = useState<any | null>(null);
+  const [levelUpCelebration, setLevelUpCelebration] = useState<{ level: number; title: string } | null>(null);
 
   // ── Load gamification progress when user logs in ──────────────
   useEffect(() => {
     if (user) {
-      const isReviewer = user.documentId === TESTER_DOCUMENT_ID;
-      const loaded = isReviewer
-        ? createFullProgress(user.documentId)
-        : loadProgress(user.documentId);
+      const loaded = loadProgress(user.documentId);
       setProgress(loaded);
 
-      if (!isReviewer) {
+      if (user.documentId !== TESTER_DOCUMENT_ID) {
         loadProgressFromSheets(user.documentId).then((sheetsProgress) => {
           if (sheetsProgress) {
             setProgress(sheetsProgress);
@@ -73,6 +72,12 @@ function App() {
           });
           return [...prev, ...unique];
         });
+
+        // Check for level-up events to trigger celebration
+        const levelUpEvent = events.find((e) => e.type === 'level-up');
+        if (levelUpEvent && levelUpEvent.value) {
+          setLevelUpCelebration({ level: levelUpEvent.value, title: levelUpEvent.label });
+        }
       }
 
       // Sync user-level fields for display
@@ -202,6 +207,20 @@ function App() {
         events={pendingEvents}
         onClear={clearPendingEvents}
       />
+
+      {/* Level-up celebration */}
+      <LevelUpCelebration
+        isOpen={!!levelUpCelebration}
+        onClose={() => setLevelUpCelebration(null)}
+        level={levelUpCelebration?.level ?? 1}
+        levelTitle={levelUpCelebration?.title ?? ''}
+        userName={user.name}
+      />
+
+      {/* Dev panel - tester only */}
+      {user.documentId === TESTER_DOCUMENT_ID && (
+        <DevPanel progress={progress} onProgressUpdate={handleProgressUpdate} />
+      )}
       
     </div>
   );
