@@ -46,7 +46,7 @@ const containerVariants = {
     opacity: 0,
     transition: { staggerChildren: 0.06, staggerDirection: -1 },
   },
-};
+} as const;
 
 const branchVariants = {
   hidden: { opacity: 0, y: 40, scale: 0.92 },
@@ -54,13 +54,13 @@ const branchVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 260, damping: 22 },
+    transition: { type: 'spring' as const, stiffness: 260, damping: 22 },
   },
   exit: {
     opacity: 0,
     y: -30,
     scale: 0.92,
-    transition: { duration: 0.25, ease: 'easeInOut' },
+    transition: { duration: 0.25, ease: 'easeInOut' as const },
   },
 };
 
@@ -70,7 +70,7 @@ const nodeVariants = {
     opacity: 1,
     x: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 300, damping: 24, delay: i * 0.08 },
+    transition: { type: 'spring' as const, stiffness: 300, damping: 24, delay: i * 0.08 },
   }),
   exit: {
     opacity: 0,
@@ -86,13 +86,13 @@ const detailVariants = {
     opacity: 1,
     x: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 280, damping: 26 },
+    transition: { type: 'spring' as const, stiffness: 280, damping: 26 },
   },
   exit: {
     opacity: 0,
     x: -60,
     scale: 0.95,
-    transition: { duration: 0.25, ease: 'easeInOut' },
+    transition: { duration: 0.25, ease: 'easeInOut' as const },
   },
 };
 
@@ -102,7 +102,7 @@ const rootVariants = {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { type: 'spring', stiffness: 300, damping: 20 },
+    transition: { type: 'spring' as const, stiffness: 300, damping: 20 },
   },
   exit: { opacity: 0, scale: 0.6, y: -20, transition: { duration: 0.2 } },
 };

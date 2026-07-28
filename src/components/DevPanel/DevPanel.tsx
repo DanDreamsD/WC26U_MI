@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bug, Plus, Calendar, CheckSquare, Compass, RotateCcw, ChevronDown, ChevronUp, Zap } from 'lucide-react';
+import { Bug, Calendar, CheckSquare, Compass, RotateCcw, ChevronDown, ChevronUp, Zap } from 'lucide-react';
 import {
   addXp,
   recordAttendance,
