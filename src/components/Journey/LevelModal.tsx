@@ -90,7 +90,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     const checkAttendance = async () => {
       if (!documentId) return;
 
-      const exists = await hasAttendanceRecord(documentId, level.id, keyword);
+      const exists = await hasAttendanceRecord(documentId, keyword);
       setAttendanceRegistered(exists);
     };
 
@@ -120,7 +120,6 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
 
       const result = await saveAttendanceRecord({
         documentId,
-        day: level.id,
         keyword
       });
 
@@ -366,13 +365,6 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
 
                 <h4 className="text-xl font-bold text-deep">{selectedActivityDetails.title}</h4>
                 <p className="mt-2 text-sm text-gray-600">{selectedActivityDetails.description}</p>
-
-                <div className="mt-4 rounded-xl bg-white p-4 border border-gray-200">
-                  <div className="text-sm font-semibold text-deep">Impartido por</div>
-                  <div className="mt-1 text-sm text-gray-600">{selectedActivityDetails.speaker || 'Por confirmar'}</div>
-                  <div className="mt-2 text-sm font-semibold text-deep">Lugar</div>
-                  <div className="mt-1 text-sm text-gray-600">{selectedActivityDetails.location}</div>
-                </div>
               </div>
             ) : (
               daySchedule.map((item, idx) => {

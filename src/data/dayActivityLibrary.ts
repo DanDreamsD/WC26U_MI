@@ -5,7 +5,6 @@ export interface DayActivityDetail {
   type: string;
   speaker: string;
   description: string;
-  location: string;
   requiresTicket?: string;
 }
 
@@ -17,8 +16,7 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       title: 'Número musical',
       type: 'ACTIVIDAD',
       speaker: 'Grupo artístico próximo a revelarse',
-      description: 'Presentación musical para dar inicio al congreso con energía y espíritu de comunidad.',
-      location: 'Auditorio de Administración'
+      description: 'Presentación musical para dar inicio al congreso con energía',
     },
     {
       dayId: 1,
@@ -27,25 +25,22 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'CEREMONIA',
       speaker: 'Directiva CEIISE',
       description: 'Ceremonia de apertura con palabras de bienvenida y presentación del programa.',
-      location: 'Auditorio principal'
     },
     {
       dayId: 1,
       time: '10:00 - 10:45',
-      title: 'Ponencia',
+      title: 'Empleabilidad y nuevas exigencias del mercado laboral',
       type: 'PONENCIA',
-      speaker: 'Próximamente',
-      description: 'Ponencia inicial del día orientada a la empleabilidad y el futuro profesional.',
-      location: 'Sala de conferencias'
+      speaker: 'Juan Pablo Sinarahua Terrones',
+      description: 'CEO Laboral IA',
     },
     {
       dayId: 1,
       time: '10:45 - 11:00',
-      title: 'Taller Liderazgo',
+      title: 'Liderazgo práctico para jóvenes profesionales',
       type: 'TALLER',
-      speaker: 'Próximamente',
+      speaker: 'Claudia Melisa Zapana Vilca',
       description: 'Taller práctico para explorar habilidades de liderazgo aplicadas al entorno profesional.',
-      location: 'Sala de talleres'
     },
     {
       dayId: 1,
@@ -53,8 +48,7 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       title: 'Meet & Greet',
       type: 'NETWORKING',
       speaker: 'Ponentes y participantes',
-      description: 'Espacio informal para conversar con especialistas, organizadores y otros asistentes.',
-      location: 'Área de networking'
+      description: 'Espacio para conversar con especialistas, organizadores y otros asistentes.',
     },
     {
       dayId: 1,
@@ -63,25 +57,22 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'BREAK',
       speaker: '',
       description: 'Tiempo libre para almorzar y descansar antes de las sesiones de la tarde.',
-      location: 'Área de comidas'
     },
     {
       dayId: 1,
       time: '14:00 - 14:30',
-      title: 'Ponencia',
+      title: 'Estrategias para generar oportunidades laborales a través de tu marca personal',
       type: 'PONENCIA',
-      speaker: 'Próximamente',
-      description: 'Segunda ponencia del día para ampliar el análisis y cerrar conceptos clave.',
-      location: 'Sala de conferencias'
+      speaker: 'Carla Silva Santisteban Vásquez',
+      description: 'Aprende a construir una marca personal sólida en LinkedIn para potenciar tu perfil profesional.',
     },
     {
       dayId: 1,
       time: '15:30 - 15:45',
-      title: 'Ponencia',
+      title: 'Competencias profesionales para destacar en la industria actual',
       type: 'PONENCIA',
-      speaker: 'Próximamente',
-      description: 'Sesión complementaria para conectar la teoría con experiencias del sector.',
-      location: 'Sala de conferencias'
+      speaker: 'María Laura Herrera Falcón',
+      description: 'Descubre el perfil profesional que mejor se adapta a ti y las competencias clave para destacar en la industria como ingeniero industrial.',
     },
     {
       dayId: 1,
@@ -89,19 +80,17 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       title: 'Noche cultural',
       type: 'ACTIVIDAD',
       speaker: 'Equipo cultural',
-      description: 'Actividades culturales y de integración para cerrar el día con una experiencia memorable.',
-      location: 'Espacio cultural'
+      description: 'Actividades para cerrar el día con una experiencia memorable.',
     }
   ],
   2: [
     {
       dayId: 2,
       time: '09:45 - 12:30',
-      title: 'Visita Técnica',
+      title: 'Espacio de visitas técnicas',
       type: 'VISITAS TÉCNICAS',
       speaker: 'Empresas invitadas',
-      description: 'Recorrido técnico para observar operaciones, procesos y soluciones aplicadas en contexto real.',
-      location: 'Instalaciones del evento'
+      description: 'Espacio para el desarrollo de la visita técnica de tu elección.',
     },
     {
       dayId: 2,
@@ -110,16 +99,14 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'BREAK',
       speaker: '',
       description: 'Tiempo libre para almorzar y descansar.',
-      location: 'Área de comidas'
     },
     {
       dayId: 2,
       time: '14:30 - 15:15',
-      title: 'Talk Experience',
-      type: 'PONENCIA',
-      speaker: 'Próximamente',
-      description: 'Sesión enfocada en compartir experiencias profesionales y lecciones de liderazgo estratégico.',
-      location: 'Sala de conferencias'
+      title: 'Historias reales de crecimiento profesional y liderazgo',
+      type: 'TALK EXPERIENCE',
+      speaker: 'Carolina Alarcón Granda',
+      description: 'Descubre cómo el ingeniero industrial puede liderar la transformación tecnológica y la inclusión financiera, generando un impacto más allá de la industria tradicional.',
     },
     {
       dayId: 2,
@@ -128,7 +115,6 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'PONENCIA',
       speaker: 'Próximamente',
       description: 'Charla para reforzar herramientas y estrategias de desarrollo profesional.',
-      location: 'Sala de conferencias'
     },
     {
       dayId: 2,
@@ -137,7 +123,6 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'NETWORKING',
       speaker: 'Diversos voluntariados',
       description: 'Espacio de encuentro para aprender sobre iniciativas de apoyo, voluntariado y participación.',
-      location: 'Área de participación'
     },
     {
       dayId: 2,
@@ -146,18 +131,16 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'NETWORKING',
       speaker: 'Ponentes y participantes',
       description: 'Cierre del día con un espacio de interacción informal entre ponentes y asistentes.',
-      location: 'Área de networking'
     }
   ],
   3: [
     {
       dayId: 3,
       time: '09:45 - 12:30',
-      title: 'Visita Técnica',
+      title: 'Espacio de visita técnica',
       type: 'VISITAS TÉCNICAS',
       speaker: 'Empresas invitadas',
-      description: 'Segmento técnico centrado en procesos productivos y soluciones innovadoras.',
-      location: 'Instalaciones del evento'
+      description: 'Espacio para el desarrollo de la visita técnica de tu elección.',
     },
     {
       dayId: 3,
@@ -166,34 +149,30 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'BREAK',
       speaker: '',
       description: 'Tiempo libre para almorzar y descansar.',
-      location: 'Área de comidas'
     },
     {
       dayId: 3,
       time: '14:00 - 16:15',
-      title: 'Feria laboral y Hub de innovación',
-      type: 'FERIA',
+      title: 'Feria laboral y Hub de innovación aplicada',
+      type: 'FERIA LABORAL',
       speaker: 'Empresas y organizaciones',
-      description: 'Espacio para explorar oportunidades laborales y proyectos de innovación aplicada.',
-      location: 'Pabellón de ferias'
+      description: 'Un espacio donde los participantes presenten, desarrollen o conecten propuestas innovadoras aplicadas a problemáticas académicas, empresariales o industriales.',
     },
     {
       dayId: 3,
       time: '16:15 - 17:00',
-      title: 'Taller Logística Inteligente',
+      title: 'Supply Chain Challenge: optimización de una cadena de suministro',
       type: 'TALLER',
       speaker: 'Próximamente',
-      description: 'Taller práctico sobre operaciones logísticas inteligentes y su impacto en la cadena de valor.',
-      location: 'Sala de talleres'
+      description: 'Fortalece tus habilidades en gestión logística mediante la resolución práctica de desafíos reales en una cadena de suministro, optimizando decisiones sobre demanda, inventarios, proveedores y distribución.',
     },
     {
       dayId: 3,
       time: '17:00 - 17:45',
-      title: 'Ponencia',
+      title: 'Logística sostenible y tecnologías aplicadas',
       type: 'PONENCIA',
       speaker: 'Próximamente',
       description: 'Ponencia enfocada en buenas prácticas y tendencias de mejora en operaciones logísticas.',
-      location: 'Sala de conferencias'
     },
     {
       dayId: 3,
@@ -202,36 +181,32 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'BREAK',
       speaker: 'Equipo de logística',
       description: 'Rango de descanso para reactivar y conversar entre sesiones.',
-      location: 'Área de descanso'
     }
   ],
   4: [
     {
       dayId: 4,
       time: '09:45 - 12:30',
-      title: 'Visita Técnica',
+      title: 'Espacio de visita técnica',
       type: 'VISITAS TÉCNICAS',
       speaker: 'Empresas invitadas',
-      description: 'Visita técnica orientada a observar procesos y soluciones aplicadas en la industria.',
-      location: 'Instalaciones del evento'
+      description: 'Espacio para el desarrollo de la visita técnica de tu elección.',
     },
     {
       dayId: 4,
-      time: '14:30 - 16:15',
-      title: 'Ponencia Virtual',
-      type: 'PONENCIA',
-      speaker: 'Próximamente',
-      description: 'Ponencia virtual enfocada en innovación empresarial y metodologías ágiles.',
-      location: 'Plataforma virtual'
+      time: '15:15 - 16:00',
+      title: 'SUPPLY CHAIN',
+      type: 'PONENCIA VIRTUAL',
+      speaker: 'OSCAR SOZA',
+      description: 'Explora cómo la logística inteligente combina datos, tecnología y estrategia para optimizar la cadena de suministro y potenciar la competitividad empresarial.',
     },
     {
       dayId: 4,
-      time: '16:15 - 17:45',
-      title: 'Ponencia Virtual',
-      type: 'PONENCIA',
-      speaker: 'Próximamente',
-      description: 'Segunda ponencia virtual del día para profundizar en estrategias de innovación.',
-      location: 'Plataforma virtual'
+      time: '16:00 - 16:15',
+      title: 'Design Thinking aplicado a la solución de problemas',
+      type: 'PONENCIA VIRTUAL',
+      speaker: 'Próximo a revelarse',
+      description: '',
     }
   ],
   5: [
@@ -242,25 +217,22 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'REGISTRO',
       speaker: 'Staff CEIISE',
       description: 'Recepción del último día del congreso para dar la bienvenida a las sesiones de cierre.',
-      location: 'Entrada principal'
     },
     {
       dayId: 5,
       time: '10:00 - 10:45',
-      title: 'Ponencia',
+      title: 'Innovar con tecnología: el futuro de las ingenierías',
       type: 'PONENCIA',
-      speaker: 'Próximamente',
-      description: 'Ponencia de cierre orientada a integrar aprendizajes de todo el congreso.',
-      location: 'Sala de conferencias'
+      speaker: 'Jeanmarco Villegas',
+      description: 'Descubre cómo los ingenieros pueden convertir la tecnología en soluciones estratégicas que impulsen la innovación y generen valor para las empresas.',
     },
     {
       dayId: 5,
       time: '11:00 - 12:30',
-      title: 'Conversatorio',
+      title: 'Retos reales de la transformación digital en empresas peruanas',
       type: 'CONVERSATORIO',
       speaker: 'Próximamente',
-      description: 'Conversatorio abierto donde se intercambian visiones y experiencias entre expertos y participantes.',
-      location: 'Sala principal'
+      description: 'Conoce las principales barreras, oportunidades y experiencias reales que enfrentan las organizaciones en sus procesos de transformación digital de la mano de expertos.',
     },
     {
       dayId: 5,
@@ -269,16 +241,14 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'BREAK',
       speaker: '',
       description: 'Buffet de cierre y sesión de fotos para conmemorar la participación en el congreso.',
-      location: 'Área de comidas'
     },
     {
       dayId: 5,
       time: '14:30 - 15:30',
-      title: 'Taller Innovación',
+      title: 'Design Thinking aplicado a problemas reales',
       type: 'TALLER',
-      speaker: 'Próximamente',
-      description: 'Taller para explorar enfoques creativos e innovación aplicada a retos reales.',
-      location: 'Sala de talleres'
+      speaker: 'Clarissa Palomino',
+      description: 'Aprende a transformar una idea o problema en un prototipo funcional mediante un enfoque práctico orientado a resolver desafíos del mundo real.',
     },
     {
       dayId: 5,
@@ -287,7 +257,6 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'CEREMONIA',
       speaker: 'Directiva CEIISE',
       description: 'Ceremonia final para reconocer participación y cerrar oficialmente el evento.',
-      location: 'Auditorio principal'
     },
     {
       dayId: 5,
@@ -296,7 +265,6 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
       type: 'ACTIVIDAD',
       speaker: 'Grupo artístico',
       description: 'Cierre cultural y social del congreso con una experiencia artística y festiva.',
-      location: 'Escenario principal'
     }
   ]
 };

@@ -98,6 +98,9 @@ export const findUserByDocument = async (documentInput: string): Promise<AppUser
     .single();
 
   if (error) {
+    if (error.code === 'PGRST116') {
+      return null;
+    }
     throw new Error(`Supabase query failed [${status}]: ${error.message}`);
   }
 

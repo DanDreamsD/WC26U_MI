@@ -34,10 +34,10 @@ export const SKILL_UNLOCK_RULES: SkillUnlockRule[] = [
   },
   {
     nodeId: 'n3',
-    hint: 'Asiste al Día 5 y aprueba el quiz (≥ 5/10) — Taller de Liderazgo',
+    hint: 'Asiste al Día 1 y aprueba el quiz (≥ 5/10) — Taller de Liderazgo',
     condition: (p) =>
-      p.attendanceDays.includes(5) &&
-      (p.quizScores[5] ?? 0) >= 5,
+      p.attendanceDays.includes(1) &&
+      (p.quizScores[1] ?? 0) >= 5,
   },
 
   // ── Innovación ──────────────────────────────────────────────────
@@ -50,10 +50,10 @@ export const SKILL_UNLOCK_RULES: SkillUnlockRule[] = [
   },
   {
     nodeId: 'n5',
-    hint: 'Asiste al Día 4 y aprueba el quiz (≥ 5/10) — Hub de Innovación',
+    hint: 'Asiste al Día 3 y aprueba el quiz (≥ 5/10) — Hub de Innovación Aplicada',
     condition: (p) =>
-      p.attendanceDays.includes(4) &&
-      (p.quizScores[4] ?? 0) >= 5,
+      p.attendanceDays.includes(3) &&
+      (p.quizScores[3] ?? 0) >= 5,
   },
   {
     nodeId: 'n6',

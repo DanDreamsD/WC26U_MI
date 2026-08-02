@@ -8,9 +8,6 @@ export interface AttendanceRecord {
   id?: number | string;
 }
 
-// URL de la Web App de Google Apps Script (resguardo secundario)
-const ATTENDANCE_API_URL = import.meta.env.VITE_ATTENDANCE_API_URL || '';
-
 export const getAttendanceRecords = async (): Promise<AttendanceRecord[]> => {
   try {
     const client = getSupabase();
@@ -27,17 +24,12 @@ export const getAttendanceRecords = async (): Promise<AttendanceRecord[]> => {
     }));
   } catch (error) {
     console.error('Error al cargar la base de asistencias desde Supabase:', error);
-    if (ATTENDANCE_API_URL) {
-      const response = await fetch(`${ATTENDANCE_API_URL}?action=getall`);
-      if (response.ok) return response.json();
-    }
     return [];
   }
 };
 
 export const hasAttendanceRecord = async (
   documentId: string,
-  day?: number,
   keyword?: string
 ): Promise<boolean> => {
   if (!documentId) return false;
@@ -74,17 +66,6 @@ export const hasAttendanceRecord = async (
     } else if (data && data.length > 0) {
       return true;
     }
-
-    // Resguardo secundario con Google Sheets si está configurado
-    if (ATTENDANCE_API_URL && day) {
-      const response = await fetch(
-        `${ATTENDANCE_API_URL}?action=check&documentId=${encodeURIComponent(documentId)}&day=${day}`
-      );
-      if (response.ok) {
-        const sheetsData = await response.json();
-        return Boolean(sheetsData.exists);
-      }
-    }
   } catch (error) {
     console.error('Error al verificar la asistencia:', error);
   }
@@ -94,11 +75,9 @@ export const hasAttendanceRecord = async (
 
 export const saveAttendanceRecord = async ({
   documentId,
-  day,
   keyword,
 }: {
   documentId: string;
-  day: number;
   keyword: string;
 }) => {
   try {
@@ -139,15 +118,6 @@ export const saveAttendanceRecord = async ({
         success: false,
         message: `Error en la base de datos ASISTENCIA: ${insertError.message}`,
       };
-    }
-
-    // Sincronización secundaria con Google Sheets si la URL está disponible
-    if (ATTENDANCE_API_URL) {
-      fetch(ATTENDANCE_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ documentId, day, keyword }),
-      }).catch((err) => console.warn('Resguardo secundario en Sheets no completado:', err));
     }
 
     return {

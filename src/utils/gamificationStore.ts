@@ -1,6 +1,7 @@
 import { getLevelForXp } from '../data/levelDefinitions';
 import { BADGE_DEFINITIONS } from '../data/badgeDefinitions';
 import { SKILL_UNLOCK_RULES } from '../data/skillUnlockRules';
+import { getSupabase } from './supabaseClient';
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -26,7 +27,8 @@ export interface GamificationEvent {
 
 // ── State Initialization ──────────────────────────────────────────
 
-const STORAGE_KEY = 'ceiise_progress';
+const PROGRESO_TABLE = 'PROGRESO';
+const REVIEWER_DOCUMENT_ID = '99999999';
 
 export const createEmptyProgress = (documentId: string): UserProgress => ({
   documentId,
@@ -41,27 +43,76 @@ export const createEmptyProgress = (documentId: string): UserProgress => ({
   lastUpdated: new Date().toISOString(),
 });
 
-export const loadProgress = (documentId: string): UserProgress => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as UserProgress;
-      if (parsed.documentId === documentId) {
-        return parsed;
-      }
-    }
-  } catch {
-    // corrupt data, fall through
+const progressToRow = (progress: UserProgress) => ({
+  dni: progress.documentId,
+  xp: progress.xp,
+  nivel: progress.level,
+  asistencias: progress.attendanceDays,
+  quiz_scores: progress.quizScores as Record<string, number>,
+  quizzes: progress.quizzesCompleted,
+  explorados: progress.exploredActivities,
+  nodos: progress.unlockedNodes,
+  insignias: progress.earnedBadges,
+  actualizado: progress.lastUpdated,
+});
+
+const rowToProgress = (row: any): UserProgress => ({
+  documentId: row.dni,
+  xp: Number(row.xp ?? 0),
+  level: Number(row.nivel ?? 1) || 1,
+  attendanceDays: Array.isArray(row.asistencias) ? row.asistencias.map(Number) : [],
+  quizScores: row.quiz_scores && typeof row.quiz_scores === 'object' ? (row.quiz_scores as Record<number, number>) : {},
+  quizzesCompleted: Array.isArray(row.quizzes) ? row.quizzes.map(Number) : [],
+  exploredActivities: Array.isArray(row.explorados) ? row.explorados : [],
+  unlockedNodes: Array.isArray(row.nodos) ? row.nodos : [],
+  earnedBadges: Array.isArray(row.insignias) ? row.insignias : [],
+  lastUpdated: row.actualizado || new Date().toISOString(),
+});
+
+export const loadProgress = async (documentId: string): Promise<UserProgress> => {
+  if (documentId === REVIEWER_DOCUMENT_ID) {
+    return createEmptyProgress(documentId);
   }
+
+  try {
+    const client = getSupabase();
+    const { data, error } = await (client as any)
+      .from(PROGRESO_TABLE)
+      .select('*')
+      .eq('dni', documentId)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+    if (data) {
+      return rowToProgress(data);
+    }
+  } catch (error) {
+    console.error('Error al cargar el progreso desde Supabase:', error);
+  }
+
   return createEmptyProgress(documentId);
 };
 
-export const saveProgress = (progress: UserProgress): void => {
+export const saveProgress = async (progress: UserProgress): Promise<void> => {
+  if (progress.documentId === REVIEWER_DOCUMENT_ID) {
+    return;
+  }
+
   progress.lastUpdated = new Date().toISOString();
+
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  } catch {
-    // storage full or unavailable – silently ignore
+    const client = getSupabase();
+    const { error } = await (client as any)
+      .from(PROGRESO_TABLE)
+      .upsert(progressToRow(progress), { onConflict: 'dni' });
+
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error al guardar el progreso en Supabase:', error);
   }
 };
 
@@ -273,7 +324,7 @@ export const evaluateAndSave = (
   events.push(...evaluateSkillUnlocks(progress));
   events.push(...evaluateBadges(progress));
 
-  saveProgress(progress);
+  void saveProgress(progress);
   return events;
 };
 

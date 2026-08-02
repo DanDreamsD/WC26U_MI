@@ -81,7 +81,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({ progress, onProgressUpdate }
 
   const handleReset = () => {
     const empty = createEmptyProgress(progress.documentId);
-    saveProgress(empty);
+    void saveProgress(empty);
     onProgressUpdate(empty, []);
   };
 

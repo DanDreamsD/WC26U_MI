@@ -19,7 +19,6 @@ import {
   type UserProgress,
   type GamificationEvent,
 } from './utils/gamificationStore';
-import { syncProgressToSheets, loadProgressFromSheets } from './utils/sheetsSync';
 
 function App() {
   const [user, setUser] = useState<AppUser | null>(null);
@@ -38,16 +37,7 @@ function App() {
   // ── Load gamification progress when user logs in ──────────────
   useEffect(() => {
     if (user) {
-      const loaded = loadProgress(user.documentId);
-      setProgress(loaded);
-
-      if (user.documentId !== TESTER_DOCUMENT_ID) {
-        loadProgressFromSheets(user.documentId).then((sheetsProgress) => {
-          if (sheetsProgress) {
-            setProgress(sheetsProgress);
-          }
-        });
-      }
+      loadProgress(user.documentId).then((loaded) => setProgress(loaded));
     } else {
       setProgress(null);
     }
@@ -57,8 +47,7 @@ function App() {
   const handleProgressUpdate = useCallback(
     (updatedProgress: UserProgress, events: GamificationEvent[]) => {
       setProgress({ ...updatedProgress });
-      saveProgress(updatedProgress);
-      syncProgressToSheets(updatedProgress);
+      void saveProgress(updatedProgress);
 
       if (events.length > 0) {
         // Deduplicate events by type+label+value to avoid showing the same notification twice

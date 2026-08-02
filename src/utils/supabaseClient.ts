@@ -23,6 +23,19 @@ export interface SupabaseAsistenciaRecord {
   keyword?: string;
 }
 
+export interface SupabaseProgresoRecord {
+  dni: string;
+  xp?: number;
+  nivel?: number;
+  asistencias?: number[];
+  quiz_scores?: Record<string, number>;
+  quizzes?: number[];
+  explorados?: string[];
+  nodos?: string[];
+  insignias?: string[];
+  actualizado?: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -35,6 +48,11 @@ export interface Database {
         Row: SupabaseAsistenciaRecord;
         Insert: SupabaseAsistenciaRecord;
         Update: Partial<SupabaseAsistenciaRecord>;
+      };
+      PROGRESO: {
+        Row: SupabaseProgresoRecord;
+        Insert: SupabaseProgresoRecord;
+        Update: Partial<SupabaseProgresoRecord>;
       };
     };
   };
