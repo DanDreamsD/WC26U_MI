@@ -1,11 +1,73 @@
 import { getSupabase } from './supabaseClient';
 import { attendanceKeywordsByDay } from './attendanceKeywords';
+import { REVIEWER_DOCUMENT_ID } from './gamificationStore';
 
 const KEYWORD_TO_DAY: Record<string, number> = Object.fromEntries(
   Object.entries(attendanceKeywordsByDay).map(([day, keyword]) => [keyword, Number(day)])
 );
 
 const dayColumn = (day: number): string => `DIA${day}`;
+const PONENCIA_TABLE = 'ASISTENCIA_PONENCIAS';
+
+export const hasPonenciaAttendance = async (
+  documentId: string,
+  keyword: string
+): Promise<boolean> => {
+  if (!documentId || !keyword) return false;
+  try {
+    const client = getSupabase();
+    const { data, error } = await (client as any)
+      .from(PONENCIA_TABLE)
+      .select('id')
+      .eq('dni', documentId)
+      .eq('keyword', keyword)
+      .maybeSingle();
+    if (error) {
+      throw error;
+    }
+    return !!data;
+  } catch (error) {
+    console.error('Error al verificar asistencia de ponencia:', error);
+    return false;
+  }
+};
+
+export const savePonenciaAttendance = async ({
+  documentId,
+  keyword,
+}: {
+  documentId: string;
+  keyword: string;
+}) => {
+  if (documentId === REVIEWER_DOCUMENT_ID) {
+    return {
+      success: true,
+      message: 'Modo revisión: no se registró la asistencia en la base de datos.',
+    };
+  }
+  try {
+    const client = getSupabase();
+    const { error } = await (client as any)
+      .from(PONENCIA_TABLE)
+      .upsert({ dni: documentId, keyword }, { onConflict: 'dni,keyword' });
+    if (error) {
+      return {
+        success: false,
+        message: `Error en la base de datos ASISTENCIA_PONENCIAS: ${error.message}`,
+      };
+    }
+    return {
+      success: true,
+      message: 'Asistencia a la ponencia registrada correctamente.',
+    };
+  } catch (error: any) {
+    console.error('Error general al registrar asistencia de ponencia:', error);
+    return {
+      success: false,
+      message: error?.message ?? 'Error inesperado al conectar con la base de datos.',
+    };
+  }
+};
 
 export interface AttendanceRecord {
   documentId: string;
@@ -28,7 +90,7 @@ export const getAttendanceRecords = async (): Promise<AttendanceRecord[]> => {
         if (!keyword) return [];
         return [
           {
-            documentId: row.dni || String(row.id),
+            documentId: row.DNI || String(row.id),
             day,
             keyword,
             registeredAt: row.created_at || new Date().toISOString(),
@@ -96,6 +158,12 @@ export const saveAttendanceRecord = async ({
   documentId: string;
   keyword: string;
 }) => {
+  if (documentId === REVIEWER_DOCUMENT_ID) {
+    return {
+      success: true,
+      message: 'Modo revisión: no se registró la asistencia en la base de datos.',
+    };
+  }
   try {
     const client = getSupabase();
 
@@ -130,7 +198,7 @@ export const saveAttendanceRecord = async ({
       .upsert(
         {
           id: userRow.id,
-          dni: documentId,
+          DNI: documentId,
           [dayColumn(day)]: keyword,
         },
         { onConflict: 'id' }

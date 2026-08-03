@@ -188,6 +188,15 @@ export const KnowledgeTree: React.FC<KnowledgeTreeProps> = ({ isOpen, onClose, p
               </svg>
             </motion.div>
 
+            {/* ── Intro description ──────────────────────────────── */}
+            <motion.p
+              variants={branchVariants}
+              className="text-center text-sm text-gray-500 leading-relaxed px-2 max-w-md mx-auto -mt-1"
+            >
+              A medida que avances por los días del CEIISE 2026 y completes tus actividades, se irán
+              desbloqueando nuevas habilidades. ¡Domínalas todas!
+            </motion.p>
+
             {/* ── Branches grid ──────────────────────────────────── */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
               {knowledgeData.branches.map((branch) => {

@@ -4,10 +4,12 @@ import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound, ArrowLeft, MapPin, C
 import { formatLevelDateLong, getLevelStatus } from '../../utils/levelStatus';
 import { attendanceKeywordsByDay } from '../../utils/attendanceKeywords';
 import { hasAttendanceRecord, saveAttendanceRecord } from '../../utils/attendanceStorage';
+import { getPonenciaKeyword, isPonenciaType } from '../../utils/attendancePonenciaKeywords';
+import { hasPonenciaAttendance, savePonenciaAttendance } from '../../utils/attendanceStorage';
 import { getDayActivitiesForDay, getDayActivityDetails } from '../../data/dayActivityLibrary';
 import { getLevelLocation } from '../../data/levelLocationLibrary';
 import { getQuizForDay, getQuizScore, QUIZ_TOTAL_POINTS } from '../../data/quizLibrary';
-import { recordAttendance, recordQuizScore, recordExploredActivity, evaluateAndSave } from '../../utils/gamificationStore';
+import { recordAttendance, recordQuizScore, recordExploredActivity, evaluateAndSave, saveQuizResults } from '../../utils/gamificationStore';
 
 interface LevelModalProps {
   isOpen: boolean;
@@ -33,6 +35,9 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const [attendanceMessage, setAttendanceMessage] = useState('');
   const [attendanceRegistered, setAttendanceRegistered] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<any | null>(null);
+  const [ponenciaInput, setPonenciaInput] = useState('');
+  const [ponenciaMessage, setPonenciaMessage] = useState('');
+  const [ponenciaRegistered, setPonenciaRegistered] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [quizScore, setQuizScore] = useState<number | null>(null);
@@ -52,6 +57,10 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const selectedActivityDetails = selectedActivity
     ? getDayActivityDetails(level.id, selectedActivity.title, selectedActivity.time)
     : null;
+  const isPonencia = !!selectedActivityDetails && isPonenciaType(selectedActivityDetails.type);
+  const ponenciaKeyword = selectedActivityDetails
+    ? getPonenciaKeyword(level.id, selectedActivityDetails.title)
+    : null;
 
   const handleQuizSubmit = (event?: React.FormEvent) => {
     event?.preventDefault();
@@ -62,6 +71,20 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     const score = getQuizScore(quiz, selectedAnswers);
     setQuizScore(score);
     setQuizSubmitted(true);
+
+    // Guardar el resultado del cuestionario en Supabase (CUESTIONARIOS_<día>)
+    if (documentId) {
+      void saveQuizResults(
+        documentId,
+        level.id,
+        quiz.questions.map((question) => {
+          const selectedOption = question.options.find(
+            (option) => option.id === selectedAnswers[question.id]
+          );
+          return selectedOption?.isCorrect ? 1 : 0;
+        })
+      );
+    }
 
     if (progress && !isStandardUser) {
       const updatedProgress = { ...progress };
@@ -102,6 +125,44 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     setQuizScore(null);
     setQuizSubmitted(false);
   }, [level.id]);
+
+  useEffect(() => {
+    setPonenciaInput('');
+    setPonenciaMessage('');
+    setPonenciaRegistered(false);
+    if (!documentId || !selectedActivity) return;
+
+    const keyword = getPonenciaKeyword(level.id, selectedActivity.title);
+    if (!keyword) return;
+
+    void hasPonenciaAttendance(documentId, keyword).then((exists) => {
+      setPonenciaRegistered(exists);
+    });
+  }, [selectedActivity, documentId, level.id]);
+
+  const handlePonenciaSubmit = async () => {
+    if (!ponenciaKeyword) {
+      setPonenciaMessage('No hay palabra clave disponible para esta ponencia.');
+      return;
+    }
+
+    if (ponenciaInput.trim().toUpperCase() === ponenciaKeyword.toUpperCase()) {
+      if (!documentId) {
+        setPonenciaMessage('No se pudo identificar el documento para guardar la asistencia.');
+        return;
+      }
+
+      const result = await savePonenciaAttendance({ documentId, keyword: ponenciaKeyword });
+      if (result.success) {
+        setPonenciaRegistered(true);
+        setPonenciaMessage(result.message ?? 'Asistencia registrada correctamente.');
+      } else {
+        setPonenciaMessage(result.message ?? 'No se pudo guardar la asistencia.');
+      }
+    } else {
+      setPonenciaMessage('La palabra clave es incorrecta. Intenta nuevamente.');
+    }
+  };
 
   const handleAttendanceSubmit = async (event?: React.FormEvent | React.MouseEvent) => {
     event?.preventDefault();
@@ -365,6 +426,52 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
 
                 <h4 className="text-xl font-bold text-deep">{selectedActivityDetails.title}</h4>
                 <p className="mt-2 text-sm text-gray-600">{selectedActivityDetails.description}</p>
+
+                {isPonencia && (
+                  <div className="mt-4 rounded-xl border border-primary/20 bg-white p-4 shadow-sm">
+                    <h5 className="flex items-center gap-2 font-semibold text-deep">
+                      <KeyRound size={16} className="text-primary" />
+                      Registrar asistencia a la ponencia
+                    </h5>
+                    <p className="mt-1 text-sm text-gray-600">
+                      {ponenciaRegistered
+                        ? 'Ya registraste tu asistencia a esta ponencia.'
+                        : `Ingresa la palabra clave proporcionada en la ponencia para confirmar tu asistencia.`}
+                    </p>
+                    {!ponenciaRegistered ? (
+                      <form
+                        onSubmit={(event) => {
+                          event.preventDefault();
+                          void handlePonenciaSubmit();
+                        }}
+                        className="mt-3 flex flex-col gap-2 sm:flex-row"
+                      >
+                        <input
+                          type="text"
+                          value={ponenciaInput}
+                          onChange={(e) => {
+                            setPonenciaInput(e.target.value);
+                            if (ponenciaMessage) setPonenciaMessage('');
+                          }}
+                          placeholder="Palabra clave de la ponencia"
+                          className="flex-1 rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary"
+                        />
+                        <button
+                          type="submit"
+                          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-secondary"
+                        >
+                          Confirmar
+                        </button>
+                      </form>
+                    ) : (
+                      <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-green-600">
+                        <CheckCircle2 size={16} />
+                        Asistencia confirmada
+                      </div>
+                    )}
+                    {ponenciaMessage ? <p className="mt-2 text-sm text-gray-600">{ponenciaMessage}</p> : null}
+                  </div>
+                )}
               </div>
             ) : (
               daySchedule.map((item, idx) => {

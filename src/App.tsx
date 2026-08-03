@@ -10,6 +10,7 @@ import { KnowledgeTree } from './components/Tree/KnowledgeTree';
 import { LoginScreen } from './components/Auth/LoginScreen';
 import { Modal } from './components/UI/Modal';
 import { XpNotification } from './components/UI/XpNotification';
+import { LoadingScreen } from './components/UI/LoadingScreen';
 import { LevelUpCelebration } from './components/UI/LevelUpCelebration';
 import { DevPanel } from './components/DevPanel/DevPanel';
 import { TESTER_DOCUMENT_ID, type AppUser } from './utils/users';
@@ -31,6 +32,7 @@ function App() {
   const [noticeOpen, setNoticeOpen] = useState(false);
   const [pendingEvents, setPendingEvents] = useState<GamificationEvent[]>([]);
   const clearPendingEvents = useCallback(() => setPendingEvents([]), []);
+  const [isLoadingProgress, setIsLoadingProgress] = useState(false);
   
   const [selectedLevel, setSelectedLevel] = useState<any | null>(null);
   const [levelUpCelebration, setLevelUpCelebration] = useState<{ level: number; title: string } | null>(null);
@@ -39,9 +41,14 @@ function App() {
   useEffect(() => {
     if (user) {
       setNoticeOpen(true);
-      loadProgress(user.documentId).then((loaded) => setProgress(loaded));
+      setIsLoadingProgress(true);
+      loadProgress(user.documentId).then((loaded) => {
+        setProgress(loaded);
+        setIsLoadingProgress(false);
+      });
     } else {
       setProgress(null);
+      setIsLoadingProgress(false);
     }
   }, [user?.documentId]);
 
@@ -101,6 +108,10 @@ function App() {
 
   if (!user) {
     return <LoginScreen onLogin={setUser} />;
+  }
+
+  if (isLoadingProgress || !progress) {
+    return <LoadingScreen />;
   }
 
   return (

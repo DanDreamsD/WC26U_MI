@@ -68,6 +68,22 @@ const makeEventKey = (e: GamificationEvent) => `${e.type}|${e.label}|${e.value ?
 export const XpNotification: React.FC<XpNotificationProps> = ({ events, onClear }) => {
   const [visibleEvents, setVisibleEvents] = useState<DisplayEvent[]>([]);
   const processedKeysRef = useRef<Set<string>>(new Set());
+  const timersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const clearTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onClearRef = useRef(onClear);
+
+  useEffect(() => {
+    onClearRef.current = onClear;
+  }, [onClear]);
+
+  // Clear all timers only on unmount, so pending hide timers can never be
+  // cancelled by a new batch of events arriving.
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+      if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (events.length === 0) return;
@@ -82,31 +98,28 @@ export const XpNotification: React.FC<XpNotificationProps> = ({ events, onClear 
       key: `${Date.now()}-${i}`,
     }));
 
-    const timers: ReturnType<typeof setTimeout>[] = [];
+    const now = Date.now();
 
     newEvents.forEach((event, index) => {
+      const showKey = `show-${now}-${index}`;
       const showTimer = setTimeout(() => {
         setVisibleEvents((prev) => [...prev, event]);
         playSoundForEvent(event.type);
 
         const hideTimer = setTimeout(() => {
           setVisibleEvents((prev) => prev.filter((e) => e.key !== event.key));
+          timersRef.current.delete(event.key);
         }, EVENT_DISPLAY_MS);
-        timers.push(hideTimer);
+        timersRef.current.set(event.key, hideTimer);
       }, index * EVENT_STAGGER_MS);
-      timers.push(showTimer);
+      timersRef.current.set(showKey, showTimer);
     });
 
-    const totalTime = newEvents.length * EVENT_STAGGER_MS + EVENT_DISPLAY_MS + 300;
-    const clearTimer = setTimeout(() => {
-      onClear();
-    }, totalTime);
-    timers.push(clearTimer);
-
-    return () => {
-      timers.forEach(clearTimeout);
-    };
-  }, [events, onClear]);
+    // Clear the pending events list once every notification has been shown.
+    if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
+    const totalTime = Math.max(0, newEvents.length - 1) * EVENT_STAGGER_MS + EVENT_DISPLAY_MS + 300;
+    clearTimerRef.current = setTimeout(() => onClearRef.current(), totalTime);
+  }, [events]);
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col-reverse gap-3 max-w-sm pointer-events-none">
@@ -119,7 +132,11 @@ export const XpNotification: React.FC<XpNotificationProps> = ({ events, onClear 
               layout
               initial={{ opacity: 0, y: 50, scale: 0.7, filter: 'blur(8px)' }}
               animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, x: 100, scale: 0.85, filter: 'blur(4px)' }}
+              exit={{
+                opacity: [1, 1, 0],
+                scale: [1, 0.65, 0.4],
+                transition: { type: 'tween', duration: 0.45, times: [0, 0.55, 1] },
+              }}
               transition={{ type: 'spring', stiffness: 350, damping: 22 }}
               className={`pointer-events-auto flex items-center gap-3 px-5 py-3.5 rounded-2xl border text-white backdrop-blur-xl ${style.bg} ${style.border} ${style.glow}`}
             >

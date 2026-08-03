@@ -1,5 +1,5 @@
 import { getLevelForXp } from '../data/levelDefinitions';
-import { BADGE_DEFINITIONS } from '../data/badgeDefinitions';
+import { BADGE_DEFINITIONS, getBadgeById } from '../data/badgeDefinitions';
 import { SKILL_UNLOCK_RULES } from '../data/skillUnlockRules';
 import { getSupabase } from './supabaseClient';
 import {
@@ -31,11 +31,11 @@ export interface GamificationEvent {
 
 // ── State Initialization ──────────────────────────────────────────
 
-const PROGRESO_TABLE = 'PROGRESO';
-const REVIEWER_DOCUMENT_ID = '99999999';
+export const REVIEWER_DOCUMENT_ID = '99999999';
 const ACTIVITY_DAYS = [1, 2, 3, 4, 5];
 
 const activitiesTableForDay = (day: number): string => `DIA_${day}_ACTIVIDADES`;
+const quizTableForDay = (day: number): string => `CUESTIONARIOS_${day}`;
 
 export const createEmptyProgress = (documentId: string): UserProgress => ({
   documentId,
@@ -50,61 +50,36 @@ export const createEmptyProgress = (documentId: string): UserProgress => ({
   lastUpdated: new Date().toISOString(),
 });
 
-const progressToRow = (progress: UserProgress) => ({
-  dni: progress.documentId,
-  xp: progress.xp,
-  nivel: progress.level,
-  asistencias: progress.attendanceDays,
-  quiz_scores: progress.quizScores as Record<string, number>,
-  quizzes: progress.quizzesCompleted,
-  explorados: progress.exploredActivities,
-  nodos: progress.unlockedNodes,
-  insignias: progress.earnedBadges,
-  actualizado: progress.lastUpdated,
-});
-
-const rowToProgress = (row: any): UserProgress => {
-  const xp = Number(row.xp ?? 0);
-  return {
-    documentId: row.dni,
-    xp,
-    level: getLevelForXp(xp).level,
-    attendanceDays: Array.isArray(row.asistencias) ? row.asistencias.map(Number) : [],
-    quizScores: row.quiz_scores && typeof row.quiz_scores === 'object' ? (row.quiz_scores as Record<number, number>) : {},
-    quizzesCompleted: Array.isArray(row.quizzes) ? row.quizzes.map(Number) : [],
-    exploredActivities: Array.isArray(row.explorados) ? row.explorados : [],
-    unlockedNodes: Array.isArray(row.nodos) ? row.nodos : [],
-    earnedBadges: Array.isArray(row.insignias) ? row.insignias : [],
-    lastUpdated: row.actualizado || new Date().toISOString(),
-  };
-};
-
 export const loadProgress = async (documentId: string): Promise<UserProgress> => {
   if (documentId === REVIEWER_DOCUMENT_ID) {
     return createEmptyProgress(documentId);
   }
 
-  let progress = createEmptyProgress(documentId);
+  const progress = createEmptyProgress(documentId);
 
+  // La asistencia se lee de la tabla ASISTENCIA (una fila por usuario, DIA1..DIA5)
   try {
     const client = getSupabase();
-    const { data, error } = await (client as any)
-      .from(PROGRESO_TABLE)
-      .select('*')
-      .eq('dni', documentId)
+    const { data: attendanceRow, error: attendanceError } = await (client as any)
+      .from('ASISTENCIA')
+      .select('DIA1, DIA2, DIA3, DIA4, DIA5')
+      .eq('DNI', documentId)
+      .limit(1)
       .maybeSingle();
 
-    if (error) {
-      throw error;
+    if (attendanceError) {
+      throw attendanceError;
     }
-    if (data) {
-      progress = rowToProgress(data);
+    if (attendanceRow) {
+      progress.attendanceDays = [1, 2, 3, 4, 5].filter(
+        (day) => attendanceRow[`DIA${day}`]
+      );
     }
   } catch (error) {
-    console.error('Error al cargar el progreso desde Supabase:', error);
+    console.error('Error al cargar la asistencia desde Supabase:', error);
   }
 
-  // Merge de actividades del Día 1 desde la matriz binaria (una columna por actividad)
+  // Actividades exploradas desde las matrices binarias (una columna por actividad)
   try {
     const client = getSupabase();
     const explored = new Set(progress.exploredActivities);
@@ -128,6 +103,42 @@ export const loadProgress = async (documentId: string): Promise<UserProgress> =>
     console.error('Error al cargar las actividades desde Supabase:', error);
   }
 
+  // Resultados de cuestionarios desde CUESTIONARIOS_1..5 (TOTAL = mejor acierto del día)
+  try {
+    const client = getSupabase();
+    for (const day of ACTIVITY_DAYS) {
+      const { data: quizRow, error: quizError } = await (client as any)
+        .from(quizTableForDay(day))
+        .select('TOTAL')
+        .eq('DNI', documentId)
+        .eq('DIA', day)
+        .maybeSingle();
+
+      if (quizError) {
+        throw quizError;
+      }
+      if (quizRow && quizRow.TOTAL != null) {
+        progress.quizScores[day] = Number(quizRow.TOTAL);
+        if (!progress.quizzesCompleted.includes(day)) {
+          progress.quizzesCompleted.push(day);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error al cargar los cuestionarios desde Supabase:', error);
+  }
+
+  // 1) XP base solo de las interacciones (asistencia, quizzes, exploración),
+  //    para que las insignias basadas en XP/nivel se evalúen correctamente.
+  syncXpFromActivity(progress);
+
+  // 2) Habilidades e insignias se re-evalúan desde la actividad registrada
+  evaluateSkillUnlocks(progress);
+  evaluateBadges(progress);
+
+  // 3) XP definitivo = interacciones + bonos de insignias (sin eventos ni animaciones)
+  syncXpFromActivity(progress);
+
   return progress;
 };
 
@@ -137,19 +148,6 @@ export const saveProgress = async (progress: UserProgress): Promise<void> => {
   }
 
   progress.lastUpdated = new Date().toISOString();
-
-  try {
-    const client = getSupabase();
-    const { error } = await (client as any)
-      .from(PROGRESO_TABLE)
-      .upsert(progressToRow(progress), { onConflict: 'dni' });
-
-    if (error) {
-      throw error;
-    }
-  } catch (error) {
-    console.error('Error al guardar el progreso en Supabase:', error);
-  }
 
   // Guardar matriz binaria de actividades (una columna por actividad, 1 = explorada)
   for (const day of ACTIVITY_DAYS) {
@@ -173,6 +171,51 @@ export const saveProgress = async (progress: UserProgress): Promise<void> => {
 };
 
 // ── XP & Level Engine ─────────────────────────────────────────────
+
+/**
+ * Calcula el XP a partir de la actividad registrada del usuario:
+ * asistencia, cuestionarios, actividades exploradas e insignias.
+ * Es la fuente de verdad del puntaje (la tabla EXPERIENCIA ya no se usa).
+ */
+export const calculateXpFromActivity = (progress: UserProgress): number => {
+  // Asistencia: 50 XP por día + 200 por asistencia completa (5/5)
+  const attendanceXp =
+    progress.attendanceDays.length * 50 +
+    (progress.attendanceDays.length === 5 ? 200 : 0);
+
+  // Cuestionarios: 10 XP por acierto (mejor puntaje), +30 por el primer quiz
+  // y +50 por cada 10/10 (bono de perfección)
+  const quizXp =
+    progress.quizzesCompleted.reduce(
+      (sum, day) => sum + (progress.quizScores[day] ?? 0) * 10,
+      0
+    ) +
+    (progress.quizzesCompleted.length > 0 ? 30 : 0) +
+    progress.quizzesCompleted.reduce(
+      (sum, day) => sum + ((progress.quizScores[day] ?? 0) === 10 ? 50 : 0),
+      0
+    );
+
+  // Exploración: 5 XP por actividad explorada
+  const explorationXp = progress.exploredActivities.length * 5;
+
+  // Insignias: XP de bonificación de cada insignia desbloqueada
+  const badgeXp = progress.earnedBadges.reduce((sum, id) => {
+    const badge = getBadgeById(id);
+    return sum + (badge?.xpBonus ?? 0);
+  }, 0);
+
+  return attendanceXp + quizXp + explorationXp + badgeXp;
+};
+
+/**
+ * Recalcula xp y nivel a partir de la actividad registrada (sin animaciones).
+ * Se invoca en la pantalla de carga, antes de que el usuario use la plataforma.
+ */
+export const syncXpFromActivity = (progress: UserProgress): void => {
+  progress.xp = calculateXpFromActivity(progress);
+  progress.level = getLevelForXp(progress.xp).level;
+};
 
 /**
  * Adds XP to progress and recalculates the level.
@@ -263,13 +306,21 @@ export const recordQuizScore = (
 
   if (!gamified) return events;
 
-  // Base XP only for the first completion of this day's quiz
+  // Base XP: 10 XP por acierto según el MEJOR puntaje del día (primera vez o mejora)
   if (!alreadyCompleted) {
     events.push(...addXp(progress, score * 10, `Quiz Día ${day}: ${score}/10`));
 
     if (isFirstQuizEver) {
       events.push(...addXp(progress, 30, '¡Primer cuestionario completado!'));
     }
+  } else if (score > previousBest) {
+    events.push(
+      ...addXp(
+        progress,
+        (score - previousBest) * 10,
+        `Quiz Día ${day}: mejor puntaje ${previousBest} → ${score}`
+      )
+    );
   }
 
   // Perfect score bonus: first time the best score reaches 10/10
@@ -278,6 +329,60 @@ export const recordQuizScore = (
   }
 
   return events;
+};
+
+/**
+ * Guarda el resultado del cuestionario de un día en la tabla CUESTIONARIOS_<día>.
+ * `perQuestionCorrect` es un arreglo de 0/1, uno por pregunta (Q1..Q10).
+ * Conserva el MEJOR puntaje del participante (DNI + DIA) si ya existe.
+ */
+export const saveQuizResults = async (
+  documentId: string,
+  day: number,
+  perQuestionCorrect: number[]
+): Promise<void> => {
+  if (!documentId || documentId === REVIEWER_DOCUMENT_ID) return;
+
+  const total = perQuestionCorrect.reduce((sum, value) => sum + value, 0);
+  const row: Record<string, unknown> = {
+    DNI: documentId,
+    DIA: day,
+    TOTAL: total,
+  };
+  perQuestionCorrect.forEach((value, index) => {
+    if (index < 10) row[`Q${index + 1}`] = value;
+  });
+
+  try {
+    const client = getSupabase();
+    const table = quizTableForDay(day);
+    const { data: existing, error: readError } = await (client as any)
+      .from(table)
+      .select('id, TOTAL')
+      .eq('DNI', documentId)
+      .eq('DIA', day)
+      .maybeSingle();
+
+    if (readError) {
+      throw readError;
+    }
+
+    if (existing?.id) {
+      if (total > Number(existing.TOTAL ?? 0)) {
+        const { error } = await (client as any).from(table).update(row).eq('id', existing.id);
+        if (error) {
+          throw error;
+        }
+      }
+    } else {
+      const { error } = await (client as any).from(table).insert(row);
+      if (error) {
+        throw error;
+      }
+    }
+  } catch (error) {
+    console.error(`Error al guardar el cuestionario del Día ${day} en Supabase:`, error);
+  }
 };
 
 // ── Activity Exploration ──────────────────────────────────────────
@@ -392,6 +497,9 @@ export const evaluateAndSave = (
 
   events.push(...evaluateSkillUnlocks(progress));
   events.push(...evaluateBadges(progress));
+
+  // El XP final siempre se deriva de las interacciones + bonos de insignias
+  syncXpFromActivity(progress);
 
   void saveProgress(progress);
   return events;
