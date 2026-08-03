@@ -40,6 +40,13 @@
   }
 }
 
+/* Compensa el DPI en móviles: escala ligeramente hacia abajo el contenido */
+@media (max-width: 480px) {
+  html {
+    zoom: 0.92;
+  }
+}
+
 /* Custom scrollbar for a sleek look */
 ::-webkit-scrollbar {
   width: 6px;
