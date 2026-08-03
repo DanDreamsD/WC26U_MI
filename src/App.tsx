@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Crown } from 'lucide-react';
+import { Lock, Crown, BellRing, HelpCircle } from 'lucide-react';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { LevelJourney } from './components/Journey/LevelJourney';
 import { LevelModal } from './components/Journey/LevelModal';
@@ -28,6 +28,7 @@ function App() {
   const [treeOpen, setTreeOpen] = useState(false);
   const [restrictionOpen, setRestrictionOpen] = useState(false);
   const [restrictionTitle, setRestrictionTitle] = useState('Acceso limitado');
+  const [noticeOpen, setNoticeOpen] = useState(false);
   const [pendingEvents, setPendingEvents] = useState<GamificationEvent[]>([]);
   const clearPendingEvents = useCallback(() => setPendingEvents([]), []);
   
@@ -37,11 +38,12 @@ function App() {
   // ── Load gamification progress when user logs in ──────────────
   useEffect(() => {
     if (user) {
+      setNoticeOpen(true);
       loadProgress(user.documentId).then((loaded) => setProgress(loaded));
     } else {
       setProgress(null);
     }
-  }, [user]);
+  }, [user?.documentId]);
 
   // ── Progress update callback ──────────────────────────────────
   const handleProgressUpdate = useCallback(
@@ -49,11 +51,15 @@ function App() {
       setProgress({ ...updatedProgress });
       void saveProgress(updatedProgress);
 
-      if (events.length > 0) {
+      // Standard users have an informational-only experience: never surface
+      // XP, badge or level-up events to them.
+      const gamifiedEvents = user?.ticketType === 'ESTANDAR' ? [] : events;
+
+      if (gamifiedEvents.length > 0) {
         // Deduplicate events by type+label+value to avoid showing the same notification twice
         setPendingEvents((prev) => {
           const seen = new Set(prev.map((e) => `${e.type}|${e.label}|${e.value ?? ''}`));
-          const unique = events.filter((e) => {
+          const unique = gamifiedEvents.filter((e) => {
             const key = `${e.type}|${e.label}|${e.value ?? ''}`;
             if (seen.has(key)) return false;
             seen.add(key);
@@ -63,7 +69,7 @@ function App() {
         });
 
         // Check for level-up events to trigger celebration
-        const levelUpEvent = events.find((e) => e.type === 'level-up');
+        const levelUpEvent = gamifiedEvents.find((e) => e.type === 'level-up');
         if (levelUpEvent && levelUpEvent.value) {
           setLevelUpCelebration({ level: levelUpEvent.value, title: levelUpEvent.label });
         }
@@ -108,7 +114,7 @@ function App() {
         progress={progress}
         onOpenProfile={() => setProfileOpen(true)}
         onOpenPassport={() => setPrizesOpen(true)}
-        onOpenKnowledgeTree={() => (user.ticketType === 'STANDARD' ? handleRestrictedAccess('Mis nuevas habilidades') : setTreeOpen(true))}
+        onOpenKnowledgeTree={() => (user.ticketType === 'ESTANDAR' ? handleRestrictedAccess('Mis nuevas habilidades') : setTreeOpen(true))}
       />
 
       <main className="flex-1 overflow-y-auto custom-scrollbar p-6 flex flex-col items-center">
@@ -167,7 +173,7 @@ function App() {
         progress={progress}
         onProgressUpdate={handleProgressUpdate}
       />
-      {user.ticketType !== 'STANDARD' && (
+      {user.ticketType !== 'ESTANDAR' && (
         <KnowledgeTree
           isOpen={treeOpen}
           onClose={() => setTreeOpen(false)}
@@ -191,25 +197,58 @@ function App() {
         </div>
       </Modal>
 
+      <Modal isOpen={noticeOpen} onClose={() => setNoticeOpen(false)} title="Aviso importante">
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-white shadow-lg shadow-primary/20">
+            <BellRing size={36} />
+          </div>
+          <h3 className="text-xl font-bold text-deep">Estimado participante</h3>
+          <p className="mt-3 max-w-md text-base text-gray-600">
+            Recuerde registrar su asistencia para obtener el certificado.
+          </p>
+          <button
+            onClick={() => setNoticeOpen(false)}
+            className="mt-6 px-8 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow"
+          >
+            Entendido
+          </button>
+        </div>
+      </Modal>
+
       {/* Gamification event notifications */}
-      <XpNotification
-        events={pendingEvents}
-        onClear={clearPendingEvents}
-      />
+      {user.ticketType !== 'ESTANDAR' && (
+        <XpNotification
+          events={pendingEvents}
+          onClear={clearPendingEvents}
+        />
+      )}
 
       {/* Level-up celebration */}
-      <LevelUpCelebration
-        isOpen={!!levelUpCelebration}
-        onClose={() => setLevelUpCelebration(null)}
-        level={levelUpCelebration?.level ?? 1}
-        levelTitle={levelUpCelebration?.title ?? ''}
-        userName={user.name}
-      />
+      {user.ticketType !== 'ESTANDAR' && (
+        <LevelUpCelebration
+          isOpen={!!levelUpCelebration}
+          onClose={() => setLevelUpCelebration(null)}
+          level={levelUpCelebration?.level ?? 1}
+          levelTitle={levelUpCelebration?.title ?? ''}
+          userName={user.name}
+        />
+      )}
 
       {/* Dev panel - tester only */}
       {user.documentId === TESTER_DOCUMENT_ID && (
         <DevPanel progress={progress} onProgressUpdate={handleProgressUpdate} />
       )}
+
+      {/* Help button - subtle corner link */}
+      <a
+        href="https://forms.gle/eAG8RESu2sYhxhdV6"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur border border-gray-200 px-3.5 py-2 text-xs font-semibold text-gray-500 shadow-sm hover:text-primary hover:border-primary/30 hover:shadow-md transition-all"
+      >
+        <HelpCircle size={14} />
+        ¿Necesitas ayuda?
+      </a>
       
     </div>
   );

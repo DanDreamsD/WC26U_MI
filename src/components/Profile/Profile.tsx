@@ -14,6 +14,7 @@ interface ProfileProps {
 }
 
 export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, onLogout, user, progress }) => {
+  const isStandard = user.ticketType === 'ESTANDAR';
   const xp = progress?.xp ?? 0;
   const levelDef = getLevelForXp(xp);
   const nextLevel = getNextLevel(levelDef.level);
@@ -46,6 +47,7 @@ export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, onLogout, use
       </div>
 
       {/* Nivel y XP */}
+      {!isStandard && (
       <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm mb-6">
         <div className="flex justify-between items-end mb-2">
           <div>
@@ -78,8 +80,10 @@ export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, onLogout, use
           )}
         </div>
       </div>
+      )}
 
       {/* Estadísticas */}
+      {!isStandard && (
       <div className="grid grid-cols-3 gap-3 mb-8">
         <div className="bg-gray-50 rounded-xl p-3 text-center border border-gray-100">
           <Calendar size={18} className="mx-auto text-primary mb-1" />
@@ -97,8 +101,19 @@ export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, onLogout, use
           <div className="text-[10px] uppercase font-bold text-gray-500 tracking-wider mt-1">Explorado</div>
         </div>
       </div>
+      )}
 
       {/* Insignias Obtenidas */}
+      {isStandard ? (
+        <div className="mb-8 rounded-2xl border border-primary/10 bg-primary/5 p-6 text-center">
+          <Award size={28} className="mx-auto text-primary/50 mb-2" />
+          <h3 className="font-bold text-deep">Plataforma informativa</h3>
+          <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto leading-snug">
+            Con tu pase Estándar puedes consultar el programa, las actividades y registrar tu asistencia. Los puntos, niveles e insignias están disponibles en los planes Premium y VIP.
+          </p>
+        </div>
+      ) : (
+      <>
       <div className="mb-8">
         <h3 className="text-lg font-bold text-deep mb-4 flex items-center justify-between">
           <span className="flex items-center gap-2"><Award size={20} className="text-primary" /> Mis Insignias</span>
@@ -151,6 +166,8 @@ export const Profile: React.FC<ProfileProps> = ({ isOpen, onClose, onLogout, use
             ))}
           </div>
         </div>
+      )}
+      </>
       )}
 
       {/* Logout */}

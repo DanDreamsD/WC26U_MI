@@ -39,28 +39,22 @@ export const DevPanel: React.FC<DevPanelProps> = ({ progress, onProgressUpdate }
   const handleAttendance = (day: number) => {
     const updated = { ...progress };
     const events = recordAttendance(updated, day);
-    if (events.length > 0) {
-      const evalEvents = evaluateAndSave(updated);
-      onProgressUpdate(updated, [...events, ...evalEvents]);
-    }
+    const evalEvents = evaluateAndSave(updated);
+    onProgressUpdate(updated, [...events, ...evalEvents]);
   };
 
   const handleQuiz = (day: number, score: number) => {
     const updated = { ...progress };
     const events = recordQuizScore(updated, day, score);
-    if (events.length > 0) {
-      const evalEvents = evaluateAndSave(updated);
-      onProgressUpdate(updated, [...events, ...evalEvents]);
-    }
+    const evalEvents = evaluateAndSave(updated);
+    onProgressUpdate(updated, [...events, ...evalEvents]);
   };
 
   const handleExplore = (day: number, title: string) => {
     const updated = { ...progress };
     const events = recordExploredActivity(updated, day, title);
-    if (events.length > 0) {
-      const evalEvents = evaluateAndSave(updated);
-      onProgressUpdate(updated, [...events, ...evalEvents]);
-    }
+    const evalEvents = evaluateAndSave(updated);
+    onProgressUpdate(updated, [...events, ...evalEvents]);
   };
 
   const handleExploreAll = (day: number) => {
@@ -73,10 +67,8 @@ export const DevPanel: React.FC<DevPanelProps> = ({ progress, onProgressUpdate }
       const events = recordExploredActivity(updated, day, title);
       allEvents = [...allEvents, ...events];
     }
-    if (allEvents.length > 0) {
-      const evalEvents = evaluateAndSave(updated);
-      onProgressUpdate(updated, [...allEvents, ...evalEvents]);
-    }
+    const evalEvents = evaluateAndSave(updated);
+    onProgressUpdate(updated, [...allEvents, ...evalEvents]);
   };
 
   const handleReset = () => {
@@ -105,10 +97,8 @@ export const DevPanel: React.FC<DevPanelProps> = ({ progress, onProgressUpdate }
       allEvents = [...allEvents, ...events];
     }
 
-    if (allEvents.length > 0) {
-      const evalEvents = evaluateAndSave(updated);
-      onProgressUpdate(updated, [...allEvents, ...evalEvents]);
-    }
+    const evalEvents = evaluateAndSave(updated);
+    onProgressUpdate(updated, [...allEvents, ...evalEvents]);
   };
 
   const uniqueActivities = (day: number) => {

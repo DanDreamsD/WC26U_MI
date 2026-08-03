@@ -41,7 +41,7 @@
     "title": "Diploma de Participación",
     "description": "Certificado oficial de participación en el CEIISE 2026 firmado por la directiva.",
     "icon": "🏆",
-    "eligibility": "STANDARD",
+    "eligibility": "ESTANDAR",
     "status": "available"
   },
   {
@@ -50,7 +50,7 @@
     "title": "Merchandising CEIISE",
     "description": "Pack de merchandise exclusivo del congreso: polo, pin y stickers.",
     "icon": "👕",
-    "eligibility": "STANDARD",
+    "eligibility": "ESTANDAR",
     "status": "available"
   },
   {
@@ -59,7 +59,7 @@
     "title": "Auriculares Inalámbricos",
     "description": "Auriculares Bluetooth de alta calidad sorteados entre los asistentes al cierre del evento.",
     "icon": "🎧",
-    "eligibility": "STANDARD",
+    "eligibility": "ESTANDAR",
     "status": "raffle"
   },
   {
@@ -68,7 +68,7 @@
     "title": "Tablet / Dispositivo Inteligente",
     "description": "Dispositivo tecnológico sorteado entre los participantes con asistencia completa.",
     "icon": "📱",
-    "eligibility": "STANDARD",
+    "eligibility": "ESTANDAR",
     "status": "raffle"
   }
 ]

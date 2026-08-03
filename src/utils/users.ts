@@ -7,7 +7,7 @@ export interface AppUser {
   name: string;
   university: string;
   career: string;
-  ticketType: 'STANDARD' | 'VIP' | 'PREMIUM';
+  ticketType: 'ESTANDAR' | 'VIP' | 'PREMIUM';
   level: number;
   xp: number;
   completedMissions: string[];
@@ -50,9 +50,9 @@ const normalizeTicket = (value: string): AppUser['ticketType'] => {
 
   if (normalized.includes('vip')) return 'VIP';
   if (normalized.includes('premium')) return 'PREMIUM';
-  if (normalized.includes('estandar') || normalized.includes('standard')) return 'STANDARD';
+  if (normalized.includes('estandar') || normalized.includes('standard')) return 'ESTANDAR';
 
-  return 'STANDARD';
+  return 'ESTANDAR';
 };
 
 const normalizeProgress = (value: string | number | undefined): number => {

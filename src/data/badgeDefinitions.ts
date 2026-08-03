@@ -15,12 +15,16 @@ export interface BadgeDefinition {
   condition: (progress: UserProgress) => boolean;
 }
 
-const TOTAL_ACTIVITIES = 28; // Unique activity keys across 5 days (deduplicated by dayId-title)
-
 const getUniqueActivityCountForDay = (dayId: number): number => {
   const activities = dayActivityLibrary[dayId] ?? [];
   return new Set(activities.map((a) => a.title)).size;
 };
+
+// Total unique activity keys across all days (deduplicated by dayId-title)
+const TOTAL_ACTIVITIES = Object.values(dayActivityLibrary).reduce(
+  (sum, activities) => sum + new Set(activities.map((a) => a.title)).size,
+  0
+);
 
 export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   // ── Insignias asignadas a IDs b1, b2, b3 ────────────────────────

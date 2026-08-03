@@ -15,7 +15,7 @@ export const prizeLibrary: PrizeItem[] = [
     title: 'Insignia de regalo',
     description: 'Insignia digital conmemorativa por ser parte del congreso.',
     icon: '🏅',
-    eligibility: 'STANDARD',
+    eligibility: 'VIP',
     status: 'available',
   },
   {
@@ -24,7 +24,7 @@ export const prizeLibrary: PrizeItem[] = [
     title: 'Kit CEIISE 2026',
     description: 'Kit de bienvenida al congreso.',
     icon: '🎒',
-    eligibility: 'PREMIUM',
+    eligibility: 'ESTANDAR',
     status: 'available',
   },
   {
@@ -33,7 +33,7 @@ export const prizeLibrary: PrizeItem[] = [
     title: 'Certificado de participación oficial',
     description: 'Certificado oficial de participación en el CEIISE 2026.',
     icon: '📜',
-    eligibility: 'STANDARD',
+    eligibility: 'ESTANDAR',
     status: 'available',
   },
 ];

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck, HelpCircle } from 'lucide-react';
 import { findUserByDocument } from '../../utils/users';
 import logo from '../../assets/iconoceiiseweb.svg';
 
@@ -106,6 +106,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
               </svg>
               Visitar ceiise.org
             </span>
+          </a>
+        </div>
+
+        {/* Help link */}
+        <div className="mt-4 flex justify-center">
+          <a
+            href="https://forms.gle/eAG8RESu2sYhxhdV6"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-primary transition-colors"
+          >
+            <HelpCircle size={14} />
+            ¿Necesitas ayuda?
           </a>
         </div>
 

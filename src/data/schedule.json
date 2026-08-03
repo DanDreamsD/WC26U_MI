@@ -5,7 +5,7 @@
     "title": "Recepción y networking",
     "speaker": "",
     "type": "REGISTRO",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -13,7 +13,7 @@
     "title": "Número musical",
     "speaker": "",
     "type": "ACTIVIDAD",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -21,7 +21,7 @@
     "title": "Inauguración",
     "speaker": "",
     "type": "CEREMONIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -29,7 +29,7 @@
     "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -37,7 +37,7 @@
     "title": "Taller Liderazgo",
     "speaker": "Próximamente",
     "type": "TALLER",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -45,7 +45,7 @@
     "title": "Meet & Greet",
     "speaker": "",
     "type": "NETWORKING",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -53,7 +53,7 @@
     "title": "Almuerzo libre",
     "speaker": "",
     "type": "BREAK",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -61,7 +61,7 @@
     "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -69,7 +69,7 @@
     "title": "Contingencia",
     "speaker": "",
     "type": "BREAK",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -77,7 +77,7 @@
     "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 1,
@@ -85,7 +85,7 @@
     "title": "Noche cultural",
     "speaker": "",
     "type": "ACTIVIDAD",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
 
   {
@@ -94,7 +94,7 @@
     "title": "Visita Técnica",
     "speaker": "",
     "type": "VISITAS TÉCNICAS",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 2,
@@ -102,7 +102,7 @@
     "title": "Almuerzo libre",
     "speaker": "",
     "type": "BREAK",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 2,
@@ -110,7 +110,7 @@
     "title": "Talk Experience",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 2,
@@ -118,7 +118,7 @@
     "title": "Contingencia",
     "speaker": "",
     "type": "BREAK",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 2,
@@ -126,7 +126,7 @@
     "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 2,
@@ -134,7 +134,7 @@
     "title": "Feria de voluntariados",
     "speaker": "",
     "type": "NETWORKING",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 2,
@@ -142,7 +142,7 @@
     "title": "Meet & Greet",
     "speaker": "",
     "type": "NETWORKING",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
 
   {
@@ -151,7 +151,7 @@
     "title": "Visita Técnica",
     "speaker": "",
     "type": "VISITAS TÉCNICAS",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 3,
@@ -159,7 +159,7 @@
     "title": "Almuerzo libre",
     "speaker": "",
     "type": "BREAK",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 3,
@@ -167,7 +167,7 @@
     "title": "Feria laboral y Hub de innovación",
     "speaker": "",
     "type": "FERIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 3,
@@ -175,7 +175,7 @@
     "title": "Taller Logística Inteligente",
     "speaker": "Próximamente",
     "type": "TALLER",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 3,
@@ -183,7 +183,7 @@
     "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 3,
@@ -191,7 +191,7 @@
     "title": "Coffee Break",
     "speaker": "",
     "type": "BREAK",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
 
   {
@@ -200,7 +200,7 @@
     "title": "Visita Técnica",
     "speaker": "",
     "type": "VISITAS TÉCNICAS",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 4,
@@ -208,7 +208,7 @@
     "title": "Ponencia Virtual",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 4,
@@ -216,7 +216,7 @@
     "title": "Ponencia Virtual",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
 
   {
@@ -225,7 +225,7 @@
     "title": "Recepción",
     "speaker": "",
     "type": "REGISTRO",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 5,
@@ -233,7 +233,7 @@
     "title": "Ponencia",
     "speaker": "Próximamente",
     "type": "PONENCIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 5,
@@ -241,7 +241,7 @@
     "title": "Contingencia",
     "speaker": "",
     "type": "BREAK",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 5,
@@ -249,7 +249,7 @@
     "title": "Conversatorio",
     "speaker": "Próximamente",
     "type": "CONVERSATORIO",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 5,
@@ -257,7 +257,7 @@
     "title": "Buffet y Fotos",
     "speaker": "",
     "type": "BREAK",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 5,
@@ -265,7 +265,7 @@
     "title": "Taller Innovación",
     "speaker": "Próximamente",
     "type": "TALLER",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 5,
@@ -273,7 +273,7 @@
     "title": "Cierre",
     "speaker": "",
     "type": "CEREMONIA",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   },
   {
     "dayId": 5,
@@ -281,6 +281,6 @@
     "title": "Concierto",
     "speaker": "",
     "type": "ACTIVIDAD",
-    "requiresTicket": "STANDARD"
+    "requiresTicket": "ESTANDAR"
   }
 ]

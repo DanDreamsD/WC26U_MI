@@ -36,3 +36,35 @@ create policy "PROGRESO actualizacion para todos"
   on public.PROGRESO for update
   using (true)
   with check (true);
+
+-- ── DIA_1_ACTIVIDADES ─────────────────────────────────────────────
+-- Matriz binaria: una columna por actividad del Día 1 (TRUE = explorada).
+-- Piloto de la tabla ancha por actividad. Requiere USUARIOS.dni único.
+
+create table if not exists public.DIA_1_ACTIVIDADES (
+  dni                 text primary key references public.USUARIOS (dni),
+  act_d1_numero_musical  boolean not null default false,
+  act_d1_inauguracion    boolean not null default false,
+  act_d1_empleabilidad   boolean not null default false,
+  act_d1_liderazgo       boolean not null default false,
+  act_d1_meet_greet      boolean not null default false,
+  act_d1_almuerzo        boolean not null default false,
+  act_d1_marca_personal  boolean not null default false,
+  act_d1_competencias    boolean not null default false,
+  act_d1_noche_cultural  boolean not null default false
+);
+
+alter table public.DIA_1_ACTIVIDADES enable row level security;
+
+create policy "DIA_1_ACTIVIDADES lectura para todos"
+  on public.DIA_1_ACTIVIDADES for select
+  using (true);
+
+create policy "DIA_1_ACTIVIDADES insercion para todos"
+  on public.DIA_1_ACTIVIDADES for insert
+  with check (true);
+
+create policy "DIA_1_ACTIVIDADES actualizacion para todos"
+  on public.DIA_1_ACTIVIDADES for update
+  using (true)
+  with check (true);

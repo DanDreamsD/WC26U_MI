@@ -19,18 +19,19 @@ interface DashboardProps {
 }
 
 const ticketGradients: Record<string, string> = {
-  STANDARD: 'from-gray-500 to-gray-600',
+  ESTANDAR: 'from-gray-500 to-gray-600',
   VIP: 'from-amber-400 to-orange-500',
   PREMIUM: 'from-primary to-secondary',
 };
 
 export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProfile, onOpenKnowledgeTree, onOpenPassport }) => {
+  const isStandard = user.ticketType === 'ESTANDAR';
   const xp = progress?.xp ?? 0;
   const levelDef = getLevelForXp(xp);
   const nextLevel = getNextLevel(levelDef.level);
   const xpPercent = getXpProgress(xp);
   const badgeCount = progress?.earnedBadges.length ?? 0;
-  const ticketGrad = ticketGradients[user.ticketType] ?? ticketGradients.STANDARD;
+  const ticketGrad = ticketGradients[user.ticketType] ?? ticketGradients.ESTANDAR;
 
   return (
     <motion.div
@@ -59,9 +60,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProf
                 {user.name.charAt(0)}
               </div>
               {/* Level indicator badge */}
-              <div className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-white border-2 border-primary flex items-center justify-center">
-                <span className="text-[9px] font-black text-primary">{levelDef.level}</span>
-              </div>
+              {!isStandard && (
+                <div className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-white border-2 border-primary flex items-center justify-center">
+                  <span className="text-[9px] font-black text-primary">{levelDef.level}</span>
+                </div>
+              )}
             </div>
 
             <div>
@@ -74,10 +77,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProf
                   {user.ticketType} PASS
                 </span>
                 <span className="text-gray-200">•</span>
-                <span className="font-medium text-xs">{levelDef.title}</span>
+                <span className="font-medium text-xs">{isStandard ? 'Acceso informativo' : levelDef.title}</span>
               </div>
 
               {/* XP progress bar — enhanced */}
+              {!isStandard && (
               <div className="flex items-center gap-2 mt-2">
                 <Zap size={12} className="text-amber-500 flex-shrink-0 fill-amber-500" />
                 <div className="w-28 sm:w-36 h-2.5 bg-gray-100 rounded-full overflow-hidden relative">
@@ -103,6 +107,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProf
                   </>
                 )}
               </div>
+              )}
             </div>
           </motion.div>
 
@@ -132,7 +137,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, progress, onOpenProf
               whileHover={{ scale: 1.03, y: -1 }}
               whileTap={{ scale: 0.97 }}
               onClick={onOpenKnowledgeTree}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all duration-300 text-[13px] font-bold ${user.ticketType === 'STANDARD' ? 'bg-gray-400 text-white shadow-sm' : 'bg-gradient-to-r from-primary to-secondary text-white shadow-[0_6px_16px_-4px_rgba(132,12,215,0.45)] hover:shadow-[0_10px_20px_-4px_rgba(132,12,215,0.6)]'}`}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all duration-300 text-[13px] font-bold ${user.ticketType === 'ESTANDAR' ? 'bg-gray-400 text-white shadow-sm' : 'bg-gradient-to-r from-primary to-secondary text-white shadow-[0_6px_16px_-4px_rgba(132,12,215,0.45)] hover:shadow-[0_10px_20px_-4px_rgba(132,12,215,0.6)]'}`}
             >
               <Award size={14} /> Mis habilidades
             </motion.button>

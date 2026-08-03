@@ -17,7 +17,7 @@ interface PrizesProps {
 }
 
 const TICKET_RANK: Record<string, number> = {
-  STANDARD: 1,
+  ESTANDAR: 1,
   VIP: 2,
   PREMIUM: 3,
 };
@@ -30,6 +30,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user, progress, onProgressUpdate }) => {
+  const isStandard = user.ticketType === 'ESTANDAR';
   const userRank = TICKET_RANK[user.ticketType] ?? 1;
   const pioneroClaimed = progress?.earnedBadges.includes('b-pionero') ?? false;
   const [showCelebration, setShowCelebration] = useState(false);
@@ -60,7 +61,8 @@ export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user, progress,
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} title="Premios CEIISE 2026">
-        {/* Pionero CEIISE Badge — Available to everyone */}
+        {/* Pionero CEIISE Badge — Available to Premium & VIP only */}
+        {!isStandard && (
         <div className="mb-6">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -117,6 +119,7 @@ export const Prizes: React.FC<PrizesProps> = ({ isOpen, onClose, user, progress,
             </div>
           </motion.div>
         </div>
+        )}
 
         <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-4 rounded-xl border border-primary/10 mb-6 flex items-start gap-3">
           <Gift size={22} className="text-primary mt-0.5 flex-shrink-0" />

@@ -2,6 +2,10 @@ import { getLevelForXp } from '../data/levelDefinitions';
 import { BADGE_DEFINITIONS } from '../data/badgeDefinitions';
 import { SKILL_UNLOCK_RULES } from '../data/skillUnlockRules';
 import { getSupabase } from './supabaseClient';
+import {
+  rowToExploredKeys,
+  exploredKeysToRow,
+} from './dayActivityColumns';
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -29,6 +33,9 @@ export interface GamificationEvent {
 
 const PROGRESO_TABLE = 'PROGRESO';
 const REVIEWER_DOCUMENT_ID = '99999999';
+const ACTIVITY_DAYS = [1, 2, 3, 4, 5];
+
+const activitiesTableForDay = (day: number): string => `DIA_${day}_ACTIVIDADES`;
 
 export const createEmptyProgress = (documentId: string): UserProgress => ({
   documentId,
@@ -56,23 +63,28 @@ const progressToRow = (progress: UserProgress) => ({
   actualizado: progress.lastUpdated,
 });
 
-const rowToProgress = (row: any): UserProgress => ({
-  documentId: row.dni,
-  xp: Number(row.xp ?? 0),
-  level: Number(row.nivel ?? 1) || 1,
-  attendanceDays: Array.isArray(row.asistencias) ? row.asistencias.map(Number) : [],
-  quizScores: row.quiz_scores && typeof row.quiz_scores === 'object' ? (row.quiz_scores as Record<number, number>) : {},
-  quizzesCompleted: Array.isArray(row.quizzes) ? row.quizzes.map(Number) : [],
-  exploredActivities: Array.isArray(row.explorados) ? row.explorados : [],
-  unlockedNodes: Array.isArray(row.nodos) ? row.nodos : [],
-  earnedBadges: Array.isArray(row.insignias) ? row.insignias : [],
-  lastUpdated: row.actualizado || new Date().toISOString(),
-});
+const rowToProgress = (row: any): UserProgress => {
+  const xp = Number(row.xp ?? 0);
+  return {
+    documentId: row.dni,
+    xp,
+    level: getLevelForXp(xp).level,
+    attendanceDays: Array.isArray(row.asistencias) ? row.asistencias.map(Number) : [],
+    quizScores: row.quiz_scores && typeof row.quiz_scores === 'object' ? (row.quiz_scores as Record<number, number>) : {},
+    quizzesCompleted: Array.isArray(row.quizzes) ? row.quizzes.map(Number) : [],
+    exploredActivities: Array.isArray(row.explorados) ? row.explorados : [],
+    unlockedNodes: Array.isArray(row.nodos) ? row.nodos : [],
+    earnedBadges: Array.isArray(row.insignias) ? row.insignias : [],
+    lastUpdated: row.actualizado || new Date().toISOString(),
+  };
+};
 
 export const loadProgress = async (documentId: string): Promise<UserProgress> => {
   if (documentId === REVIEWER_DOCUMENT_ID) {
     return createEmptyProgress(documentId);
   }
+
+  let progress = createEmptyProgress(documentId);
 
   try {
     const client = getSupabase();
@@ -86,13 +98,37 @@ export const loadProgress = async (documentId: string): Promise<UserProgress> =>
       throw error;
     }
     if (data) {
-      return rowToProgress(data);
+      progress = rowToProgress(data);
     }
   } catch (error) {
     console.error('Error al cargar el progreso desde Supabase:', error);
   }
 
-  return createEmptyProgress(documentId);
+  // Merge de actividades del Día 1 desde la matriz binaria (una columna por actividad)
+  try {
+    const client = getSupabase();
+    const explored = new Set(progress.exploredActivities);
+
+    for (const day of ACTIVITY_DAYS) {
+      const { data: dayRow, error: dayError } = await (client as any)
+        .from(activitiesTableForDay(day))
+        .select('*')
+        .eq('DNI', documentId)
+        .maybeSingle();
+
+      if (dayError) {
+        throw dayError;
+      }
+
+      rowToExploredKeys(day, dayRow ?? {}).forEach((key) => explored.add(key));
+    }
+
+    progress.exploredActivities = Array.from(explored);
+  } catch (error) {
+    console.error('Error al cargar las actividades desde Supabase:', error);
+  }
+
+  return progress;
 };
 
 export const saveProgress = async (progress: UserProgress): Promise<void> => {
@@ -113,6 +149,26 @@ export const saveProgress = async (progress: UserProgress): Promise<void> => {
     }
   } catch (error) {
     console.error('Error al guardar el progreso en Supabase:', error);
+  }
+
+  // Guardar matriz binaria de actividades (una columna por actividad, 1 = explorada)
+  for (const day of ACTIVITY_DAYS) {
+    try {
+      const client = getSupabase();
+      const dayRow = {
+        DNI: progress.documentId,
+        ...exploredKeysToRow(day, progress.exploredActivities),
+      };
+      const { error } = await (client as any)
+        .from(activitiesTableForDay(day))
+        .upsert(dayRow, { onConflict: 'DNI' });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error(`Error al guardar las actividades del Día ${day} en Supabase:`, error);
+    }
   }
 };
 
@@ -154,14 +210,19 @@ export const addXp = (
 
 /**
  * Records attendance for a day. Returns events generated.
+ * When `gamified` is false (e.g. Standard users) attendance is recorded
+ * for informational purposes but no XP is awarded.
  */
 export const recordAttendance = (
   progress: UserProgress,
-  day: number
+  day: number,
+  gamified = true
 ): GamificationEvent[] => {
   if (progress.attendanceDays.includes(day)) return [];
 
   progress.attendanceDays.push(day);
+  if (!gamified) return [];
+
   const events = addXp(progress, 50, `Asistencia Día ${day}`);
 
   // Full attendance bonus
@@ -176,40 +237,44 @@ export const recordAttendance = (
 
 /**
  * Records a quiz score for a day. Returns events generated.
+ * Base XP is only awarded on the first completion; the perfect bonus is
+ * awarded whenever the best score first reaches 10/10 (first try or retake).
+ * When `gamified` is false (e.g. Standard users) the completion is recorded
+ * but no XP is awarded.
  */
 export const recordQuizScore = (
   progress: UserProgress,
   day: number,
-  score: number
+  score: number,
+  gamified = true
 ): GamificationEvent[] => {
   const isFirstQuizEver = progress.quizzesCompleted.length === 0;
   const alreadyCompleted = progress.quizzesCompleted.includes(day);
-
-  // Always update the best score
   const previousBest = progress.quizScores[day] ?? 0;
-  if (score > previousBest) {
-    progress.quizScores[day] = score;
-  }
-
-  // Only award XP for the first completion of this day's quiz
-  if (alreadyCompleted) return [];
-
-  progress.quizzesCompleted.push(day);
 
   const events: GamificationEvent[] = [];
 
-  // Base XP: 10 per correct answer
-  const baseXp = score * 10;
-  events.push(...addXp(progress, baseXp, `Quiz Día ${day}: ${score}/10`));
+  // Always update the best score
+  progress.quizScores[day] = Math.max(previousBest, score);
 
-  // Perfect score bonus
-  if (score === 10) {
-    events.push(...addXp(progress, 50, `¡Quiz perfecto Día ${day}!`));
+  if (!alreadyCompleted) {
+    progress.quizzesCompleted.push(day);
   }
 
-  // First quiz ever bonus
-  if (isFirstQuizEver) {
-    events.push(...addXp(progress, 30, '¡Primer cuestionario completado!'));
+  if (!gamified) return events;
+
+  // Base XP only for the first completion of this day's quiz
+  if (!alreadyCompleted) {
+    events.push(...addXp(progress, score * 10, `Quiz Día ${day}: ${score}/10`));
+
+    if (isFirstQuizEver) {
+      events.push(...addXp(progress, 30, '¡Primer cuestionario completado!'));
+    }
+  }
+
+  // Perfect score bonus: first time the best score reaches 10/10
+  if (score === 10 && previousBest < 10) {
+    events.push(...addXp(progress, 50, `¡Quiz perfecto Día ${day}!`));
   }
 
   return events;
@@ -225,16 +290,20 @@ export const makeActivityKey = (dayId: number, title: string): string =>
 
 /**
  * Records an activity exploration. Returns events generated.
+ * When `gamified` is false (e.g. Standard users) the exploration is recorded
+ * but no XP is awarded.
  */
 export const recordExploredActivity = (
   progress: UserProgress,
   dayId: number,
-  title: string
+  title: string,
+  gamified = true
 ): GamificationEvent[] => {
   const key = makeActivityKey(dayId, title);
   if (progress.exploredActivities.includes(key)) return [];
 
   progress.exploredActivities.push(key);
+  if (!gamified) return [];
   return addXp(progress, 5, `Explorar: ${title}`);
 };
 

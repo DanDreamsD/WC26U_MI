@@ -20,7 +20,11 @@ export interface SupabaseAsistenciaRecord {
   id: string | number;
   created_at?: string;
   dni?: string;
-  keyword?: string;
+  DIA1?: string | null;
+  DIA2?: string | null;
+  DIA3?: string | null;
+  DIA4?: string | null;
+  DIA5?: string | null;
 }
 
 export interface SupabaseProgresoRecord {
@@ -34,6 +38,43 @@ export interface SupabaseProgresoRecord {
   nodos?: string[];
   insignias?: string[];
   actualizado?: string;
+}
+
+export interface SupabaseDiaActividadesRecord {
+  id?: number;
+  DNI: string;
+  created_at?: string;
+  act_d1_numero_musical?: number;
+  act_d1_inauguracion?: number;
+  act_d1_empleabilidad?: number;
+  act_d1_liderazgo?: number;
+  act_d1_meet_greet?: number;
+  act_d1_almuerzo?: number;
+  act_d1_marca_personal?: number;
+  act_d1_competencias?: number;
+  act_d1_noche_cultural?: number;
+  act_d2_visitas_tecnicas?: number;
+  act_d2_almuerzo?: number;
+  act_d2_historias_liderazgo?: number;
+  act_d2_ponencia?: number;
+  act_d2_feria_voluntariados?: number;
+  act_d2_meet_greet?: number;
+  act_d3_visita_tecnica?: number;
+  act_d3_almuerzo?: number;
+  act_d3_feria_laboral?: number;
+  act_d3_supply_chain_challenge?: number;
+  act_d3_logistica?: number;
+  act_d3_coffee_break?: number;
+  act_d4_visita_tecnica?: number;
+  act_d4_supply_chain?: number;
+  act_d4_design_thinking?: number;
+  act_d5_recepcion?: number;
+  act_d5_innovar_tecnologia?: number;
+  act_d5_transformacion_digital?: number;
+  act_d5_buffet_fotos?: number;
+  act_d5_design_thinking?: number;
+  act_d5_cierre?: number;
+  act_d5_concierto?: number;
 }
 
 export interface Database {
@@ -53,6 +94,31 @@ export interface Database {
         Row: SupabaseProgresoRecord;
         Insert: SupabaseProgresoRecord;
         Update: Partial<SupabaseProgresoRecord>;
+      };
+      DIA_1_ACTIVIDADES: {
+        Row: SupabaseDiaActividadesRecord;
+        Insert: SupabaseDiaActividadesRecord;
+        Update: Partial<SupabaseDiaActividadesRecord>;
+      };
+      DIA_2_ACTIVIDADES: {
+        Row: SupabaseDiaActividadesRecord;
+        Insert: SupabaseDiaActividadesRecord;
+        Update: Partial<SupabaseDiaActividadesRecord>;
+      };
+      DIA_3_ACTIVIDADES: {
+        Row: SupabaseDiaActividadesRecord;
+        Insert: SupabaseDiaActividadesRecord;
+        Update: Partial<SupabaseDiaActividadesRecord>;
+      };
+      DIA_4_ACTIVIDADES: {
+        Row: SupabaseDiaActividadesRecord;
+        Insert: SupabaseDiaActividadesRecord;
+        Update: Partial<SupabaseDiaActividadesRecord>;
+      };
+      DIA_5_ACTIVIDADES: {
+        Row: SupabaseDiaActividadesRecord;
+        Insert: SupabaseDiaActividadesRecord;
+        Update: Partial<SupabaseDiaActividadesRecord>;
       };
     };
   };

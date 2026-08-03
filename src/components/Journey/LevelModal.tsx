@@ -21,7 +21,7 @@ interface LevelModalProps {
 }
 
 const TICKET_LEVELS: Record<string, number> = {
-  STANDARD: 1,
+  ESTANDAR: 1,
   VIP: 2,
   PREMIUM: 3
 };
@@ -41,11 +41,11 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const daySchedule = getDayActivitiesForDay(level.id);
   const quiz = getQuizForDay(level.id);
   const userLevel = TICKET_LEVELS[userTicket] || 1;
-  const isStandardUser = userLevel === TICKET_LEVELS.STANDARD;
+  const isStandardUser = userLevel === TICKET_LEVELS.ESTANDAR;
 
   const levelStatus = useMemo(() => (isReviewer ? 'available' : getLevelStatus(level.date)), [isReviewer, level.date]);
   const isLockedDay = levelStatus === 'locked';
-  const shouldShowSummary = isReviewer || levelStatus === 'completed' || isStandardUser;
+  const shouldShowSummary = !isStandardUser && (isReviewer || levelStatus === 'completed');
 
   const keyword = attendanceKeywordsByDay[level.id];
   const locationDetails = getLevelLocation(level.id);
@@ -63,26 +63,25 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     setQuizScore(score);
     setQuizSubmitted(true);
 
-    if (progress) {
+    if (progress && !isStandardUser) {
       const updatedProgress = { ...progress };
+      // Always re-evaluate skills/badges so retakes that improve the score
+      // can still unlock nodes and badges.
       const quizEvents = recordQuizScore(updatedProgress, level.id, score);
-      if (quizEvents.length > 0) {
-        const evalEvents = evaluateAndSave(updatedProgress);
-        onProgressUpdate(updatedProgress, [...quizEvents, ...evalEvents]);
-      }
+      const evalEvents = evaluateAndSave(updatedProgress);
+      onProgressUpdate(updatedProgress, [...quizEvents, ...evalEvents]);
     }
   };
 
   const handleActivityExplore = (item: any) => {
     setSelectedActivity(item);
-    
+
     if (progress) {
       const updatedProgress = { ...progress };
-      const exploreEvents = recordExploredActivity(updatedProgress, level.id, item.title);
-      if (exploreEvents.length > 0) {
-        const evalEvents = evaluateAndSave(updatedProgress);
-        onProgressUpdate(updatedProgress, [...exploreEvents, ...evalEvents]);
-      }
+      const gamified = !isStandardUser;
+      const exploreEvents = recordExploredActivity(updatedProgress, level.id, item.title, gamified);
+      const evalEvents = gamified ? evaluateAndSave(updatedProgress) : [];
+      onProgressUpdate(updatedProgress, [...exploreEvents, ...evalEvents]);
     }
   };
 
@@ -129,11 +128,10 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
         
         if (progress) {
           const updatedProgress = { ...progress };
-          const attendanceEvents = recordAttendance(updatedProgress, level.id);
-          if (attendanceEvents.length > 0) {
-            const evalEvents = evaluateAndSave(updatedProgress);
-            onProgressUpdate(updatedProgress, [...attendanceEvents, ...evalEvents]);
-          }
+          // Standard users register attendance but don't earn XP/badges/skills.
+          const attendanceEvents = recordAttendance(updatedProgress, level.id, !isStandardUser);
+          const evalEvents = !isStandardUser ? evaluateAndSave(updatedProgress) : [];
+          onProgressUpdate(updatedProgress, [...attendanceEvents, ...evalEvents]);
         }
       } else {
         setAttendanceMessage(result.message ?? 'No se pudo guardar la asistencia.');
@@ -189,9 +187,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
               <div>
                 <h4 className="font-semibold text-primary mb-1">Resumen del Día</h4>
                 <p className="text-sm text-gray-600">
-                  {isStandardUser
-                    ? 'Consulta el resumen general del día y registra tu asistencia. Los detalles completos siguen reservados para Premium o VIP.'
-                    : 'Explora las conferencias y talleres del día.'}
+                  Explora las conferencias y talleres del día.
                 </p>
               </div>
               <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium shadow-md hover:bg-secondary transition-colors">
@@ -200,7 +196,9 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           ) : (
             <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
-              El resumen del día aparecerá cuando el día ya haya pasado. Mientras tanto, puedes registrar tu asistencia para este día.
+              {isStandardUser
+                ? 'El resumen del día está disponible para los planes Premium y VIP. Mientras tanto, puedes registrar tu asistencia para este día.'
+                : 'El resumen del día aparecerá cuando el día ya haya pasado. Mientras tanto, puedes registrar tu asistencia para este día.'}
             </div>
           )}
 
@@ -255,6 +253,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           </div>
 
+          {!isStandardUser && (
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -344,6 +343,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
               )
             ) : null}
           </div>
+          )}
 
           <div className="space-y-4">
             {selectedActivityDetails ? (

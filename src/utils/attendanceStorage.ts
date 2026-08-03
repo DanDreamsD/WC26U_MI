@@ -1,4 +1,11 @@
 import { getSupabase } from './supabaseClient';
+import { attendanceKeywordsByDay } from './attendanceKeywords';
+
+const KEYWORD_TO_DAY: Record<string, number> = Object.fromEntries(
+  Object.entries(attendanceKeywordsByDay).map(([day, keyword]) => [keyword, Number(day)])
+);
+
+const dayColumn = (day: number): string => `DIA${day}`;
 
 export interface AttendanceRecord {
   documentId: string;
@@ -15,13 +22,21 @@ export const getAttendanceRecords = async (): Promise<AttendanceRecord[]> => {
     if (error) {
       throw error;
     }
-    return (data || []).map((row: any) => ({
-      documentId: row.dni || String(row.id),
-      day: 1,
-      keyword: row.keyword || '',
-      registeredAt: row.created_at || new Date().toISOString(),
-      id: row.id,
-    }));
+    return (data || []).flatMap((row: any) =>
+      [1, 2, 3, 4, 5].flatMap((day) => {
+        const keyword = row[dayColumn(day)];
+        if (!keyword) return [];
+        return [
+          {
+            documentId: row.dni || String(row.id),
+            day,
+            keyword,
+            registeredAt: row.created_at || new Date().toISOString(),
+            id: row.id,
+          },
+        ];
+      })
+    );
   } catch (error) {
     console.error('Error al cargar la base de asistencias desde Supabase:', error);
     return [];
@@ -37,6 +52,8 @@ export const hasAttendanceRecord = async (
   try {
     const client = getSupabase();
 
+    const day = keyword ? KEYWORD_TO_DAY[keyword] : undefined;
+
     // 1. Buscar en USUARIOS su 'id' con el 'dni'
     const { data: userRow } = await (client as any)
       .from('USUARIOS')
@@ -45,26 +62,25 @@ export const hasAttendanceRecord = async (
       .limit(1)
       .maybeSingle();
 
-    const userId = userRow?.id;
+    // 2. Verificar en la tabla ASISTENCIA si la columna del día ya está registrada
+    if (userRow?.id) {
+      const { data, error } = await (client as any)
+        .from('ASISTENCIA')
+        .select('*')
+        .eq('id', userRow.id)
+        .limit(1)
+        .maybeSingle();
 
-    // 2. Verificar en la tabla ASISTENCIA por 'id' o 'dni'
-    let query = (client as any).from('ASISTENCIA').select('*');
-
-    if (userId !== undefined && userId !== null) {
-      query = query.eq('id', userId);
-    } else {
-      query = query.eq('dni', documentId);
-    }
-
-    if (keyword) {
-      query = query.eq('keyword', keyword);
-    }
-
-    const { data, error } = await query;
-    if (error) {
-      console.error('Error al verificar asistencia en Supabase ASISTENCIA:', error);
-    } else if (data && data.length > 0) {
-      return true;
+      if (error) {
+        console.error('Error al verificar asistencia en Supabase ASISTENCIA:', error);
+      } else if (data && day) {
+        const value = data[dayColumn(day)];
+        if (value) {
+          return true;
+        }
+      } else if (data && !day) {
+        return [1, 2, 3, 4, 5].some((d) => data[dayColumn(d)]);
+      }
     }
   } catch (error) {
     console.error('Error al verificar la asistencia:', error);
@@ -99,18 +115,26 @@ export const saveAttendanceRecord = async ({
       };
     }
 
-    const userId = userRow.id;
+    const day = KEYWORD_TO_DAY[keyword];
+    if (!day) {
+      return {
+        success: false,
+        message: 'La palabra clave no corresponde a ningún día del evento.',
+      };
+    }
 
-    // 2. Registrar el 'id' en la base de datos 'ASISTENCIA' (junto con dni y palabra clave)
+    // 2. Registrar la asistencia llenando la columna del día con la keyword.
+    //    El 'id' es la clave primaria y referencia a USUARIOS.id (1 fila por usuario).
     const { error: insertError } = await (client as any)
       .from('ASISTENCIA')
-      .insert([
+      .upsert(
         {
-          id: userId,
+          id: userRow.id,
           dni: documentId,
-          keyword: keyword,
+          [dayColumn(day)]: keyword,
         },
-      ]);
+        { onConflict: 'id' }
+      );
 
     if (insertError) {
       console.error('Error al registrar asistencia en Supabase:', insertError);
