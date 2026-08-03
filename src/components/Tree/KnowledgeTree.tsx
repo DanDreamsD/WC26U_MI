@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from '../UI/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Play, FileText, Download, Info, Sparkles, ChevronLeft, Zap } from 'lucide-react';
+import { Lock, Play, FileText, Info, Sparkles, ChevronLeft, Zap } from 'lucide-react';
 import knowledgeData from '../../data/knowledge.json';
 import { getSkillResource } from '../../data/skillLinks';
 import type { UserProgress } from '../../utils/gamificationStore';
@@ -412,20 +412,14 @@ export const KnowledgeTree: React.FC<KnowledgeTreeProps> = ({ isOpen, onClose, p
                   </h4>
 
                   {/* Recording */}
-                  <motion.a
-                    whileHover={{ y: -2, boxShadow: '0 8px 24px -8px rgba(132,12,215,0.15)' }}
-                    href={selectedResource?.recording.url ?? '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3.5 bg-white rounded-xl shadow-sm border border-gray-100/80 hover:border-primary/30 transition-all duration-200 group"
-                  >
+                  <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl border border-gray-200/70 cursor-not-allowed">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-50 to-red-100 text-red-500 flex items-center justify-center shadow-sm">
+                      <div className="w-10 h-10 rounded-xl bg-gray-200 text-gray-400 flex items-center justify-center">
                         <Play size={17} className="ml-0.5" />
                       </div>
                       <div className="text-left">
-                        <div className="font-bold text-deep text-sm">
-                          {selectedResource?.recording.label ?? 'Grabación de Ponencia'}
+                        <div className="font-bold text-gray-500 text-sm">
+                          Grabación de Ponencia
                         </div>
                         <div className="text-[11px] text-gray-400">
                           {selectedResource
@@ -434,37 +428,30 @@ export const KnowledgeTree: React.FC<KnowledgeTreeProps> = ({ isOpen, onClose, p
                         </div>
                       </div>
                     </div>
-                    <span className="text-gray-300 group-hover:text-primary transition-colors text-xs font-bold">
-                      Ver →
+                    <span className="inline-flex items-center rounded-full bg-gray-200/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                      Disponible próximamente
                     </span>
-                  </motion.a>
+                  </div>
 
                   {/* Presentation */}
-                  <motion.a
-                    whileHover={{ y: -2, boxShadow: '0 8px 24px -8px rgba(132,12,215,0.15)' }}
-                    href={selectedResource?.presentation.url ?? '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3.5 bg-white rounded-xl shadow-sm border border-gray-100/80 hover:border-primary/30 transition-all duration-200 group"
-                  >
+                  <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl border border-gray-200/70 cursor-not-allowed">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-500 flex items-center justify-center shadow-sm">
+                      <div className="w-10 h-10 rounded-xl bg-gray-200 text-gray-400 flex items-center justify-center">
                         <FileText size={17} />
                       </div>
                       <div className="text-left">
-                        <div className="font-bold text-deep text-sm">
-                          {selectedResource?.presentation.label ?? 'Presentación PDF'}
+                        <div className="font-bold text-gray-500 text-sm">
+                          Presentación PDF
                         </div>
                         <div className="text-[11px] text-gray-400">
                           {selectedResource?.presentation.format ?? 'PDF'}
                         </div>
                       </div>
                     </div>
-                    <Download
-                      size={16}
-                      className="text-gray-300 group-hover:text-primary transition-colors"
-                    />
-                  </motion.a>
+                    <span className="inline-flex items-center rounded-full bg-gray-200/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                      Disponible próximamente
+                    </span>
+                  </div>
                 </div>
               </div>
             </motion.div>
