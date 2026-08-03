@@ -156,7 +156,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
       ) : (
         <div className="space-y-6">
           <div className="overflow-hidden rounded-3xl bg-white shadow-lg border border-gray-200">
-            <div className="relative h-52 sm:h-64">
+            <div className="relative h-64 sm:h-64">
               <img
                 src={locationDetails.imageSrc}
                 alt={locationDetails.placeName}
@@ -167,9 +167,9 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold uppercase tracking-wider shadow-lg">
                   <Camera size={14} /> Lugar
                 </div>
-                <h3 className="mt-3 text-2xl font-extrabold">{locationDetails.placeName}</h3>
-                <p className="mt-1 text-sm text-white/85">{locationDetails.locationDescription}</p>
-                <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-sm text-white">
+                <h3 className="mt-2 text-lg sm:text-2xl font-extrabold leading-tight">{locationDetails.placeName}</h3>
+                <p className="mt-1 text-xs sm:text-sm text-white/85 leading-snug">{locationDetails.locationDescription}</p>
+                <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs sm:text-sm text-white">
                   <MapPin size={16} /> {locationDetails.address}
                 </div>
               </div>
