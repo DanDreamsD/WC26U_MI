@@ -2,9 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Modal } from '../UI/Modal';
 import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound, ArrowLeft, MapPin, Camera } from 'lucide-react';
 import { formatLevelDateLong, getLevelStatus } from '../../utils/levelStatus';
-import { attendanceKeywordsByDay } from '../../utils/attendanceKeywords';
 import { hasAttendanceRecord, saveAttendanceRecord } from '../../utils/attendanceStorage';
-import { getPonenciaKeyword, isPonenciaType } from '../../utils/attendancePonenciaKeywords';
+import { getPonenciaColumn, isPonenciaType } from '../../utils/attendancePonenciaKeywords';
 import { hasPonenciaAttendance, savePonenciaAttendance } from '../../utils/attendanceStorage';
 import { getDayActivitiesForDay, getDayActivityDetails } from '../../data/dayActivityLibrary';
 import { getLevelLocation } from '../../data/levelLocationLibrary';
@@ -52,14 +51,13 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const isLockedDay = levelStatus === 'locked';
   const shouldShowSummary = !isStandardUser && (isReviewer || levelStatus === 'completed');
 
-  const keyword = attendanceKeywordsByDay[level.id];
   const locationDetails = getLevelLocation(level.id);
   const selectedActivityDetails = selectedActivity
     ? getDayActivityDetails(level.id, selectedActivity.title, selectedActivity.time)
     : null;
   const isPonencia = !!selectedActivityDetails && isPonenciaType(selectedActivityDetails.type);
-  const ponenciaKeyword = selectedActivityDetails
-    ? getPonenciaKeyword(level.id, selectedActivityDetails.title)
+  const ponenciaColumn = selectedActivityDetails
+    ? getPonenciaColumn(level.id, selectedActivityDetails.title)
     : null;
 
   const handleQuizSubmit = (event?: React.FormEvent) => {
@@ -112,12 +110,12 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     const checkAttendance = async () => {
       if (!documentId) return;
 
-      const exists = await hasAttendanceRecord(documentId, keyword);
+      const exists = await hasAttendanceRecord(documentId, level.id);
       setAttendanceRegistered(exists);
     };
 
     checkAttendance();
-  }, [documentId, level.id, keyword]);
+  }, [documentId, level.id]);
 
   useEffect(() => {
     setQuizOpen(false);
@@ -132,73 +130,88 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     setPonenciaRegistered(false);
     if (!documentId || !selectedActivity) return;
 
-    const keyword = getPonenciaKeyword(level.id, selectedActivity.title);
-    if (!keyword) return;
+    const column = getPonenciaColumn(level.id, selectedActivity.title);
+    if (!column) return;
 
-    void hasPonenciaAttendance(documentId, keyword).then((exists) => {
+    void hasPonenciaAttendance(documentId, column).then((exists) => {
       setPonenciaRegistered(exists);
     });
   }, [selectedActivity, documentId, level.id]);
 
   const handlePonenciaSubmit = async () => {
-    if (!ponenciaKeyword) {
-      setPonenciaMessage('No hay palabra clave disponible para esta ponencia.');
+    if (!ponenciaColumn) {
+      setPonenciaMessage('No hay registro disponible para esta ponencia.');
       return;
     }
 
-    if (ponenciaInput.trim().toUpperCase() === ponenciaKeyword.toUpperCase()) {
-      if (!documentId) {
-        setPonenciaMessage('No se pudo identificar el documento para guardar la asistencia.');
-        return;
-      }
+    if (!documentId) {
+      setPonenciaMessage('No se pudo identificar el documento para guardar la asistencia.');
+      return;
+    }
 
-      const result = await savePonenciaAttendance({ documentId, keyword: ponenciaKeyword });
-      if (result.success) {
-        setPonenciaRegistered(true);
-        setPonenciaMessage(result.message ?? 'Asistencia registrada correctamente.');
-      } else {
-        setPonenciaMessage(result.message ?? 'No se pudo guardar la asistencia.');
-      }
+    if (!ponenciaInput.trim()) {
+      setPonenciaMessage('Ingresa la palabra clave de la ponencia para confirmar tu asistencia.');
+      return;
+    }
+
+    const exists = await hasPonenciaAttendance(documentId, ponenciaColumn);
+    if (exists) {
+      setPonenciaRegistered(true);
+      setPonenciaMessage('ASISTENCIA REGISTRADA');
+      return;
+    }
+
+    const result = await savePonenciaAttendance({
+      documentId,
+      column: ponenciaColumn,
+      keyword: ponenciaInput.trim(),
+    });
+    if (result.success) {
+      setPonenciaRegistered(true);
+      setPonenciaMessage(result.message ?? 'Asistencia a la ponencia registrada correctamente.');
     } else {
-      setPonenciaMessage('La palabra clave es incorrecta. Intenta nuevamente.');
+      setPonenciaMessage(result.message ?? 'No se pudo guardar la asistencia.');
     }
   };
 
   const handleAttendanceSubmit = async (event?: React.FormEvent | React.MouseEvent) => {
     event?.preventDefault();
 
-    if (!keyword) {
-      setAttendanceMessage('No hay palabra clave disponible para este día.');
+    if (!documentId) {
+      setAttendanceMessage('No se pudo identificar el documento para guardar la asistencia.');
       return;
     }
 
-    if (attendanceInput.trim().toUpperCase() === keyword) {
-      if (!documentId) {
-        setAttendanceMessage('No se pudo identificar el documento para guardar la asistencia.');
-        return;
-      }
+    if (!attendanceInput.trim()) {
+      setAttendanceMessage('Ingresa la palabra clave para confirmar tu asistencia.');
+      return;
+    }
 
-      const result = await saveAttendanceRecord({
-        documentId,
-        keyword
-      });
+    const exists = await hasAttendanceRecord(documentId, level.id);
+    if (exists) {
+      setAttendanceRegistered(true);
+      setAttendanceMessage('ASISTENCIA REGISTRADA');
+      return;
+    }
 
-      if (result.success) {
-        setAttendanceRegistered(true);
-        setAttendanceMessage('Asistencia registrada correctamente.');
-        
-        if (progress) {
-          const updatedProgress = { ...progress };
-          // Standard users register attendance but don't earn XP/badges/skills.
-          const attendanceEvents = recordAttendance(updatedProgress, level.id, !isStandardUser);
-          const evalEvents = !isStandardUser ? evaluateAndSave(updatedProgress) : [];
-          onProgressUpdate(updatedProgress, [...attendanceEvents, ...evalEvents]);
-        }
-      } else {
-        setAttendanceMessage(result.message ?? 'No se pudo guardar la asistencia.');
+    const result = await saveAttendanceRecord({
+      documentId,
+      day: level.id,
+      keyword: attendanceInput.trim()
+    });
+
+    if (result.success) {
+      setAttendanceRegistered(true);
+      setAttendanceMessage('Asistencia registrada correctamente.');
+
+      if (progress) {
+        const updatedProgress = { ...progress };
+        const attendanceEvents = recordAttendance(updatedProgress, level.id, !isStandardUser);
+        const evalEvents = !isStandardUser ? evaluateAndSave(updatedProgress) : [];
+        onProgressUpdate(updatedProgress, [...attendanceEvents, ...evalEvents]);
       }
     } else {
-      setAttendanceMessage('La palabra clave es incorrecta. Intenta nuevamente.');
+      setAttendanceMessage(result.message ?? 'No se pudo guardar la asistencia.');
     }
   };
 

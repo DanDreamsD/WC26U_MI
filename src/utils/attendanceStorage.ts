@@ -1,31 +1,37 @@
 import { getSupabase } from './supabaseClient';
-import { attendanceKeywordsByDay } from './attendanceKeywords';
 import { REVIEWER_DOCUMENT_ID } from './gamificationStore';
 
-const KEYWORD_TO_DAY: Record<string, number> = Object.fromEntries(
-  Object.entries(attendanceKeywordsByDay).map(([day, keyword]) => [keyword, Number(day)])
-);
-
 const dayColumn = (day: number): string => `DIA${day}`;
-const PONENCIA_TABLE = 'ASISTENCIA_PONENCIAS';
 
 export const hasPonenciaAttendance = async (
   documentId: string,
-  keyword: string
+  column: string
 ): Promise<boolean> => {
-  if (!documentId || !keyword) return false;
+  if (!documentId || !column) return false;
   try {
     const client = getSupabase();
-    const { data, error } = await (client as any)
-      .from(PONENCIA_TABLE)
+
+    const { data: userRow } = await (client as any)
+      .from('USUARIOS')
       .select('id')
       .eq('dni', documentId)
-      .eq('keyword', keyword)
+      .limit(1)
       .maybeSingle();
+
+    if (!userRow?.id) return false;
+
+    const { data, error } = await (client as any)
+      .from('ASISTENCIA')
+      .select(column)
+      .eq('id', userRow.id)
+      .limit(1)
+      .maybeSingle();
+
     if (error) {
-      throw error;
+      console.error('Error al verificar asistencia de ponencia:', error);
+      return false;
     }
-    return !!data;
+    return !!(data && data[column]);
   } catch (error) {
     console.error('Error al verificar asistencia de ponencia:', error);
     return false;
@@ -34,9 +40,11 @@ export const hasPonenciaAttendance = async (
 
 export const savePonenciaAttendance = async ({
   documentId,
+  column,
   keyword,
 }: {
   documentId: string;
+  column: string;
   keyword: string;
 }) => {
   if (documentId === REVIEWER_DOCUMENT_ID) {
@@ -47,15 +55,41 @@ export const savePonenciaAttendance = async ({
   }
   try {
     const client = getSupabase();
-    const { error } = await (client as any)
-      .from(PONENCIA_TABLE)
-      .upsert({ dni: documentId, keyword }, { onConflict: 'dni,keyword' });
-    if (error) {
+
+    const { data: userRow, error: userError } = await (client as any)
+      .from('USUARIOS')
+      .select('id')
+      .eq('dni', documentId)
+      .limit(1)
+      .maybeSingle();
+
+    if (userError || !userRow) {
+      console.error('No se encontró el usuario en USUARIOS:', userError);
       return {
         success: false,
-        message: `Error en la base de datos ASISTENCIA_PONENCIAS: ${error.message}`,
+        message: `No se encontró un usuario registrado con el DNI ${documentId}.`,
       };
     }
+
+    const { error: insertError } = await (client as any)
+      .from('ASISTENCIA')
+      .upsert(
+        {
+          id: userRow.id,
+          DNI: documentId,
+          [column]: keyword,
+        },
+        { onConflict: 'id' }
+      );
+
+    if (insertError) {
+      console.error('Error al registrar asistencia de ponencia en Supabase:', insertError);
+      return {
+        success: false,
+        message: `Error en la base de datos ASISTENCIA: ${insertError.message}`,
+      };
+    }
+
     return {
       success: true,
       message: 'Asistencia a la ponencia registrada correctamente.',
@@ -107,16 +141,13 @@ export const getAttendanceRecords = async (): Promise<AttendanceRecord[]> => {
 
 export const hasAttendanceRecord = async (
   documentId: string,
-  keyword?: string
+  day?: number
 ): Promise<boolean> => {
   if (!documentId) return false;
 
   try {
     const client = getSupabase();
 
-    const day = keyword ? KEYWORD_TO_DAY[keyword] : undefined;
-
-    // 1. Buscar en USUARIOS su 'id' con el 'dni'
     const { data: userRow } = await (client as any)
       .from('USUARIOS')
       .select('id')
@@ -124,7 +155,6 @@ export const hasAttendanceRecord = async (
       .limit(1)
       .maybeSingle();
 
-    // 2. Verificar en la tabla ASISTENCIA si la columna del día ya está registrada
     if (userRow?.id) {
       const { data, error } = await (client as any)
         .from('ASISTENCIA')
@@ -136,10 +166,7 @@ export const hasAttendanceRecord = async (
       if (error) {
         console.error('Error al verificar asistencia en Supabase ASISTENCIA:', error);
       } else if (data && day) {
-        const value = data[dayColumn(day)];
-        if (value) {
-          return true;
-        }
+        return !!data[dayColumn(day)];
       } else if (data && !day) {
         return [1, 2, 3, 4, 5].some((d) => data[dayColumn(d)]);
       }
@@ -153,9 +180,11 @@ export const hasAttendanceRecord = async (
 
 export const saveAttendanceRecord = async ({
   documentId,
+  day,
   keyword,
 }: {
   documentId: string;
+  day: number;
   keyword: string;
 }) => {
   if (documentId === REVIEWER_DOCUMENT_ID) {
@@ -167,7 +196,6 @@ export const saveAttendanceRecord = async ({
   try {
     const client = getSupabase();
 
-    // 1. Con el 'dni' buscar en la tabla 'USUARIOS' su 'id'
     const { data: userRow, error: userError } = await (client as any)
       .from('USUARIOS')
       .select('id')
@@ -183,16 +211,6 @@ export const saveAttendanceRecord = async ({
       };
     }
 
-    const day = KEYWORD_TO_DAY[keyword];
-    if (!day) {
-      return {
-        success: false,
-        message: 'La palabra clave no corresponde a ningún día del evento.',
-      };
-    }
-
-    // 2. Registrar la asistencia llenando la columna del día con la keyword.
-    //    El 'id' es la clave primaria y referencia a USUARIOS.id (1 fila por usuario).
     const { error: insertError } = await (client as any)
       .from('ASISTENCIA')
       .upsert(

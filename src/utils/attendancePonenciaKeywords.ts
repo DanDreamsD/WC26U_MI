@@ -17,11 +17,11 @@ export const attendanceKeywordsByPonencia: PonenciaKeyword[] = [
   { dayId: 5, title: 'Innovar con tecnología: el futuro de las ingenierías', keyword: 'PONCEIISE-08' },
 ];
 
-export const getPonenciaKeyword = (dayId: number, title: string): string | null => {
-  const found = attendanceKeywordsByPonencia.find(
-    (p) => p.dayId === dayId && p.title === title
-  );
-  return found ? found.keyword : null;
+export const getPonenciaColumn = (dayId: number, title: string): string | null => {
+  const dayKeywords = attendanceKeywordsByPonencia.filter((p) => p.dayId === dayId);
+  const index = dayKeywords.findIndex((p) => p.title === title);
+  if (index === -1) return null;
+  return `DIA${dayId}_P${index + 1}`;
 };
 
 export const isPonenciaType = (type: string): boolean => type.includes('PONENCIA');
