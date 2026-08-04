@@ -111,7 +111,7 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
     {
       dayId: 2,
       time: '15:30 - 16:15',
-      title: 'Ponencia',
+      title: 'Cultura organizacional y liderazgo humano',
       type: 'PONENCIA',
       speaker: 'Próximamente',
       description: 'Charla para reforzar herramientas y estrategias de desarrollo profesional.',

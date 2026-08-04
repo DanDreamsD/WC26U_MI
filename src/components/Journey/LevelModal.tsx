@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Modal } from '../UI/Modal';
-import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound, ArrowLeft, MapPin, Camera } from 'lucide-react';
+import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound, ArrowLeft } from 'lucide-react';
 import { formatLevelDateLong, getLevelStatus } from '../../utils/levelStatus';
 import { hasAttendanceRecord, saveAttendanceRecord } from '../../utils/attendanceStorage';
 import { getPonenciaColumn, isPonenciaType } from '../../utils/attendancePonenciaKeywords';
 import { hasPonenciaAttendance, savePonenciaAttendance } from '../../utils/attendanceStorage';
 import { getDayActivitiesForDay, getDayActivityDetails } from '../../data/dayActivityLibrary';
-import { getLevelLocation } from '../../data/levelLocationLibrary';
 import { getQuizForDay, getQuizScore, QUIZ_TOTAL_POINTS } from '../../data/quizLibrary';
 import { recordAttendance, recordQuizScore, recordExploredActivity, evaluateAndSave, saveQuizResults } from '../../utils/gamificationStore';
 
@@ -51,7 +50,6 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const isLockedDay = levelStatus === 'locked';
   const shouldShowSummary = !isStandardUser && (isReviewer || levelStatus === 'completed');
 
-  const locationDetails = getLevelLocation(level.id);
   const selectedActivityDetails = selectedActivity
     ? getDayActivityDetails(level.id, selectedActivity.title, selectedActivity.time)
     : null;
@@ -229,34 +227,13 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="overflow-hidden rounded-3xl bg-white shadow-lg border border-gray-200">
-            <div className="relative h-64 sm:h-64">
-              <img
-                src={locationDetails.imageSrc}
-                alt={locationDetails.placeName}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 text-white">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold uppercase tracking-wider shadow-lg">
-                  <Camera size={14} /> Lugar
-                </div>
-                <h3 className="mt-2 text-lg sm:text-2xl font-extrabold leading-tight">{locationDetails.placeName}</h3>
-                <p className="mt-1 text-xs sm:text-sm text-white/85 leading-snug">{locationDetails.locationDescription}</p>
-                <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs sm:text-sm text-white">
-                  <MapPin size={16} /> {locationDetails.address}
-                </div>
-              </div>
-            </div>
-          </div>
-
           {isStandardUser ? (
             <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
               Puedes registrar tu asistencia desde aquí. El contenido completo y los recorridos detallados siguen reservados para Premium o VIP.
             </div>
           ) : null}
 
-          {shouldShowSummary ? (
+          {shouldShowSummary && level.id !== 1 ? (
             <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 flex justify-between items-center">
               <div>
                 <h4 className="font-semibold text-primary mb-1">Resumen del Día</h4>
@@ -286,7 +263,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                 <p className="mt-1 text-sm text-gray-600">
                   {attendanceRegistered
                     ? 'Tu asistencia ya fue registrada para este día.'
-                    : `Ingresa la palabra clave provisional para confirmar tu asistencia del día ${level.day}.`}
+                    : 'Asistente recuerde ingresar la palabra clave correcta otorgada durante el congreso para validar su asistencia.'}
                 </p>
                 {!attendanceRegistered ? (
                   <form
@@ -327,7 +304,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           </div>
 
-          {!isStandardUser && (
+          {!isStandardUser && level.id !== 2 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
