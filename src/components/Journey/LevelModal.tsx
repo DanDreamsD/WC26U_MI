@@ -263,7 +263,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                 <p className="mt-1 text-sm text-gray-600">
                   {attendanceRegistered
                     ? 'Tu asistencia ya fue registrada para este día.'
-                    : 'Asistente recuerde ingresar la palabra clave correcta otorgada durante el congreso para validar su asistencia.'}
+                    : `Ingresa la palabra clave provisional para confirmar tu asistencia del día ${level.day}.`}
                 </p>
                 {!attendanceRegistered ? (
                   <form

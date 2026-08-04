@@ -215,7 +215,7 @@ function App() {
           </div>
           <h3 className="text-xl font-bold text-deep">Estimado participante</h3>
           <p className="mt-3 max-w-md text-base text-gray-600">
-            Recuerde registrar su asistencia para obtener el certificado.
+            Asistente recuerde ingresar la palabra clave correcta otorgada durante el congreso para validar su asistencia.
           </p>
           <button
             onClick={() => setNoticeOpen(false)}
