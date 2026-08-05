@@ -15,9 +15,13 @@ export const attendanceKeywordsByPonencia: PonenciaKeyword[] = [
   { dayId: 4, title: 'SUPPLY CHAIN', keyword: 'PONCEIISE-06' },
   { dayId: 4, title: 'Design Thinking aplicado a la solución de problemas', keyword: 'PONCEIISE-07' },
   { dayId: 5, title: 'Innovar con tecnología: el futuro de las ingenierías', keyword: 'PONCEIISE-08' },
+  { dayId: 5, title: 'Design Thinking aplicado a problemas reales', keyword: 'PONCEIISE-09' },
 ];
 
 export const getPonenciaColumn = (dayId: number, title: string): string | null => {
+  if (dayId === 5 && title === 'Design Thinking aplicado a problemas reales') {
+    return 'DIA5_T1';
+  }
   const dayKeywords = attendanceKeywordsByPonencia.filter((p) => p.dayId === dayId);
   const index = dayKeywords.findIndex((p) => p.title === title);
   if (index === -1) return null;

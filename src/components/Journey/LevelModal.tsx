@@ -57,6 +57,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const ponenciaColumn = selectedActivityDetails
     ? getPonenciaColumn(level.id, selectedActivityDetails.title)
     : null;
+  const hasKeywordSpace = !!ponenciaColumn;
 
   const handleQuizSubmit = (event?: React.FormEvent) => {
     event?.preventDefault();
@@ -233,7 +234,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           ) : null}
 
-          {shouldShowSummary && level.id !== 1 ? (
+          {shouldShowSummary && level.id !== 1 && level.id !== 2 ? (
             <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 flex justify-between items-center">
               <div>
                 <h4 className="font-semibold text-primary mb-1">Resumen del Día</h4>
@@ -304,7 +305,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           </div>
 
-          {!isStandardUser && level.id !== 2 && (
+          {!isStandardUser && level.id !== 2 && level.id !== 3 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -417,16 +418,16 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                 <h4 className="text-xl font-bold text-deep">{selectedActivityDetails.title}</h4>
                 <p className="mt-2 text-sm text-gray-600">{selectedActivityDetails.description}</p>
 
-                {isPonencia && (
+                {hasKeywordSpace && (
                   <div className="mt-4 rounded-xl border border-primary/20 bg-white p-4 shadow-sm">
                     <h5 className="flex items-center gap-2 font-semibold text-deep">
                       <KeyRound size={16} className="text-primary" />
-                      Registrar asistencia a la ponencia
+                      Registrar asistencia {isPonencia ? 'a la ponencia' : 'al taller'}
                     </h5>
                     <p className="mt-1 text-sm text-gray-600">
                       {ponenciaRegistered
-                        ? 'Ya registraste tu asistencia a esta ponencia.'
-                        : `Ingresa la palabra clave proporcionada en la ponencia para confirmar tu asistencia.`}
+                        ? `Ya registraste tu asistencia a ${isPonencia ? 'esta ponencia' : 'este taller'}.`
+                        : `Ingresa la palabra clave proporcionada en ${isPonencia ? 'la ponencia' : 'el taller'} para confirmar tu asistencia.`}
                     </p>
                     {!ponenciaRegistered ? (
                       <form
@@ -443,7 +444,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                             setPonenciaInput(e.target.value);
                             if (ponenciaMessage) setPonenciaMessage('');
                           }}
-                          placeholder="Palabra clave de la ponencia"
+                          placeholder={isPonencia ? 'Palabra clave de la ponencia' : 'Palabra clave del taller'}
                           className="flex-1 rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary"
                         />
                         <button

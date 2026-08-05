@@ -3,6 +3,28 @@ import { REVIEWER_DOCUMENT_ID } from './gamificationStore';
 
 const dayColumn = (day: number): string => `DIA${day}`;
 
+export const getExpectedKeyword = async (column: string): Promise<string | null> => {
+  try {
+    const client = getSupabase();
+
+    const { data, error } = await (client as any)
+      .from('keywords')
+      .select(column)
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) {
+      return null;
+    }
+
+    const value = data[column];
+    return typeof value === 'string' && value.trim() !== '' ? value.trim() : null;
+  } catch (error) {
+    console.error('Error al leer la palabra clave esperada desde Supabase:', error);
+    return null;
+  }
+};
+
 export const hasPonenciaAttendance = async (
   documentId: string,
   column: string
@@ -53,6 +75,25 @@ export const savePonenciaAttendance = async ({
       message: 'Modo revisión: no se registró la asistencia en la base de datos.',
     };
   }
+
+  const dayMatch = /^DIA(\d+)/.exec(column);
+  const day = dayMatch ? Number(dayMatch[1]) : 0;
+  if (day >= 3) {
+    const expected = await getExpectedKeyword(column);
+    if (expected === null) {
+      return {
+        success: false,
+        message: 'En unos momentos se activará la palabra clave',
+      };
+    }
+    if (keyword.trim().toUpperCase() !== expected.toUpperCase()) {
+      return {
+        success: false,
+        message: 'Palabra clave incorrecta',
+      };
+    }
+  }
+
   try {
     const client = getSupabase();
 
@@ -193,6 +234,23 @@ export const saveAttendanceRecord = async ({
       message: 'Modo revisión: no se registró la asistencia en la base de datos.',
     };
   }
+
+  if (day >= 3) {
+    const expected = await getExpectedKeyword(`DIA${day}`);
+    if (expected === null) {
+      return {
+        success: false,
+        message: 'En unos momentos se activará la palabra clave',
+      };
+    }
+    if (keyword.trim().toUpperCase() !== expected.toUpperCase()) {
+      return {
+        success: false,
+        message: 'Palabra clave incorrecta',
+      };
+    }
+  }
+
   try {
     const client = getSupabase();
 
