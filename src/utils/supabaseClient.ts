@@ -63,7 +63,6 @@ export interface SupabaseDiaActividadesRecord {
   act_d3_almuerzo?: number;
   act_d3_feria_laboral?: number;
   act_d3_supply_chain_challenge?: number;
-  act_d3_logistica?: number;
   act_d3_coffee_break?: number;
   act_d4_visita_tecnica?: number;
   act_d4_supply_chain?: number;

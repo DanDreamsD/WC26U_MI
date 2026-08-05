@@ -179,14 +179,6 @@
   },
   {
     "dayId": 3,
-    "time": "17:00 - 17:45",
-    "title": "Ponencia",
-    "speaker": "Próximamente",
-    "type": "PONENCIA",
-    "requiresTicket": "ESTANDAR"
-  },
-  {
-    "dayId": 3,
     "time": "17:45 - 18:00",
     "title": "Coffee Break",
     "speaker": "",

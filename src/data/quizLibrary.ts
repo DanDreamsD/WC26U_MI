@@ -308,56 +308,45 @@ export const quizLibrary: Record<number, QuizDefinition> = {
     },
     {
       id: '3-6',
-      prompt: '¿Cuál es el enfoque principal de la ponencia del día 3?',
-      options: [
-        { id: '3-6a', label: 'Buenas prácticas', isCorrect: true },
-        { id: '3-6b', label: 'Check in', isCorrect: false },
-        { id: '3-6c', label: 'Concierto', isCorrect: false },
-        { id: '3-6d', label: 'Cierre institucional', isCorrect: false }
-      ],
-      explanation: 'La ponencia del día 3 se orienta a buenas prácticas y tendencias.'
-    },
-    {
-      id: '3-7',
       prompt: '¿Qué actividad del día 3 se desarrolla en el pabellón de ferias?',
       options: [
-        { id: '3-7a', label: 'Feria laboral', isCorrect: true },
-        { id: '3-7b', label: 'Cierre', isCorrect: false },
-        { id: '3-7c', label: 'Coffee break', isCorrect: false },
-        { id: '3-7d', label: 'Visitas técnicas', isCorrect: false }
+        { id: '3-6a', label: 'Feria laboral', isCorrect: true },
+        { id: '3-6b', label: 'Cierre', isCorrect: false },
+        { id: '3-6c', label: 'Coffee break', isCorrect: false },
+        { id: '3-6d', label: 'Visitas técnicas', isCorrect: false }
       ],
       explanation: 'La feria laboral se organiza en el pabellón de ferias.'
     },
     {
-      id: '3-8',
+      id: '3-7',
       prompt: '¿Qué actividad del día 3 se enfoca en operaciones logísticas?',
       options: [
-        { id: '3-8a', label: 'Taller de Logística', isCorrect: true },
-        { id: '3-8b', label: 'Noche cultural', isCorrect: false },
-        { id: '3-8c', label: 'Inauguración', isCorrect: false },
-        { id: '3-8d', label: 'Concierto', isCorrect: false }
+        { id: '3-7a', label: 'Taller de Logística', isCorrect: true },
+        { id: '3-7b', label: 'Noche cultural', isCorrect: false },
+        { id: '3-7c', label: 'Inauguración', isCorrect: false },
+        { id: '3-7d', label: 'Concierto', isCorrect: false }
       ],
       explanation: 'El taller de logística está centrado en operaciones y cadena de valor.'
     },
     {
-      id: '3-9',
+      id: '3-8',
       prompt: '¿Qué actividad del día 3 está relacionada con empresas y organizaciones?',
       options: [
-        { id: '3-9a', label: 'Feria laboral', isCorrect: true },
-        { id: '3-9b', label: 'Concierto', isCorrect: false },
-        { id: '3-9c', label: 'Check in', isCorrect: false },
-        { id: '3-9d', label: 'Cierre', isCorrect: false }
+        { id: '3-8a', label: 'Feria laboral', isCorrect: true },
+        { id: '3-8b', label: 'Concierto', isCorrect: false },
+        { id: '3-8c', label: 'Check in', isCorrect: false },
+        { id: '3-8d', label: 'Cierre', isCorrect: false }
       ],
       explanation: 'La feria laboral reúne a empresas y organizaciones.'
     },
     {
-      id: '3-10',
+      id: '3-9',
       prompt: '¿Qué tipo de evento ofrece la feria laboral?',
       options: [
-        { id: '3-10a', label: 'FERIA', isCorrect: true },
-        { id: '3-10b', label: 'REGISTRO', isCorrect: false },
-        { id: '3-10c', label: 'CEREMONIA', isCorrect: false },
-        { id: '3-10d', label: 'ACTIVIDAD', isCorrect: false }
+        { id: '3-9a', label: 'FERIA', isCorrect: true },
+        { id: '3-9b', label: 'REGISTRO', isCorrect: false },
+        { id: '3-9c', label: 'CEREMONIA', isCorrect: false },
+        { id: '3-9d', label: 'ACTIVIDAD', isCorrect: false }
       ],
       explanation: 'La feria laboral se clasifica como un evento de tipo feria.'
     }

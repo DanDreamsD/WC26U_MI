@@ -32,7 +32,6 @@ export const DAY_ACTIVITY_COLUMNS: Record<number, DayActivityColumn[]> = {
     { column: 'act_d3_almuerzo', title: 'Almuerzo libre' },
     { column: 'act_d3_feria_laboral', title: 'Feria laboral y Hub de innovación aplicada' },
     { column: 'act_d3_supply_chain_challenge', title: 'Supply Chain Challenge: optimización de una cadena de suministro' },
-    { column: 'act_d3_logistica', title: 'Logística sostenible y tecnologías aplicadas' },
     { column: 'act_d3_coffee_break', title: 'Coffee Break' },
   ],
   4: [

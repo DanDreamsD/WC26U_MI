@@ -168,14 +168,6 @@ export const dayActivityLibrary: Record<number, DayActivityDetail[]> = {
     },
     {
       dayId: 3,
-      time: '17:00 - 17:45',
-      title: 'Logística sostenible y tecnologías aplicadas',
-      type: 'PONENCIA',
-      speaker: 'Próximamente',
-      description: 'Ponencia enfocada en buenas prácticas y tendencias de mejora en operaciones logísticas.',
-    },
-    {
-      dayId: 3,
       time: '17:45 - 18:00',
       title: 'Coffee Break',
       type: 'BREAK',

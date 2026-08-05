@@ -11,7 +11,6 @@ export const attendanceKeywordsByPonencia: PonenciaKeyword[] = [
   { dayId: 1, title: 'Estrategias para generar oportunidades laborales a través de tu marca personal', keyword: 'IMPACTO' },
   { dayId: 1, title: 'Competencias profesionales para destacar en la industria actual', keyword: 'ACCION' },
   { dayId: 2, title: 'Cultura organizacional y liderazgo humano', keyword: 'PONCEIISE-04' },
-  { dayId: 3, title: 'Logística sostenible y tecnologías aplicadas', keyword: 'PONCEIISE-05' },
   { dayId: 4, title: 'SUPPLY CHAIN', keyword: 'PONCEIISE-06' },
   { dayId: 4, title: 'Design Thinking aplicado a la solución de problemas', keyword: 'PONCEIISE-07' },
   { dayId: 5, title: 'Innovar con tecnología: el futuro de las ingenierías', keyword: 'PONCEIISE-08' },
