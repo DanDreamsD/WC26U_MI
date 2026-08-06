@@ -59,6 +59,12 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     : null;
   const hasKeywordSpace = !!ponenciaColumn;
 
+  const isQuizCompleted =
+    (progress?.quizzesCompleted ?? []).includes(level.id) ||
+    (quizSubmitted && quizScore !== null);
+  const completedQuizScore =
+    quizScore !== null ? quizScore : progress?.quizScores?.[level.id] ?? null;
+
   const handleQuizSubmit = (event?: React.FormEvent) => {
     event?.preventDefault();
     if (!quiz) {
@@ -68,6 +74,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     const score = getQuizScore(quiz, selectedAnswers);
     setQuizScore(score);
     setQuizSubmitted(true);
+    setQuizOpen(false);
 
     // Guardar el resultado del cuestionario en Supabase (CUESTIONARIOS_<día>)
     if (documentId) {
@@ -307,7 +314,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
           </div>
           )}
 
-          {!isStandardUser && level.id !== 2 && level.id !== 3 && level.id !== 4 && (
+          {!isStandardUser && level.id !== 4 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -316,16 +323,25 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                   Responde el quiz de este día para reforzar el contenido y obtener una puntuación sobre {QUIZ_TOTAL_POINTS}.
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => setQuizOpen((prev) => !prev)}
-                className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700"
-              >
-                {quizOpen ? 'Ocultar cuestionario' : 'Realizar cuestionario'}
-              </button>
+              {isQuizCompleted && completedQuizScore !== null ? (
+                <div className="shrink-0 rounded-xl bg-green-600 px-4 py-2 text-center shadow-sm">
+                  <span className="block text-sm font-semibold text-white">Completado</span>
+                  <span className="block text-xs font-bold text-green-100">
+                    {completedQuizScore}/{QUIZ_TOTAL_POINTS}
+                  </span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setQuizOpen((prev) => !prev)}
+                  className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700"
+                >
+                  {quizOpen ? 'Ocultar cuestionario' : 'Realizar cuestionario'}
+                </button>
+              )}
             </div>
 
-            {quizOpen ? (
+            {quizOpen && !isQuizCompleted ? (
               quiz ? (
                 <form onSubmit={(event) => { event.preventDefault(); handleQuizSubmit(event); }} className="mt-4 space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
                   <div>

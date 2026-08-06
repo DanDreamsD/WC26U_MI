@@ -214,8 +214,14 @@ function App() {
             <BellRing size={36} />
           </div>
           <h3 className="text-xl font-bold text-deep">Estimado participante</h3>
-          <p className="mt-3 max-w-md text-base text-gray-600">
-            Asistente recuerde ingresar la palabra clave correcta otorgada durante el congreso para validar su asistencia.
+          <p className="mt-4 max-w-md text-sm text-gray-500">
+            ¡Nueva actualización!
+          </p>
+          <p className="mt-2 max-w-md text-base text-gray-600">
+            <span className="font-bold text-deep">Los cuestionarios del Día 2 y el Día 3 ya están activos.</span>
+          </p>
+          <p className="mt-2 max-w-md text-base text-gray-600">
+            Resuélvelos para <span className="font-semibold text-primary">demostrar tus conocimientos</span> y <span className="font-semibold text-primary">sumar puntos a tu perfil</span>.
           </p>
           <button
             onClick={() => setNoticeOpen(false)}

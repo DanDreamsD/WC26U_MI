@@ -141,214 +141,225 @@ export const quizLibrary: Record<number, QuizDefinition> = {
   2: buildQuestions(2, [
     {
       id: '2-1',
-      prompt: '¿Cuál actividad define mejor el día 2?',
+      prompt: '¿Qué produce la startup Hopnic, presentada por Juan Alberto en el bloque virtual del Día 2?',
       options: [
-        { id: '2-1a', label: 'Visitas técnicas', isCorrect: true },
-        { id: '2-1b', label: 'Check in', isCorrect: false },
-        { id: '2-1c', label: 'Cierre', isCorrect: false },
-        { id: '2-1d', label: 'Concierto', isCorrect: false }
+        { id: '2-1a', label: 'Drones automatizados para el sector agropecuario', isCorrect: false },
+        { id: '2-1b', label: 'Prótesis biónicas de miembros superiores impresas en 3D', isCorrect: true },
+        { id: '2-1c', label: 'Sensores mecánicos de temperatura para la industria minera', isCorrect: false },
+        { id: '2-1d', label: 'Dispositivos portátiles de asistencia médica general', isCorrect: false }
       ],
-      explanation: 'El día 2 está centrado en visitas técnicas.'
+      explanation: 'Hopnic produce prótesis biónicas de miembros superiores impresas en 3D.'
     },
     {
       id: '2-2',
-      prompt: '¿Qué tipo de actividad aparece en la tarde del día 2?',
+      prompt: '¿Cómo facilita Hopnic el acceso a sus prótesis para personas de escasos recursos o que trabajan en el sector informal?',
       options: [
-        { id: '2-2a', label: 'Ponencia', isCorrect: true },
-        { id: '2-2b', label: 'Check in', isCorrect: false },
-        { id: '2-2c', label: 'Registro', isCorrect: false },
-        { id: '2-2d', label: 'Concierto', isCorrect: false }
+        { id: '2-2a', label: 'Exigiendo tarjetas de crédito internacionales y seguros privados costosos', isCorrect: false },
+        { id: '2-2b', label: 'Ofreciendo créditos directos sin burocracia, basados en la buena voluntad y la confianza', isCorrect: true },
+        { id: '2-2c', label: 'Entregando los productos de manera gratuita únicamente mediante sorteos mensuales', isCorrect: false },
+        { id: '2-2d', label: 'Ofreciendo subsidios gubernamentales completos gestionados desde Lima', isCorrect: false }
       ],
-      explanation: 'El día 2 incluye ponencias en varias franjas de la tarde.'
+      explanation: 'Hopnic ofrece créditos directos sin burocracia, basados en la buena voluntad y la confianza.'
     },
     {
       id: '2-3',
-      prompt: '¿Qué espacio se utiliza para la feria de voluntarios?',
+      prompt: '¿Cuál es el lema principal y la filosofía de trabajo que define a la startup de reciclaje Simba?',
       options: [
-        { id: '2-3a', label: 'Área de participación', isCorrect: true },
-        { id: '2-3b', label: 'Auditorio principal', isCorrect: false },
-        { id: '2-3c', label: 'Entrada principal', isCorrect: false },
-        { id: '2-3d', label: 'Escenario principal', isCorrect: false }
+        { id: '2-3a', label: 'La automatización es la única solución', isCorrect: false },
+        { id: '2-3b', label: 'La basura no es basura, nada sobra y nadie sobra', isCorrect: true },
+        { id: '2-3c', label: 'Menos costos, mayor producción', isCorrect: false },
+        { id: '2-3d', label: 'Tecnología al servicio de las grandes industrias', isCorrect: false }
       ],
-      explanation: 'La feria de voluntarios se desarrolla en el área de participación.'
+      explanation: 'El lema de Simba es: la basura no es basura, nada sobra y nadie sobra.'
     },
     {
       id: '2-4',
-      prompt: '¿Qué actividad busca promover participación social?',
+      prompt: '¿Cuál es la característica clave de la aplicación móvil Escuela para masificar la educación en sectores con baja conectividad?',
       options: [
-        { id: '2-4a', label: 'Feria de voluntarios', isCorrect: true },
-        { id: '2-4b', label: 'Noche cultural', isCorrect: false },
-        { id: '2-4c', label: 'Concierto', isCorrect: false },
-        { id: '2-4d', label: 'Check in', isCorrect: false }
+        { id: '2-4a', label: 'Requiere teléfonos de última generación y señal 5G', isCorrect: false },
+        { id: '2-4b', label: 'Es una tecnología low-tech diseñada para correr en redes 2G o 3G', isCorrect: true },
+        { id: '2-4c', label: 'Solo funciona en tabletas distribuidas por el gobierno', isCorrect: false },
+        { id: '2-4d', label: 'Solo funciona completamente offline', isCorrect: false }
       ],
-      explanation: 'La feria de voluntarios busca promover participación y colaboración comunitaria.'
+      explanation: 'Escuela es una tecnología low-tech diseñada para correr en redes 2G o 3G.'
     },
     {
       id: '2-5',
-      prompt: '¿Qué actividad del día 2 está enfocada en aprendizaje práctico?',
+      prompt: 'Según Lorena Acle, ¿qué es la seguridad psicológica?',
       options: [
-        { id: '2-5a', label: 'Visitas técnicas', isCorrect: true },
-        { id: '2-5b', label: 'Cierre', isCorrect: false },
-        { id: '2-5c', label: 'Inauguración', isCorrect: false },
-        { id: '2-5d', label: 'Concierto', isCorrect: false }
+        { id: '2-5a', label: 'Tener soporte psicológico en la oficina', isCorrect: false },
+        { id: '2-5b', label: 'Poder hablar, equivocarse o disentir sin miedo a ser castigado o humillado', isCorrect: true },
+        { id: '2-5c', label: 'Evitar conflictos en el equipo', isCorrect: false },
+        { id: '2-5d', label: 'Un examen psicotécnico obligatorio', isCorrect: false }
       ],
-      explanation: 'Las visitas técnicas ofrecen aprendizajes prácticos y contextualizados.'
+      explanation: 'La seguridad psicológica es poder hablar, equivocarse o disentir sin miedo a ser castigado o humillado.'
     },
     {
       id: '2-6',
-      prompt: '¿Qué actividad del día 2 usa el espacio de networking?',
+      prompt: '¿Qué significan las siglas CFR?',
       options: [
-        { id: '2-6a', label: 'Feria de voluntarios', isCorrect: true },
-        { id: '2-6b', label: 'Check in', isCorrect: false },
-        { id: '2-6c', label: 'Inauguración', isCorrect: false },
-        { id: '2-6d', label: 'Concierto', isCorrect: false }
+        { id: '2-6a', label: 'Control, Finanzas y Rendimiento', isCorrect: false },
+        { id: '2-6b', label: 'Conversaciones, Feedback y Reconocimiento', isCorrect: true },
+        { id: '2-6c', label: 'Compromiso, Foco y Resultados', isCorrect: false },
+        { id: '2-6d', label: 'Capacidad, Fluidez y Resiliencia', isCorrect: false }
       ],
-      explanation: 'La feria de voluntarios es una actividad de networking social.'
+      explanation: 'CFR significa Conversaciones, Feedback y Reconocimiento.'
     },
     {
       id: '2-7',
-      prompt: '¿Qué enfoque se enfatiza en las ponencias del día 2?',
+      prompt: 'En el problema del bate y la pelota, ¿cuánto cuesta la pelota?',
       options: [
-        { id: '2-7a', label: 'Tendencias del día', isCorrect: true },
-        { id: '2-7b', label: 'Registro de entradas', isCorrect: false },
-        { id: '2-7c', label: 'Ceremonia de apertura', isCorrect: false },
-        { id: '2-7d', label: 'Concierto artístico', isCorrect: false }
+        { id: '2-7a', label: 'S/. 0.10', isCorrect: false },
+        { id: '2-7b', label: 'S/. 0.05', isCorrect: true },
+        { id: '2-7c', label: 'S/. 1.00', isCorrect: false },
+        { id: '2-7d', label: 'S/. 0.15', isCorrect: false }
       ],
-      explanation: 'Las ponencias del día 2 abordan tendencias y reflexiones del día.'
+      explanation: 'En el problema del bate y la pelota, la pelota cuesta S/. 0.05.'
     },
     {
       id: '2-8',
-      prompt: '¿Cuál de estas opciones no corresponde al día 2?',
+      prompt: '¿A qué sistema de core bancario migró la entidad de Carolina Alarcón en 2022?',
       options: [
-        { id: '2-8a', label: 'Noche cultural', isCorrect: true },
-        { id: '2-8b', label: 'Visitas técnicas', isCorrect: false },
-        { id: '2-8c', label: 'Feria de voluntarios', isCorrect: false },
-        { id: '2-8d', label: 'Ponencia', isCorrect: false }
+        { id: '2-8a', label: 'SAP Banking System', isCorrect: false },
+        { id: '2-8b', label: 'Bantotal', isCorrect: true },
+        { id: '2-8c', label: 'Oracle FinTech Core', isCorrect: false },
+        { id: '2-8d', label: 'Cobol Server', isCorrect: false }
       ],
-      explanation: 'La noche cultural no forma parte del esquema principal del día 2.'
+      explanation: 'La entidad de Carolina Alarcón migró al core bancario Bantotal en 2022.'
     },
     {
       id: '2-9',
-      prompt: '¿Qué actividad del día 2 se concentra en la participación comunitaria?',
+      prompt: '¿Qué es 180 Degrees Consulting?',
       options: [
-        { id: '2-9a', label: 'Feria de voluntarios', isCorrect: true },
-        { id: '2-9b', label: 'Check in', isCorrect: false },
-        { id: '2-9c', label: 'Visita técnica', isCorrect: false },
-        { id: '2-9d', label: 'Cierre', isCorrect: false }
+        { id: '2-9a', label: 'Una empresa internacional de auditoría', isCorrect: false },
+        { id: '2-9b', label: 'La consultora universitaria más grande del mundo para ONGs y empresas sociales', isCorrect: true },
+        { id: '2-9c', label: 'Una aceleradora de startups', isCorrect: false },
+        { id: '2-9d', label: 'Un voluntariado ambiental', isCorrect: false }
       ],
-      explanation: 'La feria de voluntarios busca impulsar participación y vínculos comunitarios.'
+      explanation: '180 Degrees Consulting es la consultora universitaria más grande del mundo para ONGs y empresas sociales.'
     },
     {
       id: '2-10',
-      prompt: '¿Cuál de estas actividades está planeada para el final del día 2?',
+      prompt: '¿Qué recomendación se dio para Lucky Airlines?',
       options: [
-        { id: '2-10a', label: 'Ponencia de cierre', isCorrect: true },
-        { id: '2-10b', label: 'Check in', isCorrect: false },
-        { id: '2-10c', label: 'Inauguración', isCorrect: false },
-        { id: '2-10d', label: 'Visitas técnicas', isCorrect: false }
+        { id: '2-10a', label: 'Copiar el e-commerce de grandes aerolíneas', isCorrect: false },
+        { id: '2-10b', label: 'Monetizar mediante paquetes de experiencias', isCorrect: true },
+        { id: '2-10c', label: 'Crear un gran call center', isCorrect: false },
+        { id: '2-10d', label: 'Competir agresivamente en precios', isCorrect: false }
       ],
-      explanation: 'El cierre temático del día 2 se presenta como una ponencia final.'
+      explanation: 'Para Lucky Airlines se recomendó monetizar mediante paquetes de experiencias.'
     }
   ]),
   3: buildQuestions(3, [
     {
       id: '3-1',
-      prompt: '¿Qué espacio destaca en el programa del día 3?',
+      prompt: '¿En qué país y universidad realizó su intercambio estudiantil de pregrado Daisy Apaco?',
       options: [
-        { id: '3-1a', label: 'Feria laboral', isCorrect: true },
-        { id: '3-1b', label: 'Noche cultural', isCorrect: false },
-        { id: '3-1c', label: 'Inauguración', isCorrect: false },
-        { id: '3-1d', label: 'Concierto', isCorrect: false }
+        { id: '3-1a', label: 'Universidad de Buenos Aires, Argentina', isCorrect: false },
+        { id: '3-1b', label: 'Fundación Universitaria de Popayán, Colombia', isCorrect: true },
+        { id: '3-1c', label: 'Universidad de Chile, Chile', isCorrect: false },
+        { id: '3-1d', label: 'Universidad del País Vasco, España', isCorrect: false }
       ],
-      explanation: 'La feria laboral es una de las actividades centrales del tercer día.'
+      explanation: 'Daisy Apaco realizó su intercambio estudiantil de pregrado en la Fundación Universitaria de Popayán, Colombia.'
     },
     {
       id: '3-2',
-      prompt: '¿Cuál actividad del día 3 es de carácter técnico?',
+      prompt: '¿Qué idioma se exige para las becas de posgrado en España mencionadas por Daisy Apaco?',
       options: [
-        { id: '3-2a', label: 'Visitas técnicas', isCorrect: true },
-        { id: '3-2b', label: 'Meet & Greet', isCorrect: false },
-        { id: '3-2c', label: 'Concierto', isCorrect: false },
-        { id: '3-2d', label: 'Cierre', isCorrect: false }
+        { id: '3-2a', label: 'Inglés avanzado (C1)', isCorrect: false },
+        { id: '3-2b', label: 'Español', isCorrect: true },
+        { id: '3-2c', label: 'Portugués', isCorrect: false },
+        { id: '3-2d', label: 'Francés', isCorrect: false }
       ],
-      explanation: 'Las visitas técnicas son el componente especializado del tercer día.'
+      explanation: 'Las becas de posgrado en España mencionadas exigen el idioma español.'
     },
     {
       id: '3-3',
-      prompt: '¿Qué tipo de actividad corresponde al Taller de Logística?',
+      prompt: '¿Qué representa la metáfora de "la vaca" mencionada por Daisy Apaco?',
       options: [
-        { id: '3-3a', label: 'Taller', isCorrect: true },
-        { id: '3-3b', label: 'Conferencia', isCorrect: false },
-        { id: '3-3c', label: 'Ceremonia', isCorrect: false },
-        { id: '3-3d', label: 'Networking', isCorrect: false }
+        { id: '3-3a', label: 'La riqueza de un negocio familiar', isCorrect: false },
+        { id: '3-3b', label: 'La flojera y la zona de confort que impiden avanzar', isCorrect: true },
+        { id: '3-3c', label: 'El trabajo operativo en minería', isCorrect: false },
+        { id: '3-3d', label: 'La planificación estratégica de la demanda', isCorrect: false }
       ],
-      explanation: 'El taller de logística se enfoca en una actividad práctica.'
+      explanation: 'La metáfora de la vaca representa la flojera y la zona de confort que impiden avanzar.'
     },
     {
       id: '3-4',
-      prompt: '¿Qué actividad del día 3 aporta oportunidad laboral?',
+      prompt: '¿En qué año se fundó oficialmente la organización estudiantil ISE (antes IS)?',
       options: [
-        { id: '3-4a', label: 'Feria laboral', isCorrect: true },
-        { id: '3-4b', label: 'Check in', isCorrect: false },
-        { id: '3-4c', label: 'Noche cultural', isCorrect: false },
-        { id: '3-4d', label: 'Visitas técnicas', isCorrect: false }
+        { id: '3-4a', label: 'Diciembre de 2017', isCorrect: false },
+        { id: '3-4b', label: 'Febrero de 2020', isCorrect: true },
+        { id: '3-4c', label: 'Enero de 2024', isCorrect: false },
+        { id: '3-4d', label: 'Agosto de 2026', isCorrect: false }
       ],
-      explanation: 'La feria laboral permite conocer oportunidades y vacantes.'
+      explanation: 'La organización estudiantil ISE (antes IS) se fundó oficialmente en febrero de 2020.'
     },
     {
       id: '3-5',
-      prompt: '¿Qué actividad ofrece un descanso entre sesiones?',
+      prompt: '¿De qué empresa es Gerente Administrativo y Comercial Víctor Maldonado?',
       options: [
-        { id: '3-5a', label: 'Coffee Break', isCorrect: true },
-        { id: '3-5b', label: 'Cierre', isCorrect: false },
-        { id: '3-5c', label: 'Taller de logística', isCorrect: false },
-        { id: '3-5d', label: 'Inauguración', isCorrect: false }
+        { id: '3-5a', label: 'Estilos', isCorrect: false },
+        { id: '3-5b', label: 'Grupo Sander (Perú - Bolivia)', isCorrect: true },
+        { id: '3-5c', label: 'Sodimac Constructor', isCorrect: false },
+        { id: '3-5d', label: 'Grupo F Curazao', isCorrect: false }
       ],
-      explanation: 'El coffee break es la pausa de descanso del día 3.'
+      explanation: 'Víctor Maldonado es Gerente Administrativo y Comercial de Grupo Sander (Perú - Bolivia).'
     },
     {
       id: '3-6',
-      prompt: '¿Qué actividad del día 3 se desarrolla en el pabellón de ferias?',
+      prompt: 'Según Víctor Maldonado, ¿cuál es el error más común en la gestión logística?',
       options: [
-        { id: '3-6a', label: 'Feria laboral', isCorrect: true },
-        { id: '3-6b', label: 'Cierre', isCorrect: false },
-        { id: '3-6c', label: 'Coffee break', isCorrect: false },
-        { id: '3-6d', label: 'Visitas técnicas', isCorrect: false }
+        { id: '3-6a', label: 'Comprar insumos a precios elevados', isCorrect: false },
+        { id: '3-6b', label: 'La falta de planificación estratégica', isCorrect: true },
+        { id: '3-6c', label: 'Tener almacenes propios muy pequeños', isCorrect: false },
+        { id: '3-6d', label: 'No utilizar inteligencia artificial', isCorrect: false }
       ],
-      explanation: 'La feria laboral se organiza en el pabellón de ferias.'
+      explanation: 'El error más común en la gestión logística es la falta de planificación estratégica.'
     },
     {
       id: '3-7',
-      prompt: '¿Qué actividad del día 3 se enfoca en operaciones logísticas?',
+      prompt: '¿Cuál es la consecuencia directa del understock según Víctor Maldonado?',
       options: [
-        { id: '3-7a', label: 'Taller de Logística', isCorrect: true },
-        { id: '3-7b', label: 'Noche cultural', isCorrect: false },
-        { id: '3-7c', label: 'Inauguración', isCorrect: false },
-        { id: '3-7d', label: 'Concierto', isCorrect: false }
+        { id: '3-7a', label: 'Incremento de costos de almacenamiento', isCorrect: false },
+        { id: '3-7b', label: 'Pérdida directa de ventas', isCorrect: true },
+        { id: '3-7c', label: 'Aumento del capital inmovilizado', isCorrect: false },
+        { id: '3-7d', label: 'Riesgo de obsolescencia', isCorrect: false }
       ],
-      explanation: 'El taller de logística está centrado en operaciones y cadena de valor.'
+      explanation: 'La consecuencia directa del understock es la pérdida directa de ventas.'
     },
     {
       id: '3-8',
-      prompt: '¿Qué actividad del día 3 está relacionada con empresas y organizaciones?',
+      prompt: '¿En qué tres categorías dividió Amat Husén los métodos de pronóstico de demanda?',
       options: [
-        { id: '3-8a', label: 'Feria laboral', isCorrect: true },
-        { id: '3-8b', label: 'Concierto', isCorrect: false },
-        { id: '3-8c', label: 'Check in', isCorrect: false },
-        { id: '3-8d', label: 'Cierre', isCorrect: false }
+        { id: '3-8a', label: 'Costos de almacenamiento, transporte y mermas', isCorrect: false },
+        { id: '3-8b', label: 'Series de tiempo, regresión y distribuciones aleatorias', isCorrect: true },
+        { id: '3-8c', label: 'Inventarios Clase A, B y C', isCorrect: false },
+        { id: '3-8d', label: 'Promedio móvil, Holt-Winter y modelos ARMA', isCorrect: false }
       ],
-      explanation: 'La feria laboral reúne a empresas y organizaciones.'
+      explanation: 'Amat Husén dividió los métodos de pronóstico de demanda en series de tiempo, regresión y distribuciones aleatorias.'
     },
     {
       id: '3-9',
-      prompt: '¿Qué tipo de evento ofrece la feria laboral?',
+      prompt: '¿Qué significa que un modelo tenga overfitting?',
       options: [
-        { id: '3-9a', label: 'FERIA', isCorrect: true },
-        { id: '3-9b', label: 'REGISTRO', isCorrect: false },
-        { id: '3-9c', label: 'CEREMONIA', isCorrect: false },
-        { id: '3-9d', label: 'ACTIVIDAD', isCorrect: false }
+        { id: '3-9a', label: 'Tiene mucho error en entrenamiento y prueba', isCorrect: false },
+        { id: '3-9b', label: 'Memoriza el entrenamiento pero falla con datos nuevos', isCorrect: true },
+        { id: '3-9c', label: 'Predice con 100% de exactitud', isCorrect: false },
+        { id: '3-9d', label: 'No necesita datos históricos', isCorrect: false }
       ],
-      explanation: 'La feria laboral se clasifica como un evento de tipo feria.'
+      explanation: 'El overfitting ocurre cuando el modelo memoriza el entrenamiento pero falla con datos nuevos.'
+    },
+    {
+      id: '3-10',
+      prompt: '¿Cuál fue la frase de cierre de Amat Husén?',
+      options: [
+        { id: '3-10a', label: 'La basura no es basura, nada sobra', isCorrect: false },
+        { id: '3-10b', label: 'Sin datos, solo eres otra persona con una opinión', isCorrect: true },
+        { id: '3-10c', label: 'No puede impedirse el viento, pero pueden construirse molinos', isCorrect: false },
+        { id: '3-10d', label: 'Mi beca no fue por suerte, fue por estrategia', isCorrect: false }
+      ],
+      explanation: 'La frase de cierre de Amat Husén fue: sin datos, solo eres otra persona con una opinión.'
     }
   ]),
   4: buildQuestions(4, [

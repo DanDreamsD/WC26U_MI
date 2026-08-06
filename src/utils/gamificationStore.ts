@@ -111,7 +111,6 @@ export const loadProgress = async (documentId: string): Promise<UserProgress> =>
         .from(quizTableForDay(day))
         .select('TOTAL')
         .eq('DNI', documentId)
-        .eq('DIA', day)
         .maybeSingle();
 
       if (quizError) {
@@ -334,7 +333,7 @@ export const recordQuizScore = (
 /**
  * Guarda el resultado del cuestionario de un día en la tabla CUESTIONARIOS_<día>.
  * `perQuestionCorrect` es un arreglo de 0/1, uno por pregunta (Q1..Q10).
- * Conserva el MEJOR puntaje del participante (DNI + DIA) si ya existe.
+ * Conserva el MEJOR puntaje del participante (DNI) si ya existe.
  */
 export const saveQuizResults = async (
   documentId: string,
@@ -346,7 +345,6 @@ export const saveQuizResults = async (
   const total = perQuestionCorrect.reduce((sum, value) => sum + value, 0);
   const row: Record<string, unknown> = {
     DNI: documentId,
-    DIA: day,
     TOTAL: total,
   };
   perQuestionCorrect.forEach((value, index) => {
@@ -360,7 +358,6 @@ export const saveQuizResults = async (
       .from(table)
       .select('id, TOTAL')
       .eq('DNI', documentId)
-      .eq('DIA', day)
       .maybeSingle();
 
     if (readError) {
