@@ -234,7 +234,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           ) : null}
 
-          {shouldShowSummary && level.id !== 1 && level.id !== 2 ? (
+          {shouldShowSummary && level.id !== 1 && level.id !== 2 && level.id !== 3 ? (
             <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 flex justify-between items-center">
               <div>
                 <h4 className="font-semibold text-primary mb-1">Resumen del Día</h4>
@@ -254,6 +254,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           )}
 
+          {level.id !== 4 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -304,8 +305,9 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
               </div>
             </div>
           </div>
+          )}
 
-          {!isStandardUser && level.id !== 2 && level.id !== 3 && (
+          {!isStandardUser && level.id !== 2 && level.id !== 3 && level.id !== 4 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
