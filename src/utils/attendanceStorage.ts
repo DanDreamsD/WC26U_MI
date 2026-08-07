@@ -1,5 +1,6 @@
 import { getSupabase } from './supabaseClient';
 import { REVIEWER_DOCUMENT_ID } from './gamificationStore';
+import { withDeviceTimestamp } from './attendanceStamp';
 
 const dayColumn = (day: number): string => `DIA${day}`;
 
@@ -118,7 +119,7 @@ export const savePonenciaAttendance = async ({
         {
           id: userRow.id,
           DNI: documentId,
-          [column]: keyword,
+          [column]: withDeviceTimestamp(keyword.trim(), column),
         },
         { onConflict: 'id' }
       );
@@ -275,7 +276,7 @@ export const saveAttendanceRecord = async ({
         {
           id: userRow.id,
           DNI: documentId,
-          [dayColumn(day)]: keyword,
+          [dayColumn(day)]: withDeviceTimestamp(keyword.trim(), dayColumn(day)),
         },
         { onConflict: 'id' }
       );

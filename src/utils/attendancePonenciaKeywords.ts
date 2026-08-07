@@ -13,11 +13,15 @@ export const attendanceKeywordsByPonencia: PonenciaKeyword[] = [
   { dayId: 2, title: 'Cultura organizacional y liderazgo humano', keyword: 'PONCEIISE-04' },
   { dayId: 5, title: 'Innovar con tecnología: el futuro de las ingenierías', keyword: 'PONCEIISE-08' },
   { dayId: 5, title: 'Design Thinking aplicado a problemas reales', keyword: 'PONCEIISE-09' },
+  { dayId: 5, title: 'Retos reales de la transformación digital en empresas peruanas', keyword: '' },
 ];
 
 export const getPonenciaColumn = (dayId: number, title: string): string | null => {
   if (dayId === 5 && title === 'Design Thinking aplicado a problemas reales') {
     return 'DIA5_T1';
+  }
+  if (dayId === 5 && title === 'Retos reales de la transformación digital en empresas peruanas') {
+    return 'DIA5_C1';
   }
   const dayKeywords = attendanceKeywordsByPonencia.filter((p) => p.dayId === dayId);
   const index = dayKeywords.findIndex((p) => p.title === title);
@@ -26,3 +30,11 @@ export const getPonenciaColumn = (dayId: number, title: string): string | null =
 };
 
 export const isPonenciaType = (type: string): boolean => type.includes('PONENCIA');
+
+export type KeywordActivityKind = 'ponencia' | 'taller' | 'conversatorio';
+
+export const getKeywordActivityKind = (type: string): KeywordActivityKind => {
+  if (type.includes('CONVERSATORIO')) return 'conversatorio';
+  if (type.includes('PONENCIA')) return 'ponencia';
+  return 'taller';
+};

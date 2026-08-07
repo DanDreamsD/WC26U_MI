@@ -3,7 +3,7 @@ import { Modal } from '../UI/Modal';
 import { Lock, Clock, ChevronRight, CheckCircle2, KeyRound, ArrowLeft } from 'lucide-react';
 import { formatLevelDateLong, getLevelStatus } from '../../utils/levelStatus';
 import { hasAttendanceRecord, saveAttendanceRecord } from '../../utils/attendanceStorage';
-import { getPonenciaColumn, isPonenciaType } from '../../utils/attendancePonenciaKeywords';
+import { getPonenciaColumn, getKeywordActivityKind, type KeywordActivityKind } from '../../utils/attendancePonenciaKeywords';
 import { hasPonenciaAttendance, savePonenciaAttendance } from '../../utils/attendanceStorage';
 import { getDayActivitiesForDay, getDayActivityDetails } from '../../data/dayActivityLibrary';
 import { getQuizForDay, getQuizScore, QUIZ_TOTAL_POINTS } from '../../data/quizLibrary';
@@ -53,7 +53,11 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const selectedActivityDetails = selectedActivity
     ? getDayActivityDetails(level.id, selectedActivity.title, selectedActivity.time)
     : null;
-  const isPonencia = !!selectedActivityDetails && isPonenciaType(selectedActivityDetails.type);
+  const activityKind: KeywordActivityKind | null = selectedActivityDetails
+    ? getKeywordActivityKind(selectedActivityDetails.type)
+    : null;
+  const isPonencia = activityKind === 'ponencia';
+  const isConversatorio = activityKind === 'conversatorio';
   const ponenciaColumn = selectedActivityDetails
     ? getPonenciaColumn(level.id, selectedActivityDetails.title)
     : null;
@@ -440,12 +444,12 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                   <div className="mt-4 rounded-xl border border-primary/20 bg-white p-4 shadow-sm">
                     <h5 className="flex items-center gap-2 font-semibold text-deep">
                       <KeyRound size={16} className="text-primary" />
-                      Registrar asistencia {isPonencia ? 'a la ponencia' : 'al taller'}
+                      Registrar asistencia {isPonencia ? 'a la ponencia' : isConversatorio ? 'al conversatorio' : 'al taller'}
                     </h5>
                     <p className="mt-1 text-sm text-gray-600">
                       {ponenciaRegistered
-                        ? `Ya registraste tu asistencia a ${isPonencia ? 'esta ponencia' : 'este taller'}.`
-                        : `Ingresa la palabra clave proporcionada en ${isPonencia ? 'la ponencia' : 'el taller'} para confirmar tu asistencia.`}
+                        ? `Ya registraste tu asistencia a ${isPonencia ? 'esta ponencia' : isConversatorio ? 'este conversatorio' : 'este taller'}.`
+                        : `Ingresa la palabra clave proporcionada en ${isPonencia ? 'la ponencia' : isConversatorio ? 'el conversatorio' : 'el taller'} para confirmar tu asistencia.`}
                     </p>
                     {!ponenciaRegistered ? (
                       <form
@@ -462,7 +466,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
                             setPonenciaInput(e.target.value);
                             if (ponenciaMessage) setPonenciaMessage('');
                           }}
-                          placeholder={isPonencia ? 'Palabra clave de la ponencia' : 'Palabra clave del taller'}
+                          placeholder={isPonencia ? 'Palabra clave de la ponencia' : isConversatorio ? 'Palabra clave del conversatorio' : 'Palabra clave del taller'}
                           className="flex-1 rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary"
                         />
                         <button
