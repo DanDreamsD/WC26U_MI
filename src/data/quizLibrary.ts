@@ -362,118 +362,118 @@ export const quizLibrary: Record<number, QuizDefinition> = {
       explanation: 'La frase de cierre de Amat Husén fue: sin datos, solo eres otra persona con una opinión.'
     }
   ]),
-  4: buildQuestions(4, [
-    {
-      id: '4-1',
-      prompt: '¿Qué enfoque destaca en el día 4?',
-      options: [
-        { id: '4-1a', label: 'Innovación aplicada', isCorrect: true },
-        { id: '4-1b', label: 'Registro de asistencia', isCorrect: false },
-        { id: '4-1c', label: 'Conferencia de apertura', isCorrect: false },
-        { id: '4-1d', label: 'Ceremonia de cierre', isCorrect: false }
-      ],
-      explanation: 'El día 4 se enfoca en explorar innovación aplicada y nuevas soluciones.'
-    },
-    {
-      id: '4-2',
-      prompt: '¿Qué actividad del día 4 es de networking?',
-      options: [
-        { id: '4-2a', label: 'Hub de Innovación Aplicada', isCorrect: true },
-        { id: '4-2b', label: 'Check in', isCorrect: false },
-        { id: '4-2c', label: 'Cierre', isCorrect: false },
-        { id: '4-2d', label: 'Taller de logística', isCorrect: false }
-      ],
-      explanation: 'El hub de innovación aplicada está enfocado en networking y prototipos.'
-    },
-    {
-      id: '4-3',
-      prompt: '¿Qué tipo de actividad es la ponencia del día 4?',
-      options: [
-        { id: '4-3a', label: 'PONENCIA', isCorrect: true },
-        { id: '4-3b', label: 'REGISTRO', isCorrect: false },
-        { id: '4-3c', label: 'FERIA', isCorrect: false },
-        { id: '4-3d', label: 'ACTIVIDAD', isCorrect: false }
-      ],
-      explanation: 'La ponencia del día 4 es una sesión de tipo ponencia.'
-    },
-    {
-      id: '4-4',
-      prompt: '¿Qué se explora en el hub de innovación?',
-      options: [
-        { id: '4-4a', label: 'Proyectos y prototipos', isCorrect: true },
-        { id: '4-4b', label: 'Asistencia', isCorrect: false },
-        { id: '4-4c', label: 'Check in', isCorrect: false },
-        { id: '4-4d', label: 'Registro de entradas', isCorrect: false }
-      ],
-      explanation: 'El hub de innovación se orienta a proyectos, prototipos y colaboración.'
-    },
-    {
-      id: '4-5',
-      prompt: '¿Qué actividad del día 4 ayuda a cerrar conexiones?',
-      options: [
-        { id: '4-5a', label: 'Meet & Greet', isCorrect: true },
-        { id: '4-5b', label: 'Taller de logística', isCorrect: false },
-        { id: '4-5c', label: 'Concierto', isCorrect: false },
-        { id: '4-5d', label: 'Inauguración', isCorrect: false }
-      ],
-      explanation: 'El Meet & Greet es el momento de cierre de conexiones del día 4.'
-    },
-    {
-      id: '4-6',
-      prompt: '¿Qué actividad del día 4 se desarrolla al final de la jornada?',
-      options: [
-        { id: '4-6a', label: 'Meet & Greet', isCorrect: true },
-        { id: '4-6b', label: 'Feria laboral', isCorrect: false },
-        { id: '4-6c', label: 'Check in', isCorrect: false },
-        { id: '4-6d', label: 'Visita técnica', isCorrect: false }
-      ],
-      explanation: 'El Meet & Greet finaliza la jornada del día 4.'
-    },
-    {
-      id: '4-7',
-      prompt: '¿Qué temática se promueve en la ponencia del día 4?',
-      options: [
-        { id: '4-7a', label: 'Innovación y transformación', isCorrect: true },
-        { id: '4-7b', label: 'Registro y control', isCorrect: false },
-        { id: '4-7c', label: 'Cierre institucional', isCorrect: false },
-        { id: '4-7d', label: 'Concierto artístico', isCorrect: false }
-      ],
-      explanation: 'La ponencia del día 4 está orientada a innovación y transformación.'
-    },
-    {
-      id: '4-8',
-      prompt: '¿Cuál de estas actividades es más práctica que ceremonial?',
-      options: [
-        { id: '4-8a', label: 'Hub de Innovación Aplicada', isCorrect: true },
-        { id: '4-8b', label: 'Inauguración', isCorrect: false },
-        { id: '4-8c', label: 'Ceremonia de cierre', isCorrect: false },
-        { id: '4-8d', label: 'Check in', isCorrect: false }
-      ],
-      explanation: 'El hub de innovación aplicada tiene un enfoque más práctico.'
-    },
-    {
-      id: '4-9',
-      prompt: '¿Qué nivel de enfoque tiene el día 4?',
-      options: [
-        { id: '4-9a', label: 'Aplicado y colaborativo', isCorrect: true },
-        { id: '4-9b', label: 'Solo registro', isCorrect: false },
-        { id: '4-9c', label: 'Solo ceremonia', isCorrect: false },
-        { id: '4-9d', label: 'Solo descanso', isCorrect: false }
-      ],
-      explanation: 'El cuarto día se caracteriza por un enfoque aplicado y colaborativo.'
-    },
-    {
-      id: '4-10',
-      prompt: '¿Qué opción representa mejor el espíritu del día 4?',
-      options: [
-        { id: '4-10a', label: 'Soluciones innovadoras', isCorrect: true },
-        { id: '4-10b', label: 'Registro de asistencia', isCorrect: false },
-        { id: '4-10c', label: 'Recepción inicial', isCorrect: false },
-        { id: '4-10d', label: 'Cierre cultural', isCorrect: false }
-      ],
-      explanation: 'El día 4 está orientado a soluciones innovadoras y nuevas ideas.'
-    }
-  ]),
+   4: buildQuestions(4, [
+     {
+       id: '4-1',
+       prompt: '¿Qué herramienta de IA permite crear prototipos web con prompts?',
+       options: [
+         { id: '4-1a', label: 'ChatGPT', isCorrect: false },
+         { id: '4-1b', label: 'Lovable', isCorrect: true },
+         { id: '4-1c', label: 'Canva AI', isCorrect: false },
+         { id: '4-1d', label: 'Midjourney', isCorrect: false }
+       ],
+       explanation: 'Lovable permite diseñar prototipos web funcionales en minutos a partir de prompts estructurados (roles, contexto, acción y tono).'
+     },
+     {
+       id: '4-2',
+       prompt: '¿Cuál es el recurso clave en el modelo de negocio de Uber?',
+       options: [
+         { id: '4-2a', label: 'Los automóviles', isCorrect: false },
+         { id: '4-2b', label: 'Las oficinas físicas', isCorrect: false },
+         { id: '4-2c', label: 'Los conductores en planilla', isCorrect: false },
+         { id: '4-2d', label: 'El software (plataforma digital)', isCorrect: true }
+       ],
+       explanation: 'En el modelo de plataforma de Uber el recurso clave es el software, ya que los automóviles los aportan los propios conductores.'
+     },
+     {
+       id: '4-3',
+       prompt: '¿Qué significa "Harkai" en quechua?',
+       options: [
+         { id: '4-3a', label: 'Prevención', isCorrect: false },
+         { id: '4-3b', label: 'Inteligencia', isCorrect: false },
+         { id: '4-3c', label: 'Vigilancia', isCorrect: true },
+         { id: '4-3d', label: 'Seguridad', isCorrect: false }
+       ],
+       explanation: 'Harkai significa vigilancia en quechua; es el sistema de supervisión en tiempo real para detectar actos y condiciones inseguras.'
+     },
+     {
+       id: '4-4',
+       prompt: '¿Cómo eliminaron las burbujas de aire al llenar la cisterna de emulsión?',
+       options: [
+         { id: '4-4a', label: 'Aumentando la temperatura', isCorrect: false },
+         { id: '4-4b', label: 'Cambiando el ángulo de llenado', isCorrect: true },
+         { id: '4-4c', label: 'Agregando un aditivo químico', isCorrect: false },
+         { id: '4-4d', label: 'Incrementando la presión de bombeo', isCorrect: false }
+       ],
+       explanation: 'Al cambiar el ángulo de llenado (como servir una cerveza), elevaron la utilización de los camiones cisterna del 91% al 98.8%.'
+     },
+     {
+       id: '4-5',
+       prompt: '¿Cuáles son los tres pilares del ADN del profesional innovador?',
+       options: [
+         { id: '4-5a', label: 'Inteligencia, velocidad y memoria', isCorrect: false },
+         { id: '4-5b', label: 'Curiosidad, comunicación y accountability', isCorrect: true },
+         { id: '4-5c', label: 'Puntualidad, respeto y programación', isCorrect: false },
+         { id: '4-5d', label: 'Ahorro, resiliencia y oratoria', isCorrect: false }
+       ],
+       explanation: 'Según Alessandra Arbaisa, el ADN del profesional innovador se sostiene en la curiosidad, la comunicación ("dato mata relato") y el accountability.'
+     },
+     {
+       id: '4-6',
+       prompt: '¿Qué es la facultad de subrogación en los seguros?',
+       options: [
+         { id: '4-6a', label: 'No pagar un siniestro por atraso en cuotas', isCorrect: false },
+         { id: '4-6b', label: 'Cobrar al tercero responsable el costo del siniestro', isCorrect: true },
+         { id: '4-6c', label: 'Renovar automáticamente un seguro', isCorrect: false },
+         { id: '4-6d', label: 'Modificar las sumas aseguradas sin aviso', isCorrect: false }
+       ],
+       explanation: 'La subrogación permite a la aseguradora, tras indemnizar al asegurado, cobrar al tercero responsable el costo del siniestro.'
+     },
+     {
+       id: '4-7',
+       prompt: '¿Qué metodología combina Scrum y Kanban?',
+       options: [
+         { id: '4-7a', label: 'Design Thinking', isCorrect: false },
+         { id: '4-7b', label: 'Scrumban', isCorrect: true },
+         { id: '4-7c', label: 'Lean Startup', isCorrect: false },
+         { id: '4-7d', label: 'Cascada (Gantt)', isCorrect: false }
+       ],
+       explanation: 'El Scrumban integra la estructura de roles, eventos y retrospectivas de Scrum con la flexibilidad visual, los límites de WIP y las métricas de flujo de Kanban.'
+     },
+     {
+       id: '4-8',
+       prompt: '¿Con qué cadena se implementó la red Click & Collect?',
+       options: [
+         { id: '4-8a', label: 'Oxxo', isCorrect: false },
+         { id: '4-8b', label: 'Tambo', isCorrect: true },
+         { id: '4-8c', label: 'Inkafarma', isCorrect: false },
+         { id: '4-8d', label: 'Mifarma', isCorrect: false }
+       ],
+       explanation: 'Se aliaron con puntos externos como Tambo, pasando de 20 a más de 600 puntos de recogida en todo el Perú.'
+     },
+     {
+       id: '4-9',
+       prompt: '¿Cuál era la función de la IA en la fábrica de chocolates?',
+       options: [
+         { id: '4-9a', label: 'Controlar el peso del chocolate', isCorrect: false },
+         { id: '4-9b', label: 'Evitar el atrapamiento de manos en el molino', isCorrect: true },
+         { id: '4-9c', label: 'Identificar la madurez del cacao', isCorrect: false },
+         { id: '4-9d', label: 'Detectar consumo de chocolate por el personal', isCorrect: false }
+       ],
+       explanation: 'El sistema traza líneas musculoesqueléticas y detiene la faja o emite alertas si el operario acerca la mano al molino de cacao.'
+     },
+     {
+       id: '4-10',
+       prompt: '¿Cuál fue el principal error de Kodak frente a Instagram?',
+       options: [
+         { id: '4-10a', label: 'No invertir en tecnología en la nube', isCorrect: false },
+         { id: '4-10b', label: 'Priorizar la venta de cámaras y rollos en lugar de la experiencia de compartir fotos', isCorrect: true },
+         { id: '4-10c', label: 'Tener precios muy altos', isCorrect: false },
+         { id: '4-10d', label: 'Enfocarse en desarrollar software móvil', isCorrect: false }
+       ],
+       explanation: 'Kodak priorizó la venta de cámaras y rollos, mientras que Instagram capturó la esencia de la experiencia de compartir fotos y monetizó la interacción digital.'
+     }
+   ]),
   5: buildQuestions(5, [
     {
       id: '5-1',

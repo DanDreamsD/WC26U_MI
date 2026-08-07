@@ -218,10 +218,10 @@ function App() {
             ¡Nueva actualización!
           </p>
           <p className="mt-2 max-w-md text-base text-gray-600">
-            <span className="font-bold text-deep">Los cuestionarios del Día 2 y el Día 3 ya están activos.</span>
+            <span className="font-bold text-deep">Los resúmenes del día y los nuevos cuestionarios ya están disponibles.</span>
           </p>
           <p className="mt-2 max-w-md text-base text-gray-600">
-            Resuélvelos para <span className="font-semibold text-primary">demostrar tus conocimientos</span> y <span className="font-semibold text-primary">sumar puntos a tu perfil</span>.
+            Consúltalos para <span className="font-semibold text-primary">reforzar tus aprendizajes</span> y <span className="font-semibold text-primary">sumar puntos a tu perfil</span>.
           </p>
           <button
             onClick={() => setNoticeOpen(false)}

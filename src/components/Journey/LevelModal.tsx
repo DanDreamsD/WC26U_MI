@@ -7,7 +7,9 @@ import { getPonenciaColumn, getKeywordActivityKind, type KeywordActivityKind } f
 import { hasPonenciaAttendance, savePonenciaAttendance } from '../../utils/attendanceStorage';
 import { getDayActivitiesForDay, getDayActivityDetails } from '../../data/dayActivityLibrary';
 import { getQuizForDay, getQuizScore, QUIZ_TOTAL_POINTS } from '../../data/quizLibrary';
+import { getDaySummary } from '../../data/daySummaries';
 import { recordAttendance, recordQuizScore, recordExploredActivity, evaluateAndSave, saveQuizResults } from '../../utils/gamificationStore';
+import { DaySummaryModal } from './DaySummaryModal';
 
 interface LevelModalProps {
   isOpen: boolean;
@@ -40,15 +42,16 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [quizScore, setQuizScore] = useState<number | null>(null);
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [summaryOpen, setSummaryOpen] = useState(false);
 
   const daySchedule = getDayActivitiesForDay(level.id);
   const quiz = getQuizForDay(level.id);
+  const daySummary = getDaySummary(level.id);
   const userLevel = TICKET_LEVELS[userTicket] || 1;
   const isStandardUser = userLevel === TICKET_LEVELS.ESTANDAR;
 
   const levelStatus = useMemo(() => (isReviewer ? 'available' : getLevelStatus(level.date)), [isReviewer, level.date]);
   const isLockedDay = levelStatus === 'locked';
-  const shouldShowSummary = !isStandardUser && (isReviewer || levelStatus === 'completed');
 
   const selectedActivityDetails = selectedActivity
     ? getDayActivityDetails(level.id, selectedActivity.title, selectedActivity.time)
@@ -132,6 +135,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
     setSelectedAnswers({});
     setQuizScore(null);
     setQuizSubmitted(false);
+    setSummaryOpen(false);
   }, [level.id]);
 
   useEffect(() => {
@@ -245,25 +249,20 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
             </div>
           ) : null}
 
-          {shouldShowSummary && level.id !== 1 && level.id !== 2 && level.id !== 3 ? (
-            <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 flex justify-between items-center">
-              <div>
-                <h4 className="font-semibold text-primary mb-1">Resumen del Día</h4>
-                <p className="text-sm text-gray-600">
-                  Explora las conferencias y talleres del día.
-                </p>
-              </div>
-              <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium shadow-md hover:bg-secondary transition-colors">
-                Comenzar recorrido
-              </button>
+          <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 flex justify-between items-center gap-3">
+            <div>
+              <h4 className="font-semibold text-primary mb-1">Resumen del Día</h4>
+              <p className="text-sm text-gray-600">
+                Explora las conferencias y talleres del día.
+              </p>
             </div>
-          ) : (
-            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
-              {isStandardUser
-                ? 'El resumen del día está disponible para los planes Premium y VIP. Mientras tanto, puedes registrar tu asistencia para este día.'
-                : 'El resumen del día aparecerá cuando el día ya haya pasado. Mientras tanto, puedes registrar tu asistencia para este día.'}
-            </div>
-          )}
+            <button
+              onClick={() => setSummaryOpen(true)}
+              className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium shadow-md hover:bg-secondary transition-colors"
+            >
+              Comenzar recorrido
+            </button>
+          </div>
 
           {level.id !== 4 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -318,7 +317,7 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
           </div>
           )}
 
-          {!isStandardUser && level.id !== 4 && (
+          {!isStandardUser && level.id !== 5 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -543,6 +542,13 @@ export const LevelModal: React.FC<LevelModalProps> = ({ isOpen, onClose, level, 
           </div>
         </div>
       )}
+
+      <DaySummaryModal
+        isOpen={summaryOpen}
+        onClose={() => setSummaryOpen(false)}
+        dayId={level.day}
+        summary={daySummary}
+      />
     </Modal>
   );
 };
